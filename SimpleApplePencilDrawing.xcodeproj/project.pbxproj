@@ -1,0 +1,612 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E152C0ABCB30056C270 /* AppDelegate.swift */; };
+		D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */; };
+		D4B17E1A2C0ABCB30056C270 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E192C0ABCB30056C270 /* ViewController.swift */; };
+		D4B17E1D2C0ABCB30056C270 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E1C2C0ABCB30056C270 /* Base */; };
+		D4B17E1F2C0ABCB40056C270 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */; };
+		D4B17E222C0ABCB40056C270 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E212C0ABCB40056C270 /* Base */; };
+		D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */; };
+		D4B17E372C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E362C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift */; };
+		D4B17E392C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E382C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D4B17E292C0ABCB40056C270 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D4B17E0A2C0ABCB30056C270 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4B17E112C0ABCB30056C270;
+			remoteInfo = SimpleApplePencilDrawing;
+		};
+		D4B17E332C0ABCB40056C270 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D4B17E0A2C0ABCB30056C270 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4B17E112C0ABCB30056C270;
+			remoteInfo = SimpleApplePencilDrawing;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D4B17E122C0ABCB30056C270 /* SimpleApplePencilDrawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleApplePencilDrawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4B17E152C0ABCB30056C270 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		D4B17E192C0ABCB30056C270 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D4B17E1C2C0ABCB30056C270 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D4B17E212C0ABCB40056C270 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D4B17E232C0ABCB40056C270 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D4B17E282C0ABCB40056C270 /* SimpleApplePencilDrawingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleApplePencilDrawingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingTests.swift; sourceTree = "<group>"; };
+		D4B17E322C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleApplePencilDrawingUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4B17E362C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingUITests.swift; sourceTree = "<group>"; };
+		D4B17E382C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D4B17E0F2C0ABCB30056C270 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4B17E252C0ABCB40056C270 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4B17E2F2C0ABCB40056C270 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D4B17E092C0ABCB30056C270 = {
+			isa = PBXGroup;
+			children = (
+				D4B17E142C0ABCB30056C270 /* SimpleApplePencilDrawing */,
+				D4B17E2B2C0ABCB40056C270 /* SimpleApplePencilDrawingTests */,
+				D4B17E352C0ABCB40056C270 /* SimpleApplePencilDrawingUITests */,
+				D4B17E132C0ABCB30056C270 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D4B17E132C0ABCB30056C270 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D4B17E122C0ABCB30056C270 /* SimpleApplePencilDrawing.app */,
+				D4B17E282C0ABCB40056C270 /* SimpleApplePencilDrawingTests.xctest */,
+				D4B17E322C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D4B17E142C0ABCB30056C270 /* SimpleApplePencilDrawing */ = {
+			isa = PBXGroup;
+			children = (
+				D4B17E152C0ABCB30056C270 /* AppDelegate.swift */,
+				D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */,
+				D4B17E192C0ABCB30056C270 /* ViewController.swift */,
+				D4B17E1B2C0ABCB30056C270 /* Main.storyboard */,
+				D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */,
+				D4B17E202C0ABCB40056C270 /* LaunchScreen.storyboard */,
+				D4B17E232C0ABCB40056C270 /* Info.plist */,
+			);
+			path = SimpleApplePencilDrawing;
+			sourceTree = "<group>";
+		};
+		D4B17E2B2C0ABCB40056C270 /* SimpleApplePencilDrawingTests */ = {
+			isa = PBXGroup;
+			children = (
+				D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */,
+			);
+			path = SimpleApplePencilDrawingTests;
+			sourceTree = "<group>";
+		};
+		D4B17E352C0ABCB40056C270 /* SimpleApplePencilDrawingUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D4B17E362C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift */,
+				D4B17E382C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift */,
+			);
+			path = SimpleApplePencilDrawingUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D4B17E112C0ABCB30056C270 /* SimpleApplePencilDrawing */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4B17E3C2C0ABCB40056C270 /* Build configuration list for PBXNativeTarget "SimpleApplePencilDrawing" */;
+			buildPhases = (
+				D4B17E0E2C0ABCB30056C270 /* Sources */,
+				D4B17E0F2C0ABCB30056C270 /* Frameworks */,
+				D4B17E102C0ABCB30056C270 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SimpleApplePencilDrawing;
+			productName = SimpleApplePencilDrawing;
+			productReference = D4B17E122C0ABCB30056C270 /* SimpleApplePencilDrawing.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D4B17E272C0ABCB40056C270 /* SimpleApplePencilDrawingTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4B17E3F2C0ABCB40056C270 /* Build configuration list for PBXNativeTarget "SimpleApplePencilDrawingTests" */;
+			buildPhases = (
+				D4B17E242C0ABCB40056C270 /* Sources */,
+				D4B17E252C0ABCB40056C270 /* Frameworks */,
+				D4B17E262C0ABCB40056C270 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D4B17E2A2C0ABCB40056C270 /* PBXTargetDependency */,
+			);
+			name = SimpleApplePencilDrawingTests;
+			productName = SimpleApplePencilDrawingTests;
+			productReference = D4B17E282C0ABCB40056C270 /* SimpleApplePencilDrawingTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D4B17E312C0ABCB40056C270 /* SimpleApplePencilDrawingUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4B17E422C0ABCB40056C270 /* Build configuration list for PBXNativeTarget "SimpleApplePencilDrawingUITests" */;
+			buildPhases = (
+				D4B17E2E2C0ABCB40056C270 /* Sources */,
+				D4B17E2F2C0ABCB40056C270 /* Frameworks */,
+				D4B17E302C0ABCB40056C270 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D4B17E342C0ABCB40056C270 /* PBXTargetDependency */,
+			);
+			name = SimpleApplePencilDrawingUITests;
+			productName = SimpleApplePencilDrawingUITests;
+			productReference = D4B17E322C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D4B17E0A2C0ABCB30056C270 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					D4B17E112C0ABCB30056C270 = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					D4B17E272C0ABCB40056C270 = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = D4B17E112C0ABCB30056C270;
+					};
+					D4B17E312C0ABCB40056C270 = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = D4B17E112C0ABCB30056C270;
+					};
+				};
+			};
+			buildConfigurationList = D4B17E0D2C0ABCB30056C270 /* Build configuration list for PBXProject "SimpleApplePencilDrawing" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D4B17E092C0ABCB30056C270;
+			productRefGroup = D4B17E132C0ABCB30056C270 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D4B17E112C0ABCB30056C270 /* SimpleApplePencilDrawing */,
+				D4B17E272C0ABCB40056C270 /* SimpleApplePencilDrawingTests */,
+				D4B17E312C0ABCB40056C270 /* SimpleApplePencilDrawingUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D4B17E102C0ABCB30056C270 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4B17E1F2C0ABCB40056C270 /* Assets.xcassets in Resources */,
+				D4B17E222C0ABCB40056C270 /* Base in Resources */,
+				D4B17E1D2C0ABCB30056C270 /* Base in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4B17E262C0ABCB40056C270 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4B17E302C0ABCB40056C270 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D4B17E0E2C0ABCB30056C270 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4B17E1A2C0ABCB30056C270 /* ViewController.swift in Sources */,
+				D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */,
+				D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4B17E242C0ABCB40056C270 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4B17E2E2C0ABCB40056C270 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4B17E372C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift in Sources */,
+				D4B17E392C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D4B17E2A2C0ABCB40056C270 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4B17E112C0ABCB30056C270 /* SimpleApplePencilDrawing */;
+			targetProxy = D4B17E292C0ABCB40056C270 /* PBXContainerItemProxy */;
+		};
+		D4B17E342C0ABCB40056C270 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4B17E112C0ABCB30056C270 /* SimpleApplePencilDrawing */;
+			targetProxy = D4B17E332C0ABCB40056C270 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D4B17E1B2C0ABCB30056C270 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D4B17E1C2C0ABCB30056C270 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D4B17E202C0ABCB40056C270 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D4B17E212C0ABCB40056C270 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D4B17E3A2C0ABCB40056C270 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D4B17E3B2C0ABCB40056C270 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D4B17E3D2C0ABCB40056C270 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 59LR79WH8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SimpleApplePencilDrawing/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D4B17E3E2C0ABCB40056C270 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 59LR79WH8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SimpleApplePencilDrawing/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D4B17E402C0ABCB40056C270 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 59LR79WH8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleApplePencilDrawing.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimpleApplePencilDrawing";
+			};
+			name = Debug;
+		};
+		D4B17E412C0ABCB40056C270 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 59LR79WH8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleApplePencilDrawing.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimpleApplePencilDrawing";
+			};
+			name = Release;
+		};
+		D4B17E432C0ABCB40056C270 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 59LR79WH8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SimpleApplePencilDrawing;
+			};
+			name = Debug;
+		};
+		D4B17E442C0ABCB40056C270 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 59LR79WH8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SimpleApplePencilDrawing;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D4B17E0D2C0ABCB30056C270 /* Build configuration list for PBXProject "SimpleApplePencilDrawing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4B17E3A2C0ABCB40056C270 /* Debug */,
+				D4B17E3B2C0ABCB40056C270 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4B17E3C2C0ABCB40056C270 /* Build configuration list for PBXNativeTarget "SimpleApplePencilDrawing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4B17E3D2C0ABCB40056C270 /* Debug */,
+				D4B17E3E2C0ABCB40056C270 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4B17E3F2C0ABCB40056C270 /* Build configuration list for PBXNativeTarget "SimpleApplePencilDrawingTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4B17E402C0ABCB40056C270 /* Debug */,
+				D4B17E412C0ABCB40056C270 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4B17E422C0ABCB40056C270 /* Build configuration list for PBXNativeTarget "SimpleApplePencilDrawingUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4B17E432C0ABCB40056C270 /* Debug */,
+				D4B17E442C0ABCB40056C270 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D4B17E0A2C0ABCB30056C270 /* Project object */;
+}
