@@ -28,8 +28,15 @@ class ViewController: UIViewController {
 extension ViewController {
 
     private func subscribeEvents() {
+        // Remove `/* */` to enable finger drawing
+        /*
         canvasView.addGestureRecognizer(
             FingerInputGestureRecognizer(self)
+        )
+        */
+
+        canvasView.addGestureRecognizer(
+            PencilInputGestureRecognizer(self)
         )
 
         canvasView.publisher(for: \.renderTextureSize)
@@ -59,6 +66,17 @@ extension ViewController: FingerInputGestureSender {
 
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
+            touches: touches.map { TouchPoint(touch: $0, view: view) },
+            renderTarget: canvasView
+        )
+    }
+
+}
+
+extension ViewController: PencilInputGestureSender {
+
+    func sendPencilTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
+        canvasViewModel.onPencilInputGesture(
             touches: touches.map { TouchPoint(touch: $0, view: view) },
             renderTarget: canvasView
         )

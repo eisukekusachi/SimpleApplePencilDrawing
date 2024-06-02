@@ -55,6 +55,21 @@ extension CanvasViewModel {
         )
     }
 
+    func onPencilInputGesture(
+        touches: [TouchPoint],
+        renderTarget: MTKRenderTextureProtocol
+    ) {
+        drawCurve(
+            touches: touches.map {
+                $0.getScaledTouchPoint(
+                    renderTextureSize: renderTarget.renderTexture?.size ?? .zero,
+                    drawableSize: renderTarget.viewDrawable?.texture.size ?? .zero
+                )
+            },
+            on: renderTarget
+        )
+    }
+
 }
 
 extension CanvasViewModel {
