@@ -19,8 +19,10 @@ final class CanvasViewModel {
     /// An iterator for managing grayscale points.
     private var grayscaleDrawingIterator: GrayscaleDrawingIterator?
 
+    /// A class for managing the currently drawing texture
     private let drawingTexture: DrawingTexture = BrushDrawingTexture()
 
+    /// A class for managing textures
     private let layerManager = LayerManager()
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
