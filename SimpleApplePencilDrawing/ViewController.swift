@@ -39,6 +39,11 @@ extension ViewController {
                 self.canvasViewModel.onRenderTextureSizeChange(renderTarget: self.canvasView)
             }
             .store(in: &cancellables)
+
+        // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+        tapGesture.numberOfTouchesRequired = 3
+        canvasView.addGestureRecognizer(tapGesture)
     }
 
     private func bindViewModel() {
@@ -57,6 +62,14 @@ extension ViewController: FingerInputGestureSender {
             touches: touches.map { TouchPoint(touch: $0, view: view) },
             renderTarget: canvasView
         )
+    }
+
+}
+
+extension ViewController {
+
+    @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
+        canvasViewModel.clearButtonTapped(renderTarget: canvasView)
     }
 
 }

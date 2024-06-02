@@ -36,6 +36,23 @@ final class LayerManager {
         )
     }
 
+    func clearAll(
+        _ renderTarget: MTKRenderTextureProtocol
+    ) {
+        guard let renderTexture = renderTarget.renderTexture else { return }
+
+        MTLRenderer.clear(
+            currentTexture,
+            renderTarget.commandBuffer
+        )
+
+        MTLRenderer.fill(
+            renderTexture,
+            backgroundColor.rgb,
+            renderTarget.commandBuffer
+        )
+    }
+
     func renderTexture(
         _ drawingTexture: MTLTexture?,
         on renderTexture: MTLTexture?,

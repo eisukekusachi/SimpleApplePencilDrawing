@@ -74,6 +74,16 @@ extension CanvasViewModel {
         renderTarget.setNeedsDisplay()
     }
 
+    func clearButtonTapped(renderTarget: MTKRenderTextureProtocol) {
+        drawingTexture.clearDrawingTextures(
+            with: renderTarget.commandBuffer
+        )
+        layerManager.clearAll(
+            renderTarget
+        )
+        renderTarget.setNeedsDisplay()
+    }
+
 }
 
 extension CanvasViewModel {
