@@ -1,0 +1,119 @@
+//
+//  MTLBuffers.swift
+//  SimpleApplePencilDrawing
+//
+//  Created by Eisuke Kusachi on 2024/06/02.
+//
+
+import MetalKit
+
+typealias TextureBuffers = (
+    vertexBuffer: MTLBuffer,
+    texCoordsBuffer: MTLBuffer,
+    indexBuffer: MTLBuffer,
+    indicesCount: Int
+)
+
+typealias TextureNodes = (
+    vertices: [Float],
+    texCoords: [Float],
+    indices: [UInt16]
+)
+
+let textureNodes: TextureNodes = (
+    vertices: [
+        Float(-1.0), Float( 1.0), // LB
+        Float( 1.0), Float( 1.0), // RB
+        Float( 1.0), Float(-1.0), // RT
+        Float(-1.0), Float(-1.0)  // LT
+    ],
+    texCoords: [
+        0.0, 1.0, // LB *
+        1.0, 1.0, // RB *
+        1.0, 0.0, // RT
+        0.0, 0.0  // LT
+    ],
+    indices: [
+        0, 1, 2,
+        0, 2, 3
+    ]
+)
+
+let flippedTextureNodes: TextureNodes = (
+    vertices: [
+        Float(-1.0), Float( 1.0), // LB
+        Float( 1.0), Float( 1.0), // RB
+        Float( 1.0), Float(-1.0), // RT
+        Float(-1.0), Float(-1.0)  // LT
+    ],
+    texCoords: [
+        0.0, 0.0, // LB *
+        1.0, 0.0, // RB *
+        1.0, 1.0, // RT
+        0.0, 1.0  // LT
+    ],
+    indices: [
+        0, 1, 2,
+        0, 2, 3
+    ]
+)
+
+enum MTLBuffers {
+
+    static func makeAspectFitTextureBuffers(
+        device: MTLDevice?,
+        sourceSize: CGSize,
+        destinationSize: CGSize,
+        nodes: TextureNodes
+    ) -> TextureBuffers? {
+        guard let device = device else { return nil }
+
+        let texCoords = nodes.texCoords
+        let indices = nodes.indices
+
+        // Calculate the scale to fit the source size within the destination size
+        let scale = ViewSize.getScaleToFit(sourceSize, to: destinationSize)
+        let resizedSourceSize = CGSize(
+            width: sourceSize.width * scale,
+            height: sourceSize.height * scale
+        )
+
+        // Helper function to calculate vertex coordinates
+        func calculateVertexPosition(xOffset: CGFloat, yOffset: CGFloat) -> CGPoint {
+            let x = destinationSize.width * 0.5 + xOffset * resizedSourceSize.width * 0.5
+            let y = destinationSize.height * 0.5 + yOffset * resizedSourceSize.height * 0.5
+            return CGPoint(x: x, y: y)
+        }
+
+        // Calculate vertex positions for the four corners
+        let bottomLeft = calculateVertexPosition(xOffset: -1, yOffset: 1)
+        let bottomRight = calculateVertexPosition(xOffset: 1, yOffset: 1)
+        let topRight = calculateVertexPosition(xOffset: 1, yOffset: -1)
+        let topLeft = calculateVertexPosition(xOffset: -1, yOffset: -1)
+
+        // Normalize vertex positions to OpenGL coordinates
+        let vertices: [Float] = [
+            Float(bottomLeft.x / destinationSize.width * 2.0 - 1.0), Float(bottomLeft.y / destinationSize.height * 2.0 - 1.0),
+            Float(bottomRight.x / destinationSize.width * 2.0 - 1.0), Float(bottomRight.y / destinationSize.height * 2.0 - 1.0),
+            Float(topRight.x / destinationSize.width * 2.0 - 1.0), Float(topRight.y / destinationSize.height * 2.0 - 1.0),
+            Float(topLeft.x / destinationSize.width * 2.0 - 1.0), Float(topLeft.y / destinationSize.height * 2.0 - 1.0)
+        ]
+
+        // Create buffers
+        guard
+            let vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: []),
+            let texCoordsBuffer = device.makeBuffer(bytes: texCoords, length: texCoords.count * MemoryLayout<Float>.size, options: []),
+            let indexBuffer = device.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.size, options: [])
+        else {
+            return nil
+        }
+
+        return TextureBuffers(
+            vertexBuffer: vertexBuffer,
+            texCoordsBuffer: texCoordsBuffer,
+            indexBuffer: indexBuffer,
+            indicesCount: indices.count
+        )
+    }
+
+}
