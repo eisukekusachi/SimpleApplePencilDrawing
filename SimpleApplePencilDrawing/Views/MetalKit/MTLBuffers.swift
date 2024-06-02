@@ -7,6 +7,14 @@
 
 import MetalKit
 
+typealias GrayscalePointBuffers = (
+    vertexBuffer: MTLBuffer,
+    diameterIncludingBlurBuffer: MTLBuffer,
+    brightnessBuffer: MTLBuffer,
+    blurSizeBuffer: MTLBuffer,
+    numberOfPoints: Int
+)
+
 typealias TextureBuffers = (
     vertexBuffer: MTLBuffer,
     texCoordsBuffer: MTLBuffer,
@@ -59,6 +67,59 @@ let flippedTextureNodes: TextureNodes = (
 )
 
 enum MTLBuffers {
+
+    static func makeGrayscalePointBuffers(
+        device: MTLDevice?,
+        grayscalePointsOnTexture: [GrayscaleDotPoint],
+        pointsAlpha: Int = 255,
+        textureSize: CGSize
+    ) -> GrayscalePointBuffers? {
+        guard grayscalePointsOnTexture.count != .zero else { return nil }
+
+        var vertexArray: [Float] = []
+        var diameterPlusBlurSizeArray: [Float] = []
+        var bufferSizeArray: [Float] = []
+        var brightnessArray: [Float] = []
+
+        let alpha: CGFloat = CGFloat(pointsAlpha) / 255.0
+
+        grayscalePointsOnTexture.forEach {
+            let vertexX: Float = Float($0.location.x / textureSize.width) * 2.0 - 1.0
+            let vertexY: Float = Float($0.location.y / textureSize.height) * 2.0 - 1.0
+
+            vertexArray.append(contentsOf: [vertexX, vertexY])
+            diameterPlusBlurSizeArray.append(Float($0.diameter))
+            bufferSizeArray.append(4.0)
+            brightnessArray.append(Float($0.brightness * alpha))
+        }
+
+        guard
+            let vertexBuffer = device?.makeBuffer(
+                bytes: vertexArray,
+                length: vertexArray.count * MemoryLayout<Float>.size
+            ),
+            let diameterPlusBlurSizeBuffer = device?.makeBuffer(
+                bytes: diameterPlusBlurSizeArray,
+                length: diameterPlusBlurSizeArray.count * MemoryLayout<Float>.size
+            ),
+            let blurSizeBuffer = device?.makeBuffer(
+                bytes: bufferSizeArray,
+                length: bufferSizeArray.count * MemoryLayout<Float>.size
+            ),
+            let brightnessBuffer = device?.makeBuffer(
+                bytes: brightnessArray,
+                length: brightnessArray.count * MemoryLayout<Float>.size
+            )
+        else { return nil }
+
+        return GrayscalePointBuffers(
+            vertexBuffer: vertexBuffer,
+            diameterIncludingBlurBuffer: diameterPlusBlurSizeBuffer,
+            brightnessBuffer: brightnessBuffer,
+            blurSizeBuffer: blurSizeBuffer,
+            numberOfPoints: grayscalePointsOnTexture.count
+        )
+    }
 
     static func makeAspectFitTextureBuffers(
         device: MTLDevice?,

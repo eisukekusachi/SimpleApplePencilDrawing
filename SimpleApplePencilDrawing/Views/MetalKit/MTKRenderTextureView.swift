@@ -31,9 +31,21 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
         currentDrawable
     }
 
+    var isDisplayLinkPaused: Bool = false {
+        didSet {
+            displayLink?.isPaused = isDisplayLinkPaused
+
+            if isDisplayLinkPaused {
+                setNeedsDisplay()
+            }
+        }
+    }
+
     private var _renderTexture: MTLTexture!
 
     private var commandManager: MTLCommandManager!
+
+    private var displayLink: CADisplayLink?
 
     override init(frame frameRect: CGRect, device: MTLDevice?) {
         super.init(frame: frameRect, device: device)
@@ -52,6 +64,11 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
         assert(commandQueue != nil, "CommandQueue is nil.")
 
         commandManager = MTLCommandManager(device: self.device!)
+
+        // Configure the display link for rendering.
+        displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
+        displayLink?.add(to: .current, forMode: .common)
+        displayLink?.isPaused = true
 
         self.delegate = self
         self.enableSetNeedsDisplay = true
@@ -104,6 +121,14 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
         if _renderTexture == nil {
             initTexture(with: size)
         }
+        setNeedsDisplay()
+    }
+
+}
+
+extension MTKRenderTextureView {
+
+    @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
         setNeedsDisplay()
     }
 

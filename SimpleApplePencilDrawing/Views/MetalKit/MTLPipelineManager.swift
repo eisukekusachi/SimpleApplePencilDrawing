@@ -11,8 +11,11 @@ final class MTLPipelineManager {
 
     static let shared = MTLPipelineManager()
 
+    private (set) var drawPointsWithMaxBlendMode: MTLRenderPipelineState!
     private (set) var drawTexture: MTLRenderPipelineState!
     private (set) var fillColor: MTLComputePipelineState!
+    private (set) var colorize: MTLComputePipelineState!
+    private (set) var merge: MTLComputePipelineState!
 
     private init() {
         guard
@@ -20,6 +23,23 @@ final class MTLPipelineManager {
             let library = device.makeDefaultLibrary()
         else {
             fatalError("Failed to create default library with device.")
+        }
+
+        self.drawPointsWithMaxBlendMode = makeRenderPipelineState(
+            device: device,
+            library: library,
+            label: "Draw points with max blend mode"
+        ) { descriptor in
+            descriptor.vertexFunction = library.makeFunction(name: "draw_gray_points_vertex")
+            descriptor.fragmentFunction = library.makeFunction(name: "draw_gray_points_fragment")
+            descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+            descriptor.colorAttachments[0].isBlendingEnabled = true
+            descriptor.colorAttachments[0].rgbBlendOperation = .max
+            descriptor.colorAttachments[0].alphaBlendOperation = .add
+            descriptor.colorAttachments[0].sourceRGBBlendFactor = .one
+            descriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
+            descriptor.colorAttachments[0].destinationRGBBlendFactor = .one
+            descriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
         }
 
         self.drawTexture = makeRenderPipelineState(
@@ -45,6 +65,21 @@ final class MTLPipelineManager {
             label: "Add color to a texture",
             shaderName: "add_color_to_texture"
         )
+
+        self.colorize = makeComputePipeline(
+            device: device,
+            library: library,
+            label: "Colorize",
+            shaderName: "colorize_grayscale_texture"
+        )
+
+        self.merge = makeComputePipeline(
+            device: device,
+            library: library,
+            label: "Marge textures",
+            shaderName: "merge_textures"
+        )
+
     }
 
 }

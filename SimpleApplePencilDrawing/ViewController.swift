@@ -20,6 +20,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         subscribeEvents()
+        bindViewModel()
     }
 
 }
@@ -37,6 +38,13 @@ extension ViewController {
                 guard let `self` else { return }
                 self.canvasViewModel.onRenderTextureSizeChange(renderTarget: self.canvasView)
             }
+            .store(in: &cancellables)
+    }
+
+    private func bindViewModel() {
+        canvasViewModel.pauseDisplayLinkPublish
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isDisplayLinkPaused, on: canvasView)
             .store(in: &cancellables)
     }
 
