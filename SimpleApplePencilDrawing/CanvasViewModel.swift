@@ -70,6 +70,16 @@ extension CanvasViewModel {
         )
     }
 
+    func clearButtonTapped(renderTarget: MTKRenderTextureProtocol) {
+        drawingTexture.clearDrawingTextures(
+            with: renderTarget.commandBuffer
+        )
+        layerManager.clearAll(
+            renderTarget
+        )
+        renderTarget.setNeedsDisplay()
+    }
+
 }
 
 extension CanvasViewModel {
@@ -88,20 +98,6 @@ extension CanvasViewModel {
 
         renderTarget.setNeedsDisplay()
     }
-
-    func clearButtonTapped(renderTarget: MTKRenderTextureProtocol) {
-        drawingTexture.clearDrawingTextures(
-            with: renderTarget.commandBuffer
-        )
-        layerManager.clearAll(
-            renderTarget
-        )
-        renderTarget.setNeedsDisplay()
-    }
-
-}
-
-extension CanvasViewModel {
 
     private func drawCurve(
         touches: [TouchPoint],

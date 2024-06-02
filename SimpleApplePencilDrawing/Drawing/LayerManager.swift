@@ -9,14 +9,11 @@ import MetalKit
 
 final class LayerManager {
 
+    var backgroundColor: UIColor = .white
+
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
     private var currentTexture: MTLTexture?
-
-    var isTextureInitialized: Bool {
-        currentTexture != nil
-    }
-    var backgroundColor: UIColor = .white
 
     func initTextures(
         _ textureSize: CGSize,
