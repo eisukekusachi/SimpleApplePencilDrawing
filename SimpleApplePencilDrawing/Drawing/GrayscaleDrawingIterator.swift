@@ -12,7 +12,7 @@ final class GrayscaleDrawingIterator: Iterator<GrayscaleDotPoint> {
     typealias T = GrayscaleDotPoint
 
     func makeCurvePoints(
-        isDrawingFinished: Bool = false
+        atEnd: Bool = false
     ) -> [T] {
 
         var curve: [T] = []
@@ -40,7 +40,7 @@ final class GrayscaleDrawingIterator: Iterator<GrayscaleDotPoint> {
             )
         }
 
-        if isDrawingFinished {
+        if atEnd {
             if index == 0 && array.count >= 3 {
                 curve.append(
                     contentsOf: makeFirstCurve(
