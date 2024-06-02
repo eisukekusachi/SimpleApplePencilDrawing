@@ -27,6 +27,10 @@ class ViewController: UIViewController {
 extension ViewController {
 
     private func subscribeEvents() {
+        canvasView.addGestureRecognizer(
+            FingerInputGestureRecognizer(self)
+        )
+
         canvasView.publisher(for: \.renderTextureSize)
             .filter { $0 != .zero }
             .sink { [weak self] newSize in
@@ -34,6 +38,17 @@ extension ViewController {
                 self.canvasViewModel.onRenderTextureSizeChange(renderTarget: self.canvasView)
             }
             .store(in: &cancellables)
+    }
+
+}
+
+extension ViewController: FingerInputGestureSender {
+
+    func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
+        canvasViewModel.onFingerInputGesture(
+            touches: touches.map { TouchPoint(touch: $0, view: view) },
+            renderTarget: canvasView
+        )
     }
 
 }

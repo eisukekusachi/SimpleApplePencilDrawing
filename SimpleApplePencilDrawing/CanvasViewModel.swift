@@ -40,4 +40,13 @@ extension CanvasViewModel {
         renderTarget.setNeedsDisplay()
     }
 
+    func onFingerInputGesture(
+        touches: [TouchPoint],
+        renderTarget: MTKRenderTextureProtocol
+    ) {
+        touches.forEach {
+            print($0)
+        }
+    }
+
 }
