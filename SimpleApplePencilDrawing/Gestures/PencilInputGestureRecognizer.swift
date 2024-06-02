@@ -39,4 +39,9 @@ final class PencilInputGestureRecognizer: UIGestureRecognizer {
         gestureDelegate?.sendPencilTouches(touches, with: event, on: view)
     }
 
+    // MARK TODO: Use actual values instead of estimates
+    override func touchesEstimatedPropertiesUpdated(_ touches: Set<UITouch>) {
+
+    }
+
 }
