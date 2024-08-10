@@ -37,8 +37,6 @@ extension CanvasViewModel {
     ) {
         // Initialize the canvas here if the renderTexture's texture is nil
         if renderTarget.renderTexture == nil {
-            renderTarget.initTexture(with: drawableTextureSize)
-
             initCanvas(
                 textureSize: drawableTextureSize,
                 renderTarget: renderTarget
