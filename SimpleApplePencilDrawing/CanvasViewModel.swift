@@ -39,8 +39,8 @@ extension CanvasViewModel {
         if renderTarget.renderTexture == nil {
             renderTarget.initTexture(with: drawableTextureSize)
 
-            initTextures(
-                drawableTextureSize,
+            initCanvas(
+                textureSize: drawableTextureSize,
                 renderTarget: renderTarget
             )
         }
@@ -90,16 +90,24 @@ extension CanvasViewModel {
 
 extension CanvasViewModel {
 
-    private func initTextures(
-        _ textureSize: CGSize,
+    /// Initialize the textures used for drawing with the same size
+    func initCanvas(
+        textureSize: CGSize,
         renderTarget: MTKRenderTextureProtocol
     ) {
         drawingTexture.initTextures(
             textureSize
         )
         layerManager.initTextures(
-            textureSize,
-            renderTarget: renderTarget
+            textureSize
+        )
+
+        renderTarget.initTexture(with: textureSize)
+
+        // Add a background color to the render target’s texture
+        layerManager.fillBackgroundColor(
+            on: renderTarget.renderTexture!,
+            with: renderTarget.commandBuffer
         )
 
         renderTarget.setNeedsDisplay()
