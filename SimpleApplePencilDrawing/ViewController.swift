@@ -21,6 +21,7 @@ class ViewController: UIViewController {
 
         subscribeEvents()
         bindViewModel()
+        setupCanvasViewModel()
     }
 
     override func viewDidLayoutSubviews() {
@@ -38,6 +39,16 @@ class ViewController: UIViewController {
 }
 
 extension ViewController {
+
+    private func setupCanvasViewModel() {
+        // Initialize the texture with any size
+        /*
+        canvasViewModel.initCanvas(
+            textureSize: .init(width: 768, height: 1024),
+            renderTarget: canvasView
+        )
+        */
+    }
 
     private func subscribeEvents() {
         // Remove `/* */` to enable finger drawing
