@@ -15,15 +15,9 @@ struct GrayscaleDotPoint: Equatable {
 
     let blurSize: CGFloat = 2.0
 
-    init(
-        location: CGPoint,
-        diameter: CGFloat,
-        brightness: CGFloat
-    ) {
-        self.location = location
-        self.diameter = diameter
-        self.brightness = brightness
-    }
+}
+
+extension GrayscaleDotPoint {
 
     init(
         touchPoint: TouchPoint,
@@ -33,11 +27,6 @@ struct GrayscaleDotPoint: Equatable {
         self.diameter = diameter
         self.brightness = touchPoint.maximumPossibleForce != 0 ? min(touchPoint.force, 1.0) : 1.0
     }
-
-}
-
-extension GrayscaleDotPoint {
-
     static func average(_ left: Self, _ right: Self) -> Self {
         .init(
             location: left.location == right.location ? left.location : CGPoint(

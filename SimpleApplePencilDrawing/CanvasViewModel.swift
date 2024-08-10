@@ -31,15 +31,19 @@ final class CanvasViewModel {
 
 extension CanvasViewModel {
 
-    func onRenderTextureSizeChange(renderTarget: MTKRenderTextureProtocol) {
-        guard
-            let textureSize = renderTarget.renderTexture?.size
-        else { return }
+    func onViewDidAppear(
+        _ drawableTextureSize: CGSize,
+        renderTarget: MTKRenderTextureProtocol
+    ) {
+        // Initialize the canvas here if the renderTexture's texture is nil
+        if renderTarget.renderTexture == nil {
+            renderTarget.initTexture(with: drawableTextureSize)
 
-        initTextures(
-            textureSize,
-            renderTarget: renderTarget
-        )
+            initCanvas(
+                textureSize: drawableTextureSize,
+                renderTarget: renderTarget
+            )
+        }
     }
 
     func onFingerInputGesture(
@@ -86,16 +90,24 @@ extension CanvasViewModel {
 
 extension CanvasViewModel {
 
-    private func initTextures(
-        _ textureSize: CGSize,
+    /// Initialize the textures used for drawing with the same size
+    func initCanvas(
+        textureSize: CGSize,
         renderTarget: MTKRenderTextureProtocol
     ) {
         drawingTexture.initTextures(
             textureSize
         )
         layerManager.initTextures(
-            textureSize,
-            renderTarget: renderTarget
+            textureSize
+        )
+
+        renderTarget.initTexture(with: textureSize)
+
+        // Add a background color to the render target’s texture
+        layerManager.fillBackgroundColor(
+            on: renderTarget.renderTexture!,
+            with: renderTarget.commandBuffer
         )
 
         renderTarget.setNeedsDisplay()

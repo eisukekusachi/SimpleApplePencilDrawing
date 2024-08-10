@@ -16,21 +16,13 @@ final class LayerManager {
     private var currentTexture: MTLTexture?
 
     func initTextures(
-        _ textureSize: CGSize,
-        renderTarget: MTKRenderTextureProtocol
+        _ textureSize: CGSize
     ) {
-        guard let renderTexture = renderTarget.renderTexture else { return }
-
         currentTexture = MTLTextureManager.makeBlankTexture(
             with: device,
             textureSize
         )
 
-        MTLRenderer.fill(
-            renderTexture,
-            backgroundColor.rgb,
-            renderTarget.commandBuffer
-        )
     }
 
     func clearAll(
@@ -47,6 +39,17 @@ final class LayerManager {
             renderTexture,
             backgroundColor.rgb,
             renderTarget.commandBuffer
+        )
+    }
+
+    func fillBackgroundColor(
+        on renderTexture: MTLTexture,
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        MTLRenderer.fill(
+            renderTexture,
+            backgroundColor.rgb,
+            commandBuffer
         )
     }
 

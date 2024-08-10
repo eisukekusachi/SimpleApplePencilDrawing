@@ -13,16 +13,15 @@ protocol MTKRenderTextureProtocol {
     var renderTexture: MTLTexture? { get }
     var viewDrawable: CAMetalDrawable? { get }
 
+    func initTexture(with textureSize: CGSize)
+
     func setNeedsDisplay()
 }
 
 /// A custom view for displaying textures with Metal support.
 class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
 
-    @objc dynamic var renderTexture: MTLTexture? {
-        _renderTexture
-    }
-    @objc dynamic var renderTextureSize: CGSize = .zero
+    @objc dynamic var renderTexture: MTLTexture?
 
     var commandBuffer: MTLCommandBuffer {
         commandManager.currentCommandBuffer
@@ -40,8 +39,6 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
             }
         }
     }
-
-    private var _renderTexture: MTLTexture!
 
     private var commandManager: MTLCommandManager!
 
@@ -82,13 +79,11 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
         let minLength: CGFloat = CGFloat(MTLRenderer.threadGroupLength)
         assert(textureSize.width >= minLength && textureSize.height >= minLength, "The textureSize is not appropriate")
 
-        _renderTexture = MTLTextureManager.makeBlankTexture(with: device!, textureSize)
-        renderTextureSize = textureSize
+        renderTexture = MTLTextureManager.makeBlankTexture(with: device!, textureSize)
     }
 
     // MARK: - DrawTexture
     func draw(in view: MTKView) {
-        assert(self._renderTexture != nil, "`rootTexture` is nil. Call `initRootTexture(with textureSize:)` once before rendering.")
         guard
             let device,
             let renderTexture,
@@ -117,10 +112,6 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        // Initialize the `_renderTexture` when the `drawableSize` is determined if it is not already initialized.
-        if _renderTexture == nil {
-            initTexture(with: size)
-        }
         setNeedsDisplay()
     }
 

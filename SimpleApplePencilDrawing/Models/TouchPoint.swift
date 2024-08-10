@@ -15,19 +15,9 @@ struct TouchPoint: Equatable {
     let phase: UITouch.Phase
     let frameSize: CGSize
 
-    init(
-        location: CGPoint,
-        force: CGFloat,
-        maximumPossibleForce: CGFloat,
-        phase: UITouch.Phase,
-        frameSize: CGSize
-    ) {
-        self.location = location
-        self.force = force
-        self.maximumPossibleForce = maximumPossibleForce
-        self.phase = phase
-        self.frameSize = frameSize
-    }
+}
+
+extension TouchPoint {
 
     init(
         touch: UITouch,

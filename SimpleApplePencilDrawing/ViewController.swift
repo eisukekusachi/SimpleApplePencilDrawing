@@ -21,11 +21,34 @@ class ViewController: UIViewController {
 
         subscribeEvents()
         bindViewModel()
+        setupCanvasViewModel()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        canvasViewModel.onViewDidAppear(
+            canvasView.drawableSize,
+            renderTarget: canvasView
+        )
     }
 
 }
 
 extension ViewController {
+
+    private func setupCanvasViewModel() {
+        // Initialize the texture with any size
+        /*
+        canvasViewModel.initCanvas(
+            textureSize: .init(width: 768, height: 1024),
+            renderTarget: canvasView
+        )
+        */
+    }
 
     private func subscribeEvents() {
         // Remove `/* */` to enable finger drawing
@@ -38,14 +61,6 @@ extension ViewController {
         canvasView.addGestureRecognizer(
             PencilInputGestureRecognizer(self)
         )
-
-        canvasView.publisher(for: \.renderTextureSize)
-            .filter { $0 != .zero }
-            .sink { [weak self] newSize in
-                guard let `self` else { return }
-                self.canvasViewModel.onRenderTextureSizeChange(renderTarget: self.canvasView)
-            }
-            .store(in: &cancellables)
 
         // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
