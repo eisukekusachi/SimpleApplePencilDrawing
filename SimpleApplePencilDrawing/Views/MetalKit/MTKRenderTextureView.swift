@@ -13,6 +13,8 @@ protocol MTKRenderTextureProtocol {
     var renderTexture: MTLTexture? { get }
     var viewDrawable: CAMetalDrawable? { get }
 
+    func initTexture(with textureSize: CGSize)
+
     func setNeedsDisplay()
 }
 
@@ -20,8 +22,6 @@ protocol MTKRenderTextureProtocol {
 class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
 
     @objc dynamic var renderTexture: MTLTexture?
-
-    @objc dynamic var renderTextureSize: CGSize = .zero
 
     var commandBuffer: MTLCommandBuffer {
         commandManager.currentCommandBuffer
@@ -80,7 +80,6 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
         assert(textureSize.width >= minLength && textureSize.height >= minLength, "The textureSize is not appropriate")
 
         renderTexture = MTLTextureManager.makeBlankTexture(with: device!, textureSize)
-        renderTextureSize = textureSize
     }
 
     // MARK: - DrawTexture
@@ -113,10 +112,6 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        // Initialize the `_renderTexture` when the `drawableSize` is determined if it is not already initialized.
-        if renderTexture == nil {
-            initTexture(with: size)
-        }
         setNeedsDisplay()
     }
 
