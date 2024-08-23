@@ -1,5 +1,5 @@
 //
-//  TouchPoint.swift
+//  CanvasTouchPoint.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct TouchPoint: Equatable {
+struct CanvasTouchPoint: Equatable {
 
     let location: CGPoint
     let force: CGFloat
@@ -16,7 +16,7 @@ struct TouchPoint: Equatable {
 
 }
 
-extension TouchPoint {
+extension CanvasTouchPoint {
 
     init(
         touch: UITouch,
@@ -66,7 +66,7 @@ extension TouchPoint {
 
 }
 
-extension Array where Element == TouchPoint {
+extension Array where Element == CanvasTouchPoint {
 
     var currentTouchPhase: UITouch.Phase {
         if self.last?.phase == .cancelled {

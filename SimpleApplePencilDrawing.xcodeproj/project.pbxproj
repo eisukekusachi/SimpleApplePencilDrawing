@@ -19,7 +19,7 @@
 		D462E1852C0C583900E0503E /* MTLTextureExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1842C0C583900E0503E /* MTLTextureExtensions.swift */; };
 		D462E1872C0C5A7500E0503E /* CanvasViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1862C0C5A7500E0503E /* CanvasViewModel.swift */; };
 		D462E18A2C0C616C00E0503E /* FingerInputGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1892C0C616C00E0503E /* FingerInputGestureRecognizer.swift */; };
-		D462E18F2C0C620500E0503E /* TouchPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E18E2C0C620500E0503E /* TouchPoint.swift */; };
+		D462E18F2C0C620500E0503E /* CanvasTouchPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E18E2C0C620500E0503E /* CanvasTouchPoint.swift */; };
 		D462E1922C0C63F900E0503E /* CanvasBrushDrawingTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */; };
 		D462E1942C0C641800E0503E /* DrawingTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1932C0C641800E0503E /* DrawingTexture.swift */; };
 		D462E1982C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1972C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift */; };
@@ -73,7 +73,7 @@
 		D462E1842C0C583900E0503E /* MTLTextureExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLTextureExtensions.swift; sourceTree = "<group>"; };
 		D462E1862C0C5A7500E0503E /* CanvasViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasViewModel.swift; sourceTree = "<group>"; };
 		D462E1892C0C616C00E0503E /* FingerInputGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerInputGestureRecognizer.swift; sourceTree = "<group>"; };
-		D462E18E2C0C620500E0503E /* TouchPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchPoint.swift; sourceTree = "<group>"; };
+		D462E18E2C0C620500E0503E /* CanvasTouchPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasTouchPoint.swift; sourceTree = "<group>"; };
 		D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasBrushDrawingTexture.swift; sourceTree = "<group>"; };
 		D462E1932C0C641800E0503E /* DrawingTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingTexture.swift; sourceTree = "<group>"; };
 		D462E1972C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleDotPoint.swift; sourceTree = "<group>"; };
@@ -214,7 +214,7 @@
 				D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */,
 				D462E1972C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift */,
 				D462E19F2C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift */,
-				D462E18E2C0C620500E0503E /* TouchPoint.swift */,
+				D462E18E2C0C620500E0503E /* CanvasTouchPoint.swift */,
 				D462E1A72C0C684300E0503E /* DrawingTool.swift */,
 			);
 			path = Models;
@@ -430,7 +430,7 @@
 				D462E1A82C0C684300E0503E /* DrawingTool.swift in Sources */,
 				D462E1782C0C562400E0503E /* Texture.metal in Sources */,
 				D462E18A2C0C616C00E0503E /* FingerInputGestureRecognizer.swift in Sources */,
-				D462E18F2C0C620500E0503E /* TouchPoint.swift in Sources */,
+				D462E18F2C0C620500E0503E /* CanvasTouchPoint.swift in Sources */,
 				D462E17E2C0C567E00E0503E /* UIColorExtensions.swift in Sources */,
 				D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */,
 				D462E1852C0C583900E0503E /* MTLTextureExtensions.swift in Sources */,

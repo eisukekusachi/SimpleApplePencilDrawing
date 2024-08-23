@@ -20,7 +20,7 @@ struct CanvasGrayscaleDotPoint: Equatable {
 extension CanvasGrayscaleDotPoint {
 
     init(
-        touchPoint: TouchPoint,
+        touchPoint: CanvasTouchPoint,
         diameter: CGFloat
     ) {
         self.location = touchPoint.location

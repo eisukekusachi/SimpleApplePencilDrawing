@@ -47,7 +47,7 @@ extension CanvasViewModel {
     }
 
     func onFingerInputGesture(
-        touches: [TouchPoint],
+        touches: [CanvasTouchPoint],
         view: UIView,
         renderTarget: CanvasViewProtocol
     ) {
@@ -64,7 +64,7 @@ extension CanvasViewModel {
     }
 
     func onPencilInputGesture(
-        touches: [TouchPoint],
+        touches: [CanvasTouchPoint],
         view: UIView,
         renderTarget: CanvasViewProtocol
     ) {
@@ -120,7 +120,7 @@ extension CanvasViewModel {
     }
 
     private func drawCurve(
-        touches: [TouchPoint],
+        touches: [CanvasTouchPoint],
         on renderTarget: CanvasViewProtocol
     ) {
         let touchPhase = touches.currentTouchPhase
