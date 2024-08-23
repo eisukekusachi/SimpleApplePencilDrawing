@@ -76,7 +76,7 @@ extension CanvasViewModel {
         )
     }
 
-    func clearButtonTapped(renderTarget: MTKRenderTextureProtocol) {
+    func onTapClearTexture(renderTarget: MTKRenderTextureProtocol) {
         drawingTexture.clearTexture(
             with: renderTarget.commandBuffer
         )

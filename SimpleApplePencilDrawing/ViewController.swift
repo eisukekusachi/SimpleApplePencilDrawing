@@ -102,7 +102,7 @@ extension ViewController: PencilInputGestureSender {
 extension ViewController {
 
     @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
-        canvasViewModel.clearButtonTapped(renderTarget: canvasView)
+        canvasViewModel.onTapClearTexture(renderTarget: canvasView)
     }
 
 }
