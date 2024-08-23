@@ -14,7 +14,7 @@ final class CanvasViewModel {
         pauseDisplayLinkSubject.eraseToAnyPublisher()
     }
 
-    private let drawingTool = DrawingTool()
+    private let drawingTool = CanvasDrawingTool()
 
     /// An iterator for managing grayscale points.
     private var grayscaleTexturePointIterator: CanvasGrayscaleTexturePointIterator?
