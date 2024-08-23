@@ -138,6 +138,15 @@
 			path = CanvasView;
 			sourceTree = "<group>";
 		};
+		D41E21702C78C686005CE868 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D462E1932C0C641800E0503E /* DrawingTexture.swift */,
+				D462E1A92C0C69BC00E0503E /* LayerManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		D462E16B2C0C554300E0503E /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -213,9 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */,
-				D462E1932C0C641800E0503E /* DrawingTexture.swift */,
 				D462E19F2C0C67C000E0503E /* GrayscaleTexturePointIterator.swift */,
-				D462E1A92C0C69BC00E0503E /* LayerManager.swift */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -249,6 +256,7 @@
 				D462E17C2C0C566900E0503E /* Extensions */,
 				D462E1812C0C56E000E0503E /* Utils */,
 				D462E16C2C0C554900E0503E /* MetalKit */,
+				D41E21702C78C686005CE868 /* Models */,
 				D462E16B2C0C554300E0503E /* Views */,
 				D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */,
 				D4B17E202C0ABCB40056C270 /* LaunchScreen.storyboard */,
