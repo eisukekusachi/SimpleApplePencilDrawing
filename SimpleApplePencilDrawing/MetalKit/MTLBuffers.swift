@@ -70,7 +70,7 @@ enum MTLBuffers {
 
     static func makeGrayscalePointBuffers(
         device: MTLDevice?,
-        grayscaleTexturePoints: [GrayscaleDotPoint],
+        grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
         pointsAlpha: Int = 255,
         textureSize: CGSize
     ) -> GrayscalePointBuffers? {

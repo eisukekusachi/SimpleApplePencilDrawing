@@ -22,9 +22,9 @@
 		D462E18F2C0C620500E0503E /* TouchPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E18E2C0C620500E0503E /* TouchPoint.swift */; };
 		D462E1922C0C63F900E0503E /* CanvasBrushDrawingTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */; };
 		D462E1942C0C641800E0503E /* DrawingTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1932C0C641800E0503E /* DrawingTexture.swift */; };
-		D462E1982C0C651B00E0503E /* GrayscaleDotPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1972C0C651B00E0503E /* GrayscaleDotPoint.swift */; };
+		D462E1982C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1972C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift */; };
 		D462E19A2C0C669E00E0503E /* Drawing.metal in Sources */ = {isa = PBXBuildFile; fileRef = D462E1992C0C669E00E0503E /* Drawing.metal */; };
-		D462E1A02C0C67C000E0503E /* GrayscaleTexturePointIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E19F2C0C67C000E0503E /* GrayscaleTexturePointIterator.swift */; };
+		D462E1A02C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E19F2C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift */; };
 		D462E1A22C0C67DC00E0503E /* Iterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1A12C0C67DC00E0503E /* Iterator.swift */; };
 		D462E1A42C0C680400E0503E /* Interpolator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1A32C0C680400E0503E /* Interpolator.swift */; };
 		D462E1A62C0C682300E0503E /* Calculate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1A52C0C682300E0503E /* Calculate.swift */; };
@@ -76,9 +76,9 @@
 		D462E18E2C0C620500E0503E /* TouchPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchPoint.swift; sourceTree = "<group>"; };
 		D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasBrushDrawingTexture.swift; sourceTree = "<group>"; };
 		D462E1932C0C641800E0503E /* DrawingTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingTexture.swift; sourceTree = "<group>"; };
-		D462E1972C0C651B00E0503E /* GrayscaleDotPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleDotPoint.swift; sourceTree = "<group>"; };
+		D462E1972C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleDotPoint.swift; sourceTree = "<group>"; };
 		D462E1992C0C669E00E0503E /* Drawing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Drawing.metal; sourceTree = "<group>"; };
-		D462E19F2C0C67C000E0503E /* GrayscaleTexturePointIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleTexturePointIterator.swift; sourceTree = "<group>"; };
+		D462E19F2C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleTexturePointIterator.swift; sourceTree = "<group>"; };
 		D462E1A12C0C67DC00E0503E /* Iterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Iterator.swift; sourceTree = "<group>"; };
 		D462E1A32C0C680400E0503E /* Interpolator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpolator.swift; sourceTree = "<group>"; };
 		D462E1A52C0C682300E0503E /* Calculate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculate.swift; sourceTree = "<group>"; };
@@ -211,7 +211,9 @@
 		D462E18D2C0C61F400E0503E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				D462E1972C0C651B00E0503E /* GrayscaleDotPoint.swift */,
+				D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */,
+				D462E1972C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift */,
+				D462E19F2C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift */,
 				D462E18E2C0C620500E0503E /* TouchPoint.swift */,
 				D462E1A72C0C684300E0503E /* DrawingTool.swift */,
 			);
@@ -221,8 +223,6 @@
 		D462E1902C0C63DF00E0503E /* Drawing */ = {
 			isa = PBXGroup;
 			children = (
-				D462E1912C0C63F900E0503E /* CanvasBrushDrawingTexture.swift */,
-				D462E19F2C0C67C000E0503E /* GrayscaleTexturePointIterator.swift */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -414,7 +414,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D462E1942C0C641800E0503E /* DrawingTexture.swift in Sources */,
-				D462E1982C0C651B00E0503E /* GrayscaleDotPoint.swift in Sources */,
+				D462E1982C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift in Sources */,
 				D462E1AE2C0C70A700E0503E /* PencilInputGestureRecognizer.swift in Sources */,
 				D462E1A22C0C67DC00E0503E /* Iterator.swift in Sources */,
 				D462E19A2C0C669E00E0503E /* Drawing.metal in Sources */,
@@ -436,7 +436,7 @@
 				D462E1852C0C583900E0503E /* MTLTextureExtensions.swift in Sources */,
 				D462E1832C0C580600E0503E /* ViewSize.swift in Sources */,
 				D462E1A62C0C682300E0503E /* Calculate.swift in Sources */,
-				D462E1A02C0C67C000E0503E /* GrayscaleTexturePointIterator.swift in Sources */,
+				D462E1A02C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift in Sources */,
 				D462E1702C0C557D00E0503E /* MTLCommandManager.swift in Sources */,
 				D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */,
 				D462E1AA2C0C69BC00E0503E /* LayerManager.swift in Sources */,

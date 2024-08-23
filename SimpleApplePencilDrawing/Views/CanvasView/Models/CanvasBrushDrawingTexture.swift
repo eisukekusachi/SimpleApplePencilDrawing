@@ -36,7 +36,7 @@ extension CanvasBrushDrawingTexture {
     /// Converts the grayscale to brightness, adds color, and creates `texture`.
     /// This way, overlapping lines won’t darken within a single stroke.
     func drawLineOnTexture(
-        grayscaleTexturePoints: [GrayscaleDotPoint],
+        grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer
     ) {
