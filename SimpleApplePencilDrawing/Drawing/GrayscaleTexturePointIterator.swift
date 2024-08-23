@@ -1,5 +1,5 @@
 //
-//  GrayscaleDrawingIterator.swift
+//  GrayscaleTexturePointIterator.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,10 +7,13 @@
 
 import Foundation
 
-final class GrayscaleDrawingIterator: Iterator<GrayscaleDotPoint> {
+final class GrayscaleTexturePointIterator: Iterator<GrayscaleDotPoint> {
 
     typealias T = GrayscaleDotPoint
 
+}
+
+extension GrayscaleTexturePointIterator {
     func makeCurvePoints(
         atEnd: Bool = false
     ) -> [T] {
@@ -74,7 +77,7 @@ final class GrayscaleDrawingIterator: Iterator<GrayscaleDotPoint> {
 
 }
 
-extension GrayscaleDrawingIterator {
+extension GrayscaleTexturePointIterator {
 
     private func makeFirstCurve(
         previousPoint: T,

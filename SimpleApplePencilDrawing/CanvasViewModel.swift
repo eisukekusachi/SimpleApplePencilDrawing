@@ -17,7 +17,7 @@ final class CanvasViewModel {
     private let drawingTool = DrawingTool()
 
     /// An iterator for managing grayscale points.
-    private var grayscaleDrawingIterator: GrayscaleDrawingIterator?
+    private var grayscaleTexturePointIterator: GrayscaleTexturePointIterator?
 
     /// A class for managing the currently drawing texture
     private let drawingTexture: DrawingTexture = BrushDrawingTexture()
@@ -123,11 +123,11 @@ extension CanvasViewModel {
 
         if touchPhase == .began {
             pauseDisplayLinkSubject.send(false)
-            grayscaleDrawingIterator = GrayscaleDrawingIterator()
+            grayscaleTexturePointIterator = GrayscaleTexturePointIterator()
         }
 
         // Add points to the iterator.
-        grayscaleDrawingIterator?.append(
+        grayscaleTexturePointIterator?.append(
             touches.map {
                 .init(
                     touchPoint: $0,
@@ -138,7 +138,7 @@ extension CanvasViewModel {
 
         // Draw curve points on the `drawingTexture`.
         drawingTexture.drawLineOnTexture(
-            grayscaleTexturePoints: grayscaleDrawingIterator?.makeCurvePoints(
+            grayscaleTexturePoints: grayscaleTexturePointIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
             color: drawingTool.brushColor,
@@ -167,7 +167,7 @@ extension CanvasViewModel {
 
         if touchPhase == .ended || touchPhase == .cancelled {
             pauseDisplayLinkSubject.send(true)
-            grayscaleDrawingIterator = nil
+            grayscaleTexturePointIterator = nil
         }
     }
 
