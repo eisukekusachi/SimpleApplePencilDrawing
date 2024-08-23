@@ -1,5 +1,5 @@
 //
-//  GrayscaleDotPoint.swift
+//  CanvasGrayscaleDotPoint.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct GrayscaleDotPoint: Equatable {
+struct CanvasGrayscaleDotPoint: Equatable {
 
     let location: CGPoint
     let diameter: CGFloat
@@ -17,10 +17,10 @@ struct GrayscaleDotPoint: Equatable {
 
 }
 
-extension GrayscaleDotPoint {
+extension CanvasGrayscaleDotPoint {
 
     init(
-        touchPoint: TouchPoint,
+        touchPoint: CanvasTouchPoint,
         diameter: CGFloat
     ) {
         self.location = touchPoint.location

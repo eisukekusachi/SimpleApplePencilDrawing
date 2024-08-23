@@ -1,5 +1,5 @@
 //
-//  Calculate.swift
+//  Calculator.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Calculate {
+enum Calculator {
 
     static func getLength(_ leftHandSide: CGPoint, to rightHandSide: CGPoint) -> CGFloat {
         sqrt(pow(rightHandSide.x - leftHandSide.x, 2) + pow(rightHandSide.y - leftHandSide.y, 2))
@@ -21,7 +21,7 @@ enum Calculate {
 
     static func getRadian(_ left: CGVector, _ right: CGVector) -> CGFloat {
         let dotProduct = left.dx * right.dx + left.dy * right.dy
-        let divisor: CGFloat = Calculate.getLength(left) * Calculate.getLength(right)
+        let divisor: CGFloat = Calculator.getLength(left) * Calculator.getLength(right)
 
         return divisor != 0 ? acos(dotProduct / divisor) : 0.0
     }

@@ -10,7 +10,7 @@ import Combine
 
 class ViewController: UIViewController {
 
-    @IBOutlet private weak var canvasView: MTKRenderTextureView!
+    @IBOutlet private weak var canvasView: CanvasView!
 
     private let canvasViewModel = CanvasViewModel()
 
@@ -54,12 +54,12 @@ extension ViewController {
         // Remove `/* */` to enable finger drawing
         /*
         canvasView.addGestureRecognizer(
-            FingerInputGestureRecognizer(self)
+            CanvasFingerInputGestureRecognizer(self)
         )
         */
 
         canvasView.addGestureRecognizer(
-            PencilInputGestureRecognizer(self)
+            CanvasPencilInputGestureRecognizer(self)
         )
 
         // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
@@ -77,11 +77,11 @@ extension ViewController {
 
 }
 
-extension ViewController: FingerInputGestureSender {
+extension ViewController: CanvasFingerInputGestureSender {
 
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
-            touches: touches.map { TouchPoint(touch: $0, view: view) },
+            touches: touches.map { .init(touch: $0, view: view) },
             view: canvasView,
             renderTarget: canvasView
         )
@@ -89,11 +89,11 @@ extension ViewController: FingerInputGestureSender {
 
 }
 
-extension ViewController: PencilInputGestureSender {
+extension ViewController: CanvasPencilInputGestureSender {
 
     func sendPencilTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilInputGesture(
-            touches: touches.map { TouchPoint(touch: $0, view: view) },
+            touches: touches.map { .init(touch: $0, view: view) },
             view: canvasView,
             renderTarget: canvasView
         )

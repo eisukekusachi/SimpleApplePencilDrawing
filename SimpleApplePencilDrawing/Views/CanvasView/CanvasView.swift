@@ -1,5 +1,5 @@
 //
-//  MTKRenderTextureView.swift
+//  CanvasView.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,7 +7,7 @@
 
 import MetalKit
 
-protocol MTKRenderTextureProtocol {
+protocol CanvasViewProtocol {
     var commandBuffer: MTLCommandBuffer { get }
 
     var renderTexture: MTLTexture? { get }
@@ -19,7 +19,7 @@ protocol MTKRenderTextureProtocol {
 }
 
 /// A custom view for displaying textures with Metal support.
-class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
+class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
     @objc dynamic var renderTexture: MTLTexture?
 
@@ -117,7 +117,7 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
 
 }
 
-extension MTKRenderTextureView {
+extension CanvasView {
 
     @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
         setNeedsDisplay()
