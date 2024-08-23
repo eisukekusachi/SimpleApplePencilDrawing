@@ -121,12 +121,6 @@ extension CanvasViewModel {
     ) {
         let touchPhase = touches.phase
 
-        defer {
-            if touchPhase == .ended || touchPhase == .cancelled {
-                pauseDisplayLinkSubject.send(true)
-                grayscaleDrawingIterator = nil
-            }
-        }
         if touchPhase == .began {
             pauseDisplayLinkSubject.send(false)
             grayscaleDrawingIterator = GrayscaleDrawingIterator()
@@ -169,6 +163,11 @@ extension CanvasViewModel {
             drawingTexture.clearDrawingTextures(
                 with: renderTarget.commandBuffer
             )
+        }
+
+        if touchPhase == .ended || touchPhase == .cancelled {
+            pauseDisplayLinkSubject.send(true)
+            grayscaleDrawingIterator = nil
         }
     }
 
