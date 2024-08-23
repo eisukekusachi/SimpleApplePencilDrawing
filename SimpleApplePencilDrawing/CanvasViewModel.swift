@@ -77,7 +77,7 @@ extension CanvasViewModel {
     }
 
     func clearButtonTapped(renderTarget: MTKRenderTextureProtocol) {
-        drawingTexture.clearDrawingTextures(
+        drawingTexture.clearTexture(
             with: renderTarget.commandBuffer
         )
         layerManager.resetAllTextures(
@@ -96,7 +96,7 @@ extension CanvasViewModel {
         textureSize: CGSize,
         renderTarget: MTKRenderTextureProtocol
     ) {
-        drawingTexture.initTextures(
+        drawingTexture.initTexture(
             textureSize
         )
         layerManager.initTexture(
@@ -137,8 +137,8 @@ extension CanvasViewModel {
         )
 
         // Draw curve points on the `drawingTexture`.
-        drawingTexture.drawLineOnDrawingTexture(
-            grayscalePointsOnTexture: grayscaleDrawingIterator?.makeCurvePoints(
+        drawingTexture.drawLineOnTexture(
+            grayscaleTexturePoints: grayscaleDrawingIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
             color: drawingTool.brushColor,
@@ -148,7 +148,7 @@ extension CanvasViewModel {
         // Render the `drawingTexture` onto the `renderTexture`
         MTLRenderer.drawTextures(
             [layerManager.currentTexture,
-             drawingTexture.drawingTexture],
+             drawingTexture.texture],
             withBackgroundColor: backgroundColor.rgba,
             on: renderTarget.renderTexture,
             with: renderTarget.commandBuffer
@@ -156,11 +156,11 @@ extension CanvasViewModel {
 
         if touchPhase == .ended {
             MTLRenderer.merge(
-                drawingTexture.drawingTexture,
+                drawingTexture.texture,
                 into: layerManager.currentTexture,
                 with: renderTarget.commandBuffer
             )
-            drawingTexture.clearDrawingTextures(
+            drawingTexture.clearTexture(
                 with: renderTarget.commandBuffer
             )
         }

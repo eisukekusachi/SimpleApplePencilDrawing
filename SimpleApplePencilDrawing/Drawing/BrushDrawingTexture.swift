@@ -6,44 +6,48 @@
 //
 
 import MetalKit
-
+/// A class for drawing with a brush
 final class BrushDrawingTexture: DrawingTexture {
-
-    var drawingTexture: MTLTexture? {
-        _drawingTexture
-    }
-
-    private var _drawingTexture: MTLTexture?
+    /// A texture being drawn
+    private (set) var texture: MTLTexture?
+    /// A texture drawn in grayscale, with the grayscale converted to brightness later
     private var grayscaleDrawingTexture: MTLTexture?
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
-    func initTextures(
+}
+
+extension BrushDrawingTexture {
+
+    func initTexture(
         _ textureSize: CGSize
     ) {
         grayscaleDrawingTexture = MTLTextureManager.makeBlankTexture(
             with: device,
             textureSize
         )
-        _drawingTexture = MTLTextureManager.makeBlankTexture(
+        texture = MTLTextureManager.makeBlankTexture(
             with: device,
             textureSize
         )
     }
 
-    func drawLineOnDrawingTexture(
-        grayscalePointsOnTexture: [GrayscaleDotPoint],
+    /// Draws in grayscale on `grayscaleDrawingTexture` with Max blend mode.
+    /// Converts the grayscale to brightness, adds color, and creates `texture`.
+    /// This way, overlapping lines won’t darken within a single stroke.
+    func drawLineOnTexture(
+        grayscaleTexturePoints: [GrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer
     ) {
         guard
             let grayscaleDrawingTexture,
-            let drawingTexture
+            let texture
         else { return }
 
         if let buffer = MTLBuffers.makeGrayscalePointBuffers(
             device: device,
-            grayscalePointsOnTexture: grayscalePointsOnTexture,
+            grayscaleTexturePoints: grayscaleTexturePoints,
             pointsAlpha: color.alpha,
             textureSize: grayscaleDrawingTexture.size
         ) {
@@ -56,18 +60,15 @@ final class BrushDrawingTexture: DrawingTexture {
             MTLRenderer.colorize(
                 grayscaleTexture: grayscaleDrawingTexture,
                 color: color.rgb,
-                on: drawingTexture,
+                on: texture,
                 with: commandBuffer
             )
         }
     }
 
-    func clearDrawingTextures(with commandBuffer: MTLCommandBuffer) {
+    func clearTexture(with commandBuffer: MTLCommandBuffer) {
         MTLRenderer.clear(
-            [
-                grayscaleDrawingTexture,
-                drawingTexture
-            ],
+            [grayscaleDrawingTexture, texture],
             with: commandBuffer
         )
     }

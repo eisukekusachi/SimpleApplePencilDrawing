@@ -70,11 +70,11 @@ enum MTLBuffers {
 
     static func makeGrayscalePointBuffers(
         device: MTLDevice?,
-        grayscalePointsOnTexture: [GrayscaleDotPoint],
+        grayscaleTexturePoints: [GrayscaleDotPoint],
         pointsAlpha: Int = 255,
         textureSize: CGSize
     ) -> GrayscalePointBuffers? {
-        guard grayscalePointsOnTexture.count != .zero else { return nil }
+        guard grayscaleTexturePoints.count != .zero else { return nil }
 
         var vertexArray: [Float] = []
         var diameterPlusBlurSizeArray: [Float] = []
@@ -83,7 +83,7 @@ enum MTLBuffers {
 
         let alpha: CGFloat = CGFloat(pointsAlpha) / 255.0
 
-        grayscalePointsOnTexture.forEach {
+        grayscaleTexturePoints.forEach {
             let vertexX: Float = Float($0.location.x / textureSize.width) * 2.0 - 1.0
             let vertexY: Float = Float($0.location.y / textureSize.height) * 2.0 - 1.0
 
@@ -117,7 +117,7 @@ enum MTLBuffers {
             diameterIncludingBlurBuffer: diameterPlusBlurSizeBuffer,
             brightnessBuffer: brightnessBuffer,
             blurSizeBuffer: blurSizeBuffer,
-            numberOfPoints: grayscalePointsOnTexture.count
+            numberOfPoints: grayscaleTexturePoints.count
         )
     }
 

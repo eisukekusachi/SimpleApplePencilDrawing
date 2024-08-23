@@ -6,21 +6,21 @@
 //
 
 import MetalKit
-
+/// Manage the currently drawn texture
 protocol DrawingTexture {
 
-    var drawingTexture: MTLTexture? { get }
+    var texture: MTLTexture? { get }
 
-    func initTextures(
+    func initTexture(
         _ textureSize: CGSize
     )
 
-    func drawLineOnDrawingTexture(
-        grayscalePointsOnTexture: [GrayscaleDotPoint],
+    func drawLineOnTexture(
+        grayscaleTexturePoints: [GrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer
     )
 
-    func clearDrawingTextures(with commandBuffer: MTLCommandBuffer)
+    func clearTexture(with commandBuffer: MTLCommandBuffer)
 
 }
