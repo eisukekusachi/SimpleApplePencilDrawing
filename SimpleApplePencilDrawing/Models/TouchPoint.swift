@@ -13,7 +13,6 @@ struct TouchPoint: Equatable {
     let force: CGFloat
     let maximumPossibleForce: CGFloat
     let phase: UITouch.Phase
-    let frameSize: CGSize
 
 }
 
@@ -27,10 +26,10 @@ extension TouchPoint {
         self.force = touch.force
         self.maximumPossibleForce = touch.maximumPossibleForce
         self.phase = touch.phase
-        self.frameSize = view.frame.size
     }
 
-    func getScaledTouchPoint(
+    func convertToTextureCoordinates(
+        frameSize: CGSize,
         renderTextureSize: CGSize,
         drawableSize: CGSize
     ) -> Self {
@@ -61,8 +60,7 @@ extension TouchPoint {
             location: locationOnTexture,
             force: force,
             maximumPossibleForce: maximumPossibleForce,
-            phase: phase,
-            frameSize: frameSize
+            phase: phase
         )
     }
 
@@ -70,23 +68,16 @@ extension TouchPoint {
 
 extension Array where Element == TouchPoint {
 
-    var phase: UITouch.Phase {
-        guard !isEmpty else { return .cancelled }
-
-        for touch in self {
-            switch touch.phase {
-            case .cancelled:
-                return .cancelled
-            case .ended:
-                return .ended
-            case .began:
-                return .began
-            default:
-                continue
-            }
+    var currentTouchPhase: UITouch.Phase {
+        if self.last?.phase == .cancelled {
+            .cancelled
+        } else if self.last?.phase == .ended {
+            .ended
+        } else if self.first?.phase == .began {
+            .began
+        } else {
+            .moved
         }
-
-        return .moved
     }
 
 }

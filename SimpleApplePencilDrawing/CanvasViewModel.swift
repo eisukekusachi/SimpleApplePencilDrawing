@@ -48,11 +48,13 @@ extension CanvasViewModel {
 
     func onFingerInputGesture(
         touches: [TouchPoint],
+        view: UIView,
         renderTarget: MTKRenderTextureProtocol
     ) {
         drawCurve(
             touches: touches.map {
-                $0.getScaledTouchPoint(
+                $0.convertToTextureCoordinates(
+                    frameSize: view.frame.size,
                     renderTextureSize: renderTarget.renderTexture?.size ?? .zero,
                     drawableSize: renderTarget.viewDrawable?.texture.size ?? .zero
                 )
@@ -63,11 +65,13 @@ extension CanvasViewModel {
 
     func onPencilInputGesture(
         touches: [TouchPoint],
+        view: UIView,
         renderTarget: MTKRenderTextureProtocol
     ) {
         drawCurve(
             touches: touches.map {
-                $0.getScaledTouchPoint(
+                $0.convertToTextureCoordinates(
+                    frameSize: view.frame.size,
                     renderTextureSize: renderTarget.renderTexture?.size ?? .zero,
                     drawableSize: renderTarget.viewDrawable?.texture.size ?? .zero
                 )
@@ -119,7 +123,7 @@ extension CanvasViewModel {
         touches: [TouchPoint],
         on renderTarget: MTKRenderTextureProtocol
     ) {
-        let touchPhase = touches.phase
+        let touchPhase = touches.currentTouchPhase
 
         if touchPhase == .began {
             pauseDisplayLinkSubject.send(false)
