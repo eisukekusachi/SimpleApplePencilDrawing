@@ -20,7 +20,7 @@ final class CanvasViewModel {
     private var grayscaleTexturePointIterator: GrayscaleTexturePointIterator?
 
     /// A class for managing the currently drawing texture
-    private let drawingTexture: DrawingTexture = BrushDrawingTexture()
+    private let drawingTexture: DrawingTexture = CanvasBrushDrawingTexture()
 
     /// A class for managing textures
     private let layerManager = LayerManager()
