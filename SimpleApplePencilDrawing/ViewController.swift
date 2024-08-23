@@ -54,12 +54,12 @@ extension ViewController {
         // Remove `/* */` to enable finger drawing
         /*
         canvasView.addGestureRecognizer(
-            FingerInputGestureRecognizer(self)
+            CanvasFingerInputGestureRecognizer(self)
         )
         */
 
         canvasView.addGestureRecognizer(
-            PencilInputGestureRecognizer(self)
+            CanvasPencilInputGestureRecognizer(self)
         )
 
         // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
@@ -77,7 +77,7 @@ extension ViewController {
 
 }
 
-extension ViewController: FingerInputGestureSender {
+extension ViewController: CanvasFingerInputGestureSender {
 
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
@@ -89,7 +89,7 @@ extension ViewController: FingerInputGestureSender {
 
 }
 
-extension ViewController: PencilInputGestureSender {
+extension ViewController: CanvasPencilInputGestureSender {
 
     func sendPencilTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilInputGesture(
