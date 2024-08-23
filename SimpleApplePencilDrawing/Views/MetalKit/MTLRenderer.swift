@@ -185,12 +185,15 @@ extension MTLRenderer {
     }
 
     static func merge(
-        _ texture: MTLTexture,
+        _ texture: MTLTexture?,
         alpha: Int = 255,
         into destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
-        guard let destinationTexture else { return }
+        guard 
+            let texture,
+            let destinationTexture
+        else { return }
 
         let threadGroupSize = MTLSize(
             width: Int(destinationTexture.width / 16),

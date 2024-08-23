@@ -7,26 +7,26 @@
 
 import MetalKit
 
+/// Manage `var currentTexture`
 final class LayerManager {
-
-    var backgroundColor: UIColor = .white
+    private (set) var currentTexture: MTLTexture?
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
+}
 
-    private var currentTexture: MTLTexture?
-
-    func initTextures(
+extension LayerManager {
+    func initTexture(
         _ textureSize: CGSize
     ) {
         currentTexture = MTLTextureManager.makeBlankTexture(
             with: device,
             textureSize
         )
-
     }
 
-    func clearAll(
-        _ renderTarget: MTKRenderTextureProtocol
+    func resetAllTextures(
+        _ renderTarget: MTKRenderTextureProtocol,
+        withBackgroundColor color: (Int, Int, Int)
     ) {
         guard let renderTexture = renderTarget.renderTexture else { return }
 
@@ -36,49 +36,10 @@ final class LayerManager {
         )
 
         MTLRenderer.fill(
-            backgroundColor.rgb,
+            color,
             on: renderTexture,
             with: renderTarget.commandBuffer
         )
-    }
-
-    func fillBackgroundColor(
-        on renderTexture: MTLTexture,
-        with commandBuffer: MTLCommandBuffer
-    ) {
-        MTLRenderer.fill(
-            backgroundColor.rgb,
-            on: renderTexture,
-            with: commandBuffer
-        )
-    }
-
-    func renderTexture(
-        _ drawingTexture: MTLTexture?,
-        on renderTexture: MTLTexture?,
-        with commandBuffer: MTLCommandBuffer,
-        atEnd: Bool
-    ) {
-        guard
-            let currentTexture,
-            let renderTexture
-        else { return }
-
-        MTLRenderer.drawTextures(
-            [currentTexture,
-             drawingTexture],
-            withBackgroundColor: backgroundColor.rgba,
-            on: renderTexture,
-            with: commandBuffer
-        )
-
-        if atEnd, let drawingTexture {
-            MTLRenderer.merge(
-                drawingTexture,
-                into: currentTexture,
-                with: commandBuffer
-            )
-        }
     }
 
 }

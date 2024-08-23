@@ -27,6 +27,8 @@ final class CanvasViewModel {
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
 
+    private var backgroundColor: UIColor = .white
+
 }
 
 extension CanvasViewModel {
@@ -78,8 +80,9 @@ extension CanvasViewModel {
         drawingTexture.clearDrawingTextures(
             with: renderTarget.commandBuffer
         )
-        layerManager.clearAll(
-            renderTarget
+        layerManager.resetAllTextures(
+            renderTarget,
+            withBackgroundColor: backgroundColor.rgb
         )
         renderTarget.setNeedsDisplay()
     }
@@ -96,15 +99,16 @@ extension CanvasViewModel {
         drawingTexture.initTextures(
             textureSize
         )
-        layerManager.initTextures(
+        layerManager.initTexture(
             textureSize
         )
 
         renderTarget.initTexture(with: textureSize)
 
         // Add a background color to the render target’s texture
-        layerManager.fillBackgroundColor(
-            on: renderTarget.renderTexture!,
+        MTLRenderer.fill(
+            backgroundColor.rgb,
+            on: renderTarget.renderTexture,
             with: renderTarget.commandBuffer
         )
 
@@ -147,15 +151,21 @@ extension CanvasViewModel {
             with: renderTarget.commandBuffer
         )
 
-        // Render the `drawingTexture` onto the `renderTexture`.
-        layerManager.renderTexture(
-            drawingTexture.drawingTexture,
+        // Render the `drawingTexture` onto the `renderTexture`
+        MTLRenderer.drawTextures(
+            [layerManager.currentTexture,
+             drawingTexture.drawingTexture],
+            withBackgroundColor: backgroundColor.rgba,
             on: renderTarget.renderTexture,
-            with: renderTarget.commandBuffer,
-            atEnd: touchPhase == .ended
+            with: renderTarget.commandBuffer
         )
 
         if touchPhase == .ended {
+            MTLRenderer.merge(
+                drawingTexture.drawingTexture,
+                into: layerManager.currentTexture,
+                with: renderTarget.commandBuffer
+            )
             drawingTexture.clearDrawingTextures(
                 with: renderTarget.commandBuffer
             )
