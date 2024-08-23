@@ -10,7 +10,7 @@ import Combine
 
 class ViewController: UIViewController {
 
-    @IBOutlet private weak var canvasView: MTKRenderTextureView!
+    @IBOutlet private weak var canvasView: CanvasView!
 
     private let canvasViewModel = CanvasViewModel()
 

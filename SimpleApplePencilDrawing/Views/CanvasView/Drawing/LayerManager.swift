@@ -25,7 +25,7 @@ extension LayerManager {
     }
 
     func resetAllTextures(
-        _ renderTarget: MTKRenderTextureProtocol,
+        _ renderTarget: CanvasViewProtocol,
         withBackgroundColor color: (Int, Int, Int)
     ) {
         guard let renderTexture = renderTarget.renderTexture else { return }

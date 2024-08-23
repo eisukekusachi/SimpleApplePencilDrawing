@@ -35,7 +35,7 @@ extension CanvasViewModel {
 
     func onViewDidAppear(
         _ drawableTextureSize: CGSize,
-        renderTarget: MTKRenderTextureProtocol
+        renderTarget: CanvasViewProtocol
     ) {
         // Initialize the canvas here if the renderTexture's texture is nil
         if renderTarget.renderTexture == nil {
@@ -49,7 +49,7 @@ extension CanvasViewModel {
     func onFingerInputGesture(
         touches: [TouchPoint],
         view: UIView,
-        renderTarget: MTKRenderTextureProtocol
+        renderTarget: CanvasViewProtocol
     ) {
         drawCurve(
             touches: touches.map {
@@ -66,7 +66,7 @@ extension CanvasViewModel {
     func onPencilInputGesture(
         touches: [TouchPoint],
         view: UIView,
-        renderTarget: MTKRenderTextureProtocol
+        renderTarget: CanvasViewProtocol
     ) {
         drawCurve(
             touches: touches.map {
@@ -80,7 +80,7 @@ extension CanvasViewModel {
         )
     }
 
-    func onTapClearTexture(renderTarget: MTKRenderTextureProtocol) {
+    func onTapClearTexture(renderTarget: CanvasViewProtocol) {
         drawingTexture.clearTexture(
             with: renderTarget.commandBuffer
         )
@@ -98,7 +98,7 @@ extension CanvasViewModel {
     /// Initialize the textures used for drawing with the same size
     func initCanvas(
         textureSize: CGSize,
-        renderTarget: MTKRenderTextureProtocol
+        renderTarget: CanvasViewProtocol
     ) {
         drawingTexture.initTexture(
             textureSize
@@ -121,7 +121,7 @@ extension CanvasViewModel {
 
     private func drawCurve(
         touches: [TouchPoint],
-        on renderTarget: MTKRenderTextureProtocol
+        on renderTarget: CanvasViewProtocol
     ) {
         let touchPhase = touches.currentTouchPhase
 
