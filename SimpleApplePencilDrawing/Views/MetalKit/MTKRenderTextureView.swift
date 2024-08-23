@@ -99,7 +99,7 @@ class MTKRenderTextureView: MTKView, MTKViewDelegate, MTKRenderTextureProtocol {
         MTLRenderer.drawTexture(
             renderTexture,
             buffers: textureBuffers,
-            backgroundColor: (230, 230, 230),
+            withBackgroundColor: (230, 230, 230),
             on: drawable.texture,
             with: commandBuffer
         )

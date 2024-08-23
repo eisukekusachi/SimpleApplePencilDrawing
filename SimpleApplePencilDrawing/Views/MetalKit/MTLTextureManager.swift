@@ -21,7 +21,7 @@ enum MTLTextureManager {
 
         MTLRenderer.clear(
             texture,
-            commandBuffer
+            with: commandBuffer
         )
         commandBuffer.commit()
 

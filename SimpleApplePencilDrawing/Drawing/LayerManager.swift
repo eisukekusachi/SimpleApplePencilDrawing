@@ -32,13 +32,13 @@ final class LayerManager {
 
         MTLRenderer.clear(
             currentTexture,
-            renderTarget.commandBuffer
+            with: renderTarget.commandBuffer
         )
 
         MTLRenderer.fill(
-            renderTexture,
             backgroundColor.rgb,
-            renderTarget.commandBuffer
+            on: renderTexture,
+            with: renderTarget.commandBuffer
         )
     }
 
@@ -47,9 +47,9 @@ final class LayerManager {
         with commandBuffer: MTLCommandBuffer
     ) {
         MTLRenderer.fill(
-            renderTexture,
             backgroundColor.rgb,
-            commandBuffer
+            on: renderTexture,
+            with: commandBuffer
         )
     }
 
@@ -64,27 +64,15 @@ final class LayerManager {
             let renderTexture
         else { return }
 
-        MTLRenderer.fill(
-            renderTexture,
-            backgroundColor.rgba,
-            commandBuffer
-        )
-
-        MTLRenderer.merge(
-            currentTexture,
-            into: renderTexture,
+        MTLRenderer.drawTextures(
+            [currentTexture,
+             drawingTexture],
+            withBackgroundColor: backgroundColor.rgba,
+            on: renderTexture,
             with: commandBuffer
         )
 
-        guard let drawingTexture else { return }
-
-        MTLRenderer.merge(
-            drawingTexture,
-            into: renderTexture,
-            with: commandBuffer
-        )
-
-        if atEnd {
+        if atEnd, let drawingTexture {
             MTLRenderer.merge(
                 drawingTexture,
                 into: currentTexture,

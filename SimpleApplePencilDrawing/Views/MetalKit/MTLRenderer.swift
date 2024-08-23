@@ -7,9 +7,96 @@
 
 import MetalKit
 
-class MTLRenderer {
+final class MTLRenderer {
 
     static let threadGroupLength: Int = 16
+
+    static func drawTextures(
+        _ textures: [MTLTexture?],
+        withBackgroundColor color: (Int, Int, Int, Int),
+        on destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        guard let destinationTexture else { return }
+
+        MTLRenderer.fill(
+            color,
+            on: destinationTexture,
+            with: commandBuffer
+        )
+
+        textures.forEach { texture in
+            if let texture {
+                MTLRenderer.merge(
+                    texture,
+                    into: destinationTexture,
+                    with: commandBuffer
+                )
+            }
+        }
+    }
+
+    static func fill(
+        _ color: (Int, Int, Int),
+        on destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer?
+    ) {
+        guard let destinationTexture else { return }
+
+        fill(
+            (color.0, color.1, color.2, 255),
+            on: destinationTexture,
+            with: commandBuffer
+        )
+    }
+
+    static func clear(
+        _ textures: [MTLTexture?],
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        textures.forEach {
+            clear($0, with: commandBuffer)
+        }
+    }
+
+}
+
+extension MTLRenderer {
+
+    static func drawTexture(
+        _ texture: MTLTexture,
+        buffers: TextureBuffers,
+        withBackgroundColor color: (Int, Int, Int),
+        on destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        guard let destinationTexture else { return }
+
+        let backgroundColor = MTLClearColorMake(
+            min(CGFloat(color.0) / 255.0, 1.0),
+            min(CGFloat(color.1) / 255.0, 1.0),
+            min(CGFloat(color.2) / 255.0, 1.0),
+            CGFloat(1.0)
+        )
+        let descriptor = MTLRenderPassDescriptor()
+        descriptor.colorAttachments[0].texture = destinationTexture
+        descriptor.colorAttachments[0].clearColor = backgroundColor
+        descriptor.colorAttachments[0].loadAction = .clear
+
+        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
+        encoder?.setRenderPipelineState(MTLPipelineManager.shared.drawTexture)
+        encoder?.setVertexBuffer(buffers.vertexBuffer, offset: 0, index: 0)
+        encoder?.setVertexBuffer(buffers.texCoordsBuffer, offset: 0, index: 1)
+        encoder?.setFragmentTexture(texture, index: 0)
+        encoder?.drawIndexedPrimitives(
+            type: .triangle,
+            indexCount: buffers.indicesCount,
+            indexType: .uint16,
+            indexBuffer: buffers.indexBuffer,
+            indexBufferOffset: 0
+        )
+        encoder?.endEncoding()
+    }
 
     static func drawPointsWithMaxBlendMode(
         grayscalePointBuffers buffers: GrayscalePointBuffers,
@@ -34,56 +121,13 @@ class MTLRenderer {
         encoder?.endEncoding()
     }
 
-    static func drawTexture(
-        _ sourceTexture: MTLTexture,
-        buffers: TextureBuffers,
-        backgroundColor color: (Int, Int, Int),
-        on destinationTexture: MTLTexture,
-        with commandBuffer: MTLCommandBuffer
-    ) {
-        let backgroundColor = MTLClearColorMake(
-            min(CGFloat(color.0) / 255.0, 1.0),
-            min(CGFloat(color.1) / 255.0, 1.0),
-            min(CGFloat(color.2) / 255.0, 1.0),
-            CGFloat(1.0)
-        )
-        let descriptor = MTLRenderPassDescriptor()
-        descriptor.colorAttachments[0].texture = destinationTexture
-        descriptor.colorAttachments[0].clearColor = backgroundColor
-        descriptor.colorAttachments[0].loadAction = .clear
-
-        let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
-        encoder?.setRenderPipelineState(MTLPipelineManager.shared.drawTexture)
-        encoder?.setVertexBuffer(buffers.vertexBuffer, offset: 0, index: 0)
-        encoder?.setVertexBuffer(buffers.texCoordsBuffer, offset: 0, index: 1)
-        encoder?.setFragmentTexture(sourceTexture, index: 0)
-        encoder?.drawIndexedPrimitives(
-            type: .triangle,
-            indexCount: buffers.indicesCount,
-            indexType: .uint16,
-            indexBuffer: buffers.indexBuffer,
-            indexBufferOffset: 0
-        )
-        encoder?.endEncoding()
-    }
-
     static func fill(
-        _ destinationTexture: MTLTexture,
-        _ color: (Int, Int, Int),
-        _ commandBuffer: MTLCommandBuffer?
-    ) {
-        fill(
-            destinationTexture,
-            (color.0, color.1, color.2, 255),
-            commandBuffer
-        )
-    }
-
-    static func fill(
-        _ destinationTexture: MTLTexture,
         _ color: (Int, Int, Int, Int),
-        _ commandBuffer: MTLCommandBuffer?
+        on destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer?
     ) {
+        guard let destinationTexture else { return }
+
         let threadGroupSize = MTLSize(
             width: Int(destinationTexture.width / 16),
             height: Int(destinationTexture.height / 16),
@@ -113,21 +157,11 @@ class MTLRenderer {
     }
 
     static func clear(
-        _ textures: [MTLTexture?], _
-        commandBuffer: MTLCommandBuffer
-    ) {
-        textures.forEach {
-            clear($0, commandBuffer)
-        }
-    }
-
-    static func clear(
         _ texture: MTLTexture?,
-        _ commandBuffer: MTLCommandBuffer
+        with commandBuffer: MTLCommandBuffer
     ) {
-        guard let texture = texture else {
-            return
-        }
+        guard let texture else { return }
+
         let threadGroupSize = MTLSize(
             width: Int(texture.width / 16),
             height: Int(texture.height / 16),
@@ -153,9 +187,11 @@ class MTLRenderer {
     static func merge(
         _ texture: MTLTexture,
         alpha: Int = 255,
-        into destinationTexture: MTLTexture,
+        into destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
+        guard let destinationTexture else { return }
+
         let threadGroupSize = MTLSize(
             width: Int(destinationTexture.width / 16),
             height: Int(destinationTexture.height / 16),
@@ -184,9 +220,11 @@ class MTLRenderer {
     static func colorize(
         grayscaleTexture: MTLTexture,
         color: (Int, Int, Int),
-        result destinationTexture: MTLTexture,
+        on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
+        guard let destinationTexture else { return }
+
         let threadGroupSize = MTLSize(
             width: Int(grayscaleTexture.width / threadGroupLength),
             height: Int(grayscaleTexture.height / threadGroupLength),

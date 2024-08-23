@@ -56,7 +56,7 @@ final class BrushDrawingTexture: DrawingTexture {
             MTLRenderer.colorize(
                 grayscaleTexture: grayscaleDrawingTexture,
                 color: color.rgb,
-                result: drawingTexture,
+                on: drawingTexture,
                 with: commandBuffer
             )
         }
@@ -68,7 +68,7 @@ final class BrushDrawingTexture: DrawingTexture {
                 grayscaleDrawingTexture,
                 drawingTexture
             ],
-            commandBuffer
+            with: commandBuffer
         )
     }
 
