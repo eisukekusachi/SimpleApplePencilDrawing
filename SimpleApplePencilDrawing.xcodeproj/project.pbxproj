@@ -131,7 +131,6 @@
 			children = (
 				D462E16D2C0C555900E0503E /* CanvasView.swift */,
 				D462E1862C0C5A7500E0503E /* CanvasViewModel.swift */,
-				D462E1902C0C63DF00E0503E /* Drawing */,
 				D462E1882C0C615900E0503E /* Gestures */,
 				D462E18D2C0C61F400E0503E /* Models */,
 			);
@@ -218,13 +217,6 @@
 				D462E18E2C0C620500E0503E /* CanvasTouchPoint.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		D462E1902C0C63DF00E0503E /* Drawing */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Drawing;
 			sourceTree = "<group>";
 		};
 		D4B17E092C0ABCB30056C270 = {
