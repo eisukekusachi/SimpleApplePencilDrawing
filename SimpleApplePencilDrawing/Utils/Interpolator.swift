@@ -23,21 +23,21 @@ enum Interpolator {
         let abVector = CGVector(left: pointB, right: pointA)
         let cbaVector = CGVector(dx: cbVector.dx + baVector.dx, dy: cbVector.dy + baVector.dy)
 
-        let adjustValue1 = Calc.getRadian(cbVector, Calc.getReversedVector(baVector)) / .pi
+        let adjustValue1 = Calculate.getRadian(cbVector, Calculate.getReversedVector(baVector)) / .pi
 
-        let length1 = Calc.getLength(baVector) * handleMaxLengthRatio * max(0.0, adjustValue1)
-        let cp1Vector = Calc.getResizedVector(cbaVector, length: length1)
+        let length1 = Calculate.getLength(baVector) * handleMaxLengthRatio * max(0.0, adjustValue1)
+        let cp1Vector = Calculate.getResizedVector(cbaVector, length: length1)
 
-        let length0 = Calc.getLength(abVector) * handleMaxLengthRatio * max(0.0, adjustValue1)
-        let cp0Vector = Calc.getResizedVector(abVector, length: length0)
+        let length0 = Calculate.getLength(abVector) * handleMaxLengthRatio * max(0.0, adjustValue1)
+        let cp0Vector = Calculate.getResizedVector(abVector, length: length0)
 
         let cp1 = CGPoint(x: cp1Vector.dx + pointB.x, y: cp1Vector.dy + pointB.y)
         let cp0 = CGPoint(x: cp0Vector.dx + pointA.x, y: cp0Vector.dy + pointA.y)
 
         let circumference: Int = max(1, Int(
-            Calc.distance(pointA, to: cp0) +
-            Calc.distance(cp0, to: cp1) +
-            Calc.distance(cp1, to: pointB)
+            Calculate.getLength(pointA, to: cp0) +
+            Calculate.getLength(cp0, to: cp1) +
+            Calculate.getLength(cp1, to: pointB)
         ))
 
         return Interpolator.cubicCurve(
@@ -61,24 +61,24 @@ enum Interpolator {
         let bcVector = CGVector(left: endPoint, right: startPoint)
         let cdVector = CGVector(left: nextPoint, right: endPoint)
         let abcVector = CGVector(dx: abVector.dx + bcVector.dx, dy: abVector.dy + bcVector.dy)
-        let dcbVector = Calc.getReversedVector(CGVector(dx: bcVector.dx + cdVector.dx, dy: bcVector.dy + cdVector.dy))
+        let dcbVector = Calculate.getReversedVector(CGVector(dx: bcVector.dx + cdVector.dx, dy: bcVector.dy + cdVector.dy))
 
-        let adjustValue0 = Calc.getRadian(abVector, Calc.getReversedVector(bcVector)) / .pi
-        let adjustValue1 = Calc.getRadian(bcVector, Calc.getReversedVector(cdVector)) / .pi
+        let adjustValue0 = Calculate.getRadian(abVector, Calculate.getReversedVector(bcVector)) / .pi
+        let adjustValue1 = Calculate.getRadian(bcVector, Calculate.getReversedVector(cdVector)) / .pi
 
-        let length0 = Calc.getLength(bcVector) * handleMaxLengthRatio * max(0.0, adjustValue0)
-        let cp0Vector = Calc.getResizedVector(abcVector, length: length0)
+        let length0 = Calculate.getLength(bcVector) * handleMaxLengthRatio * max(0.0, adjustValue0)
+        let cp0Vector = Calculate.getResizedVector(abcVector, length: length0)
 
-        let length1 = Calc.getLength(bcVector) * handleMaxLengthRatio * max(0.0, adjustValue1)
-        let cp1Vector = Calc.getResizedVector(dcbVector, length: length1)
+        let length1 = Calculate.getLength(bcVector) * handleMaxLengthRatio * max(0.0, adjustValue1)
+        let cp1Vector = Calculate.getResizedVector(dcbVector, length: length1)
 
         let cp0 = CGPoint(x: cp0Vector.dx + startPoint.x, y: cp0Vector.dy + startPoint.y)
         let cp1 = CGPoint(x: cp1Vector.dx + endPoint.x, y: cp1Vector.dy + endPoint.y)
 
         let circumference = max(1, Int(
-            Calc.distance(startPoint, to: cp0) +
-            Calc.distance(cp0, to: cp1) +
-            Calc.distance(cp1, to: endPoint)
+            Calculate.getLength(startPoint, to: cp0) +
+            Calculate.getLength(cp0, to: cp1) +
+            Calculate.getLength(cp1, to: endPoint)
         ))
 
         return Interpolator.cubicCurve(
@@ -102,21 +102,21 @@ enum Interpolator {
         let cbVector = CGVector(left: pointB, right: pointC)
         let abcVector = CGVector(dx: abVector.dx + bcVector.dx, dy: abVector.dy + bcVector.dy)
 
-        let adjustValue0 = Calc.getRadian(abVector, Calc.getReversedVector(bcVector)) / .pi
+        let adjustValue0 = Calculate.getRadian(abVector, Calculate.getReversedVector(bcVector)) / .pi
 
-        let length0 = Calc.getLength(bcVector) * handleMaxLengthRatio * max(0.0, adjustValue0)
-        let cp0Vector = Calc.getResizedVector(abcVector, length: length0)
+        let length0 = Calculate.getLength(bcVector) * handleMaxLengthRatio * max(0.0, adjustValue0)
+        let cp0Vector = Calculate.getResizedVector(abcVector, length: length0)
 
-        let length1 = Calc.getLength(cbVector) * handleMaxLengthRatio * max(0.0, adjustValue0)
-        let cp1Vector = Calc.getResizedVector(cbVector, length: length1)
+        let length1 = Calculate.getLength(cbVector) * handleMaxLengthRatio * max(0.0, adjustValue0)
+        let cp1Vector = Calculate.getResizedVector(cbVector, length: length1)
 
         let cp0 = CGPoint(x: cp0Vector.dx + pointB.x, y: cp0Vector.dy + pointB.y)
         let cp1 = CGPoint(x: cp1Vector.dx + pointC.x, y: cp1Vector.dy + pointC.y)
 
         let circumference = max(1, Int(
-            Calc.distance(pointB, to: cp0) +
-            Calc.distance(cp0, to: cp1) +
-            Calc.distance(cp1, to: pointC)
+            Calculate.getLength(pointB, to: cp0) +
+            Calculate.getLength(cp0, to: cp1) +
+            Calculate.getLength(cp1, to: pointC)
         ))
 
         return Interpolator.cubicCurve(
