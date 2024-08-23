@@ -1,5 +1,5 @@
 //
-//  CanvasFingerInputGestureRecognizer.swift
+//  FingerInputGestureRecognizer.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,15 +7,15 @@
 
 import UIKit
 
-protocol CanvasFingerInputGestureSender {
+protocol FingerInputGestureSender {
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView)
 }
 
-final class CanvasFingerInputGestureRecognizer: UIGestureRecognizer {
+final class FingerInputGestureRecognizer: UIGestureRecognizer {
 
-    private var gestureDelegate: CanvasFingerInputGestureSender?
+    private var gestureDelegate: FingerInputGestureSender?
 
-    init(_ view: CanvasFingerInputGestureSender) {
+    init(_ view: FingerInputGestureSender) {
         super.init(target: nil, action: nil)
         allowedTouchTypes = [UITouch.TouchType.direct.rawValue as NSNumber]
 
