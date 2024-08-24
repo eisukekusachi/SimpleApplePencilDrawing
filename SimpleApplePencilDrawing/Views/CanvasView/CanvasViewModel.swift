@@ -47,18 +47,22 @@ extension CanvasViewModel {
     }
 
     func onFingerInputGesture(
-        touches: [CanvasTouchPoint],
+        touches: Set<UITouch>,
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
-        let touchPhase = touches.currentTouchPhase
+        let touchScreenPoints: [CanvasTouchPoint] = touches.map {
+            .init(touch: $0, view: view)
+        }
+
+        let touchPhase = touchScreenPoints.currentTouchPhase
 
         if touchPhase == .began {
             pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
             grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
         }
 
-        let textureTouchPoints: [CanvasTouchPoint] = touches.map {
+        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
             $0.convertToTextureCoordinates(
                 frameSize: view.frame.size,
                 renderTextureSize: canvasView.renderTexture?.size ?? .zero,
@@ -86,18 +90,22 @@ extension CanvasViewModel {
     }
 
     func onPencilInputGesture(
-        touches: [CanvasTouchPoint],
+        touches: Set<UITouch>,
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
-        let touchPhase = touches.currentTouchPhase
+        let touchScreenPoints: [CanvasTouchPoint] = touches.map {
+            .init(touch: $0, view: view)
+        }
+
+        let touchPhase = touchScreenPoints.currentTouchPhase
 
         if touchPhase == .began {
             pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
             grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
         }
 
-        let textureTouchPoints: [CanvasTouchPoint] = touches.map {
+        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
             $0.convertToTextureCoordinates(
                 frameSize: view.frame.size,
                 renderTextureSize: canvasView.renderTexture?.size ?? .zero,
