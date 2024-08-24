@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         super.viewDidAppear(animated)
         canvasViewModel.onViewDidAppear(
             canvasView.drawableSize,
-            renderTarget: canvasView
+            canvasView: canvasView
         )
     }
 
@@ -45,7 +45,7 @@ extension ViewController {
         /*
         canvasViewModel.initCanvas(
             textureSize: .init(width: 768, height: 1024),
-            renderTarget: canvasView
+            canvasView: canvasView
         )
         */
     }
@@ -70,7 +70,7 @@ extension ViewController {
     private func bindViewModel() {
         canvasViewModel.pauseDisplayLinkPublish
             .receive(on: DispatchQueue.main)
-            .assign(to: \.isDisplayLinkPaused, on: canvasView)
+            .assign(to: \.isPaused, on: canvasView.displayLink)
             .store(in: &cancellables)
     }
 
@@ -81,8 +81,8 @@ extension ViewController: FingerInputGestureSender {
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
             touches: touches.map { .init(touch: $0, view: view) },
-            view: canvasView,
-            renderTarget: canvasView
+            view: self.view,
+            canvasView: canvasView
         )
     }
 
@@ -93,8 +93,8 @@ extension ViewController: PencilInputGestureSender {
     func sendPencilTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilInputGesture(
             touches: touches.map { .init(touch: $0, view: view) },
-            view: canvasView,
-            renderTarget: canvasView
+            view: self.view,
+            canvasView: canvasView
         )
     }
 
@@ -103,7 +103,7 @@ extension ViewController: PencilInputGestureSender {
 extension ViewController {
 
     @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
-        canvasViewModel.onTapClearTexture(renderTarget: canvasView)
+        canvasViewModel.onTapClearTexture(canvasView: canvasView)
     }
 
 }

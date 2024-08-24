@@ -35,13 +35,13 @@ extension CanvasViewModel {
 
     func onViewDidAppear(
         _ drawableTextureSize: CGSize,
-        renderTarget: CanvasViewProtocol
+        canvasView: CanvasViewProtocol
     ) {
         // Initialize the canvas here if the renderTexture's texture is nil
-        if renderTarget.renderTexture == nil {
+        if canvasView.renderTexture == nil {
             initCanvas(
                 textureSize: drawableTextureSize,
-                renderTarget: renderTarget
+                canvasView: canvasView
             )
         }
     }
@@ -49,46 +49,46 @@ extension CanvasViewModel {
     func onFingerInputGesture(
         touches: [CanvasTouchPoint],
         view: UIView,
-        renderTarget: CanvasViewProtocol
+        canvasView: CanvasViewProtocol
     ) {
         drawCurve(
             touches: touches.map {
                 $0.convertToTextureCoordinates(
                     frameSize: view.frame.size,
-                    renderTextureSize: renderTarget.renderTexture?.size ?? .zero,
-                    drawableSize: renderTarget.viewDrawable?.texture.size ?? .zero
+                    renderTextureSize: canvasView.renderTexture?.size ?? .zero,
+                    drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
                 )
             },
-            on: renderTarget
+            on: canvasView
         )
     }
 
     func onPencilInputGesture(
         touches: [CanvasTouchPoint],
         view: UIView,
-        renderTarget: CanvasViewProtocol
+        canvasView: CanvasViewProtocol
     ) {
         drawCurve(
             touches: touches.map {
                 $0.convertToTextureCoordinates(
                     frameSize: view.frame.size,
-                    renderTextureSize: renderTarget.renderTexture?.size ?? .zero,
-                    drawableSize: renderTarget.viewDrawable?.texture.size ?? .zero
+                    renderTextureSize: canvasView.renderTexture?.size ?? .zero,
+                    drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
                 )
             },
-            on: renderTarget
+            on: canvasView
         )
     }
 
-    func onTapClearTexture(renderTarget: CanvasViewProtocol) {
+    func onTapClearTexture(canvasView: CanvasViewProtocol) {
         drawingTexture.clearTexture(
-            with: renderTarget.commandBuffer
+            with: canvasView.commandBuffer
         )
         layerManager.resetAllTextures(
-            renderTarget,
+            canvasView,
             withBackgroundColor: backgroundColor.rgb
         )
-        renderTarget.setNeedsDisplay()
+        canvasView.setNeedsDisplay()
     }
 
 }
@@ -98,7 +98,7 @@ extension CanvasViewModel {
     /// Initialize the textures used for drawing with the same size
     func initCanvas(
         textureSize: CGSize,
-        renderTarget: CanvasViewProtocol
+        canvasView: CanvasViewProtocol
     ) {
         drawingTexture.initTexture(
             textureSize
@@ -107,26 +107,35 @@ extension CanvasViewModel {
             textureSize
         )
 
-        renderTarget.initTexture(with: textureSize)
+        canvasView.initTexture(with: textureSize)
 
         // Add a background color to the render target’s texture
         MTLRenderer.fill(
             backgroundColor.rgb,
-            on: renderTarget.renderTexture,
-            with: renderTarget.commandBuffer
+            on: canvasView.renderTexture,
+            with: canvasView.commandBuffer
         )
 
-        renderTarget.setNeedsDisplay()
+        canvasView.setNeedsDisplay()
+    }
+
+    private func pauseDisplayLinkOnCanvas(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
+        pauseDisplayLinkSubject.send(isPaused)
+
+        // Call `canvas.setNeedsDisplay` when stopping as the last line isn’t drawn
+        if isPaused {
+            canvasView.setNeedsDisplay()
+        }
     }
 
     private func drawCurve(
         touches: [CanvasTouchPoint],
-        on renderTarget: CanvasViewProtocol
+        on canvasView: CanvasViewProtocol
     ) {
         let touchPhase = touches.currentTouchPhase
 
         if touchPhase == .began {
-            pauseDisplayLinkSubject.send(false)
+            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
             grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
         }
 
@@ -146,7 +155,7 @@ extension CanvasViewModel {
                 atEnd: touchPhase == .ended
             ) ?? [],
             color: drawingTool.brushColor,
-            with: renderTarget.commandBuffer
+            with: canvasView.commandBuffer
         )
 
         // Render the `drawingTexture` onto the `renderTexture`
@@ -154,23 +163,23 @@ extension CanvasViewModel {
             [layerManager.currentTexture,
              drawingTexture.texture],
             withBackgroundColor: backgroundColor.rgba,
-            on: renderTarget.renderTexture,
-            with: renderTarget.commandBuffer
+            on: canvasView.renderTexture,
+            with: canvasView.commandBuffer
         )
 
         if touchPhase == .ended {
             MTLRenderer.merge(
                 drawingTexture.texture,
                 into: layerManager.currentTexture,
-                with: renderTarget.commandBuffer
+                with: canvasView.commandBuffer
             )
             drawingTexture.clearTexture(
-                with: renderTarget.commandBuffer
+                with: canvasView.commandBuffer
             )
         }
 
         if touchPhase == .ended || touchPhase == .cancelled {
-            pauseDisplayLinkSubject.send(true)
+            pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
             grayscaleTexturePointIterator = nil
         }
     }

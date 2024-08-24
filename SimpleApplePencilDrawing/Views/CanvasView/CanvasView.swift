@@ -30,19 +30,9 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         currentDrawable
     }
 
-    var isDisplayLinkPaused: Bool = false {
-        didSet {
-            displayLink?.isPaused = isDisplayLinkPaused
-
-            if isDisplayLinkPaused {
-                setNeedsDisplay()
-            }
-        }
-    }
-
     private var commandManager: MTLCommandManager!
 
-    private var displayLink: CADisplayLink?
+    private (set) var displayLink: CADisplayLink!
 
     override init(frame frameRect: CGRect, device: MTLDevice?) {
         super.init(frame: frameRect, device: device)
