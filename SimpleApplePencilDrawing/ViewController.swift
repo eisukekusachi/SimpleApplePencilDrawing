@@ -70,7 +70,7 @@ extension ViewController {
     private func bindViewModel() {
         canvasViewModel.pauseDisplayLinkPublish
             .receive(on: DispatchQueue.main)
-            .assign(to: \.isDisplayLinkPaused, on: canvasView)
+            .assign(to: \.isPaused, on: canvasView.displayLink)
             .store(in: &cancellables)
     }
 

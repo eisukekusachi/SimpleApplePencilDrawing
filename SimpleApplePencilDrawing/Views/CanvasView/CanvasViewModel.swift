@@ -119,6 +119,15 @@ extension CanvasViewModel {
         renderTarget.setNeedsDisplay()
     }
 
+    private func pauseDisplayLinkOnCanvas(_ isPaused: Bool, canvas: CanvasViewProtocol) {
+        pauseDisplayLinkSubject.send(isPaused)
+
+        // Call `canvas.setNeedsDisplay` when stopping as the last line isn’t drawn
+        if isPaused {
+            canvas.setNeedsDisplay()
+        }
+    }
+
     private func drawCurve(
         touches: [CanvasTouchPoint],
         on renderTarget: CanvasViewProtocol
@@ -126,7 +135,7 @@ extension CanvasViewModel {
         let touchPhase = touches.currentTouchPhase
 
         if touchPhase == .began {
-            pauseDisplayLinkSubject.send(false)
+            pauseDisplayLinkOnCanvas(false, canvas: renderTarget)
             grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
         }
 
@@ -170,7 +179,7 @@ extension CanvasViewModel {
         }
 
         if touchPhase == .ended || touchPhase == .cancelled {
-            pauseDisplayLinkSubject.send(true)
+            pauseDisplayLinkOnCanvas(true, canvas: renderTarget)
             grayscaleTexturePointIterator = nil
         }
     }
