@@ -51,14 +51,36 @@ extension CanvasViewModel {
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
-        drawCurve(
-            touches: touches.map {
-                $0.convertToTextureCoordinates(
-                    frameSize: view.frame.size,
-                    renderTextureSize: canvasView.renderTexture?.size ?? .zero,
-                    drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+        let touchPhase = touches.currentTouchPhase
+
+        if touchPhase == .began {
+            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
+            grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
+        }
+
+        let textureTouchPoints: [CanvasTouchPoint] = touches.map {
+            $0.convertToTextureCoordinates(
+                frameSize: view.frame.size,
+                renderTextureSize: canvasView.renderTexture?.size ?? .zero,
+                drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+            )
+        }
+
+        // Add points to the iterator.
+        grayscaleTexturePointIterator?.append(
+            textureTouchPoints.map {
+                .init(
+                    touchPoint: $0,
+                    diameter: CGFloat(drawingTool.brushDiameter)
                 )
-            },
+            }
+        )
+
+        drawPoints(
+            textureCurvePoints: grayscaleTexturePointIterator?.makeCurvePoints(
+                atEnd: touchPhase == .ended
+            ) ?? [],
+            touchPhase: touchPhase,
             on: canvasView
         )
     }
@@ -68,14 +90,36 @@ extension CanvasViewModel {
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
-        drawCurve(
-            touches: touches.map {
-                $0.convertToTextureCoordinates(
-                    frameSize: view.frame.size,
-                    renderTextureSize: canvasView.renderTexture?.size ?? .zero,
-                    drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+        let touchPhase = touches.currentTouchPhase
+
+        if touchPhase == .began {
+            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
+            grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
+        }
+
+        let textureTouchPoints: [CanvasTouchPoint] = touches.map {
+            $0.convertToTextureCoordinates(
+                frameSize: view.frame.size,
+                renderTextureSize: canvasView.renderTexture?.size ?? .zero,
+                drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+            )
+        }
+
+        // Add points to the iterator.
+        grayscaleTexturePointIterator?.append(
+            textureTouchPoints.map {
+                .init(
+                    touchPoint: $0,
+                    diameter: CGFloat(drawingTool.brushDiameter)
                 )
-            },
+            }
+        )
+
+        drawPoints(
+            textureCurvePoints: grayscaleTexturePointIterator?.makeCurvePoints(
+                atEnd: touchPhase == .ended
+            ) ?? [],
+            touchPhase: touchPhase,
             on: canvasView
         )
     }
@@ -128,32 +172,14 @@ extension CanvasViewModel {
         }
     }
 
-    private func drawCurve(
-        touches: [CanvasTouchPoint],
+    private func drawPoints(
+        textureCurvePoints: [CanvasGrayscaleDotPoint],
+        touchPhase: UITouch.Phase,
         on canvasView: CanvasViewProtocol
     ) {
-        let touchPhase = touches.currentTouchPhase
-
-        if touchPhase == .began {
-            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
-            grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
-        }
-
-        // Add points to the iterator.
-        grayscaleTexturePointIterator?.append(
-            touches.map {
-                .init(
-                    touchPoint: $0,
-                    diameter: CGFloat(drawingTool.brushDiameter)
-                )
-            }
-        )
-
-        // Draw curve points on the `drawingTexture`.
-        drawingTexture.drawLineOnTexture(
-            grayscaleTexturePoints: grayscaleTexturePointIterator?.makeCurvePoints(
-                atEnd: touchPhase == .ended
-            ) ?? [],
+        // Draw curve points on the `drawingTexture.texture`.
+        drawingTexture.drawPointsOnTexture(
+            grayscaleTexturePoints: textureCurvePoints,
             color: drawingTool.brushColor,
             with: canvasView.commandBuffer
         )
@@ -167,6 +193,8 @@ extension CanvasViewModel {
             with: canvasView.commandBuffer
         )
 
+        // At touch end, render `drawingTexture.texture` on `layerManager.currentTexture`.
+        // Then, clear `drawingTexture.texture` for the next drawing.
         if touchPhase == .ended {
             MTLRenderer.merge(
                 drawingTexture.texture,

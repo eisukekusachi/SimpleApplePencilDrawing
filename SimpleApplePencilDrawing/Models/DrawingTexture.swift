@@ -15,7 +15,7 @@ protocol DrawingTexture {
         _ textureSize: CGSize
     )
 
-    func drawLineOnTexture(
+    func drawPointsOnTexture(
         grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer
