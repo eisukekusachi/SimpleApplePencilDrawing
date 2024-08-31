@@ -14,8 +14,6 @@ final class CanvasViewModel {
         pauseDisplayLinkSubject.eraseToAnyPublisher()
     }
 
-    private let drawingToolStatus = CanvasDrawingToolStatus()
-
     /// An iterator for managing a grayscale curve
     private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
 
@@ -26,6 +24,8 @@ final class CanvasViewModel {
     private let currentTexture = CanvasCurrentTexture()
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
+
+    private let drawingToolStatus = CanvasDrawingToolStatus()
 
     private var backgroundColor: UIColor = .white
 
