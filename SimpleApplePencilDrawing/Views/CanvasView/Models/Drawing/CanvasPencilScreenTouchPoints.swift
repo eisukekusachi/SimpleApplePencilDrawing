@@ -25,7 +25,7 @@ final class CanvasPencilScreenTouchPoints {
     /// An element processed in `actualTouchPointArray`
     private (set) var latestActualTouchPoint: CanvasTouchPoint? = nil
 
-    private var lastEstimationUpdateIndexAtCompletion: NSNumber?
+    private (set) var lastEstimationUpdateIndexAtCompletion: NSNumber? = nil
 
     init(
         actualTouchPointArray: [CanvasTouchPoint] = [],
