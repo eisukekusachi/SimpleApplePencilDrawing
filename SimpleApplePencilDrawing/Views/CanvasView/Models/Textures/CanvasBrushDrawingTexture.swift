@@ -7,7 +7,7 @@
 
 import MetalKit
 /// A class for drawing with a brush
-final class CanvasBrushDrawingTexture: DrawingTexture {
+final class CanvasBrushDrawingTexture: CanvasDrawingTexture {
     /// A texture being drawn
     private (set) var texture: MTLTexture?
     /// A texture drawn in grayscale, with the grayscale converted to brightness later
@@ -22,20 +22,20 @@ extension CanvasBrushDrawingTexture {
     func initTexture(
         _ textureSize: CGSize
     ) {
-        grayscaleDrawingTexture = MTLTextureManager.makeBlankTexture(
+        grayscaleDrawingTexture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
         )
-        texture = MTLTextureManager.makeBlankTexture(
+        texture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
         )
     }
 
-    /// Draws in grayscale on `grayscaleDrawingTexture` with Max blend mode.
+    /// Draws the points in grayscale on grayscaleDrawingTexture with Max blend mode.
     /// Converts the grayscale to brightness, adds color, and creates `texture`.
     /// This way, overlapping lines won’t darken within a single stroke.
-    func drawLineOnTexture(
+    func drawPointsOnTexture(
         grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer
@@ -71,6 +71,12 @@ extension CanvasBrushDrawingTexture {
             [grayscaleDrawingTexture, texture],
             with: commandBuffer
         )
+    }
+
+    func clearTexture() {
+        let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+        clearTexture(with: commandBuffer)
+        commandBuffer.commit()
     }
 
 }

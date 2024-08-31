@@ -13,7 +13,7 @@ protocol CanvasViewProtocol {
     var renderTexture: MTLTexture? { get }
     var viewDrawable: CAMetalDrawable? { get }
 
-    func initTexture(with textureSize: CGSize)
+    func initTexture(textureSize: CGSize)
 
     func setNeedsDisplay()
 }
@@ -65,11 +65,11 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         self.backgroundColor = .white
     }
 
-    func initTexture(with textureSize: CGSize) {
+    func initTexture(textureSize: CGSize) {
         let minLength: CGFloat = CGFloat(MTLRenderer.threadGroupLength)
         assert(textureSize.width >= minLength && textureSize.height >= minLength, "The textureSize is not appropriate")
 
-        renderTexture = MTLTextureManager.makeBlankTexture(with: device!, textureSize)
+        renderTexture = MTKTextureUtils.makeBlankTexture(with: device!, textureSize)
     }
 
     // MARK: - DrawTexture

@@ -17,13 +17,13 @@ final class CanvasViewModel {
     private let drawingTool = CanvasDrawingTool()
 
     /// An iterator for managing grayscale points.
-    private var grayscaleTexturePointIterator: CanvasGrayscaleTexturePointIterator?
+    private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
 
     /// A class for managing the currently drawing texture
-    private let drawingTexture: DrawingTexture = CanvasBrushDrawingTexture()
+    private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
 
-    /// A class for managing textures
-    private let layerManager = LayerManager()
+    /// A texture that combines the texture of the currently selected `TextureLayer` and `DrawingTexture`
+    private let currentTexture = CanvasCurrentTexture()
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
 
@@ -47,47 +47,101 @@ extension CanvasViewModel {
     }
 
     func onFingerInputGesture(
-        touches: [CanvasTouchPoint],
+        touches: Set<UITouch>,
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
-        drawCurve(
-            touches: touches.map {
-                $0.convertToTextureCoordinates(
-                    frameSize: view.frame.size,
-                    renderTextureSize: canvasView.renderTexture?.size ?? .zero,
-                    drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+        let touchScreenPoints: [CanvasTouchPoint] = touches.map {
+            .init(touch: $0, view: view)
+        }
+
+        let touchPhase = touchScreenPoints.currentTouchPhase
+
+        if touchPhase == .began {
+            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
+            grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
+        }
+
+        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
+            $0.convertToTextureCoordinates(
+                frameSize: view.frame.size,
+                renderTextureSize: canvasView.renderTexture?.size ?? .zero,
+                drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+            )
+        }
+
+        // Add points to the iterator.
+        grayscaleTextureCurveIterator?.append(
+            textureTouchPoints.map {
+                .init(
+                    touchPoint: $0,
+                    diameter: CGFloat(drawingTool.brushDiameter)
                 )
-            },
+            }
+        )
+
+        drawPoints(
+            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
+                atEnd: touchPhase == .ended
+            ) ?? [],
+            touchPhase: touchPhase,
             on: canvasView
         )
     }
 
     func onPencilInputGesture(
-        touches: [CanvasTouchPoint],
+        touches: Set<UITouch>,
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
-        drawCurve(
-            touches: touches.map {
-                $0.convertToTextureCoordinates(
-                    frameSize: view.frame.size,
-                    renderTextureSize: canvasView.renderTexture?.size ?? .zero,
-                    drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+        let touchScreenPoints: [CanvasTouchPoint] = touches.map {
+            .init(touch: $0, view: view)
+        }
+
+        let touchPhase = touchScreenPoints.currentTouchPhase
+
+        if touchPhase == .began {
+            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
+            grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
+        }
+
+        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
+            $0.convertToTextureCoordinates(
+                frameSize: view.frame.size,
+                renderTextureSize: canvasView.renderTexture?.size ?? .zero,
+                drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+            )
+        }
+
+        // Add points to the iterator.
+        grayscaleTextureCurveIterator?.append(
+            textureTouchPoints.map {
+                .init(
+                    touchPoint: $0,
+                    diameter: CGFloat(drawingTool.brushDiameter)
                 )
-            },
+            }
+        )
+
+        drawPoints(
+            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
+                atEnd: touchPhase == .ended
+            ) ?? [],
+            touchPhase: touchPhase,
             on: canvasView
         )
     }
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {
-        drawingTexture.clearTexture(
+        drawingTexture.clearTexture()
+        currentTexture.clearTexture()
+
+        MTLRenderer.fill(
+            backgroundColor.rgb,
+            on: canvasView.renderTexture,
             with: canvasView.commandBuffer
         )
-        layerManager.resetAllTextures(
-            canvasView,
-            withBackgroundColor: backgroundColor.rgb
-        )
+
         canvasView.setNeedsDisplay()
     }
 
@@ -100,16 +154,11 @@ extension CanvasViewModel {
         textureSize: CGSize,
         canvasView: CanvasViewProtocol
     ) {
-        drawingTexture.initTexture(
-            textureSize
-        )
-        layerManager.initTexture(
-            textureSize
-        )
+        drawingTexture.initTexture(textureSize: textureSize)
+        currentTexture.initTexture(textureSize: textureSize)
 
-        canvasView.initTexture(with: textureSize)
+        canvasView.initTexture(textureSize: textureSize)
 
-        // Add a background color to the render target’s texture
         MTLRenderer.fill(
             backgroundColor.rgb,
             on: canvasView.renderTexture,
@@ -128,49 +177,33 @@ extension CanvasViewModel {
         }
     }
 
-    private func drawCurve(
-        touches: [CanvasTouchPoint],
+    private func drawPoints(
+        textureCurvePoints: [CanvasGrayscaleDotPoint],
+        touchPhase: UITouch.Phase,
         on canvasView: CanvasViewProtocol
     ) {
-        let touchPhase = touches.currentTouchPhase
-
-        if touchPhase == .began {
-            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
-            grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
-        }
-
-        // Add points to the iterator.
-        grayscaleTexturePointIterator?.append(
-            touches.map {
-                .init(
-                    touchPoint: $0,
-                    diameter: CGFloat(drawingTool.brushDiameter)
-                )
-            }
-        )
-
-        // Draw curve points on the `drawingTexture`.
-        drawingTexture.drawLineOnTexture(
-            grayscaleTexturePoints: grayscaleTexturePointIterator?.makeCurvePoints(
-                atEnd: touchPhase == .ended
-            ) ?? [],
+        // Draw curve points on the `drawingTexture.texture`.
+        drawingTexture.drawPointsOnTexture(
+            grayscaleTexturePoints: textureCurvePoints,
             color: drawingTool.brushColor,
             with: canvasView.commandBuffer
         )
 
         // Render the `drawingTexture` onto the `renderTexture`
         MTLRenderer.drawTextures(
-            [layerManager.currentTexture,
+            [currentTexture.currentTexture,
              drawingTexture.texture],
             withBackgroundColor: backgroundColor.rgba,
             on: canvasView.renderTexture,
             with: canvasView.commandBuffer
         )
 
+        // At touch end, render `drawingTexture.texture` on `layerManager.currentTexture`.
+        // Then, clear `drawingTexture.texture` for the next drawing.
         if touchPhase == .ended {
             MTLRenderer.merge(
                 drawingTexture.texture,
-                into: layerManager.currentTexture,
+                into: currentTexture.currentTexture,
                 with: canvasView.commandBuffer
             )
             drawingTexture.clearTexture(
@@ -180,7 +213,7 @@ extension CanvasViewModel {
 
         if touchPhase == .ended || touchPhase == .cancelled {
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
-            grayscaleTexturePointIterator = nil
+            grayscaleTextureCurveIterator = nil
         }
     }
 

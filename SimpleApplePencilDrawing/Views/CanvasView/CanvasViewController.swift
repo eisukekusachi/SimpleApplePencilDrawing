@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CanvasViewController.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/01.
@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class ViewController: UIViewController {
+class CanvasViewController: UIViewController {
 
     @IBOutlet private weak var canvasView: CanvasView!
 
@@ -38,7 +38,7 @@ class ViewController: UIViewController {
 
 }
 
-extension ViewController {
+extension CanvasViewController {
 
     private func setupCanvasViewModel() {
         // Initialize the texture with any size
@@ -54,11 +54,11 @@ extension ViewController {
         // Remove `/* */` to enable finger drawing
         /*
         canvasView.addGestureRecognizer(
-            FingerInputGestureRecognizer(self)
+            CanvasFingerInputGestureRecognizer(self)
         )
         */
         canvasView.addGestureRecognizer(
-            PencilInputGestureRecognizer(self)
+            CanvasPencilInputGestureRecognizer(self)
         )
 
         // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
@@ -76,11 +76,11 @@ extension ViewController {
 
 }
 
-extension ViewController: FingerInputGestureSender {
+extension CanvasViewController: CanvasFingerInputGestureSender {
 
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
-            touches: touches.map { .init(touch: $0, view: view) },
+            touches: touches,
             view: self.view,
             canvasView: canvasView
         )
@@ -88,11 +88,11 @@ extension ViewController: FingerInputGestureSender {
 
 }
 
-extension ViewController: PencilInputGestureSender {
+extension CanvasViewController: CanvasPencilInputGestureSender {
 
     func sendPencilTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilInputGesture(
-            touches: touches.map { .init(touch: $0, view: view) },
+            touches: touches,
             view: self.view,
             canvasView: canvasView
         )
@@ -100,7 +100,7 @@ extension ViewController: PencilInputGestureSender {
 
 }
 
-extension ViewController {
+extension CanvasViewController {
 
     @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
         canvasViewModel.onTapClearTexture(canvasView: canvasView)
