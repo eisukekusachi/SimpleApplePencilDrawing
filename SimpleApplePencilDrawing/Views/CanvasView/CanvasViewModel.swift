@@ -188,7 +188,7 @@ extension CanvasViewModel {
 
         // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
         MTLRenderer.drawTextures(
-            [currentTexture.currentTexture,
+            [currentTexture.texture,
              drawingTexture.texture],
             withBackgroundColor: backgroundColor.rgba,
             on: canvasView.renderTexture,
@@ -200,7 +200,7 @@ extension CanvasViewModel {
         if touchPhase == .ended {
             MTLRenderer.merge(
                 drawingTexture.texture,
-                into: currentTexture.currentTexture,
+                into: currentTexture.texture,
                 with: canvasView.commandBuffer
             )
             drawingTexture.clearTexture(
