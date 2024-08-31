@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CanvasViewController.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/01.
@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-class ViewController: UIViewController {
+class CanvasViewController: UIViewController {
 
     @IBOutlet private weak var canvasView: CanvasView!
 
@@ -38,7 +38,7 @@ class ViewController: UIViewController {
 
 }
 
-extension ViewController {
+extension CanvasViewController {
 
     private func setupCanvasViewModel() {
         // Initialize the texture with any size
@@ -76,7 +76,7 @@ extension ViewController {
 
 }
 
-extension ViewController: CanvasFingerInputGestureSender {
+extension CanvasViewController: CanvasFingerInputGestureSender {
 
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
@@ -88,7 +88,7 @@ extension ViewController: CanvasFingerInputGestureSender {
 
 }
 
-extension ViewController: CanvasPencilInputGestureSender {
+extension CanvasViewController: CanvasPencilInputGestureSender {
 
     func sendPencilTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilInputGesture(
@@ -100,7 +100,7 @@ extension ViewController: CanvasPencilInputGestureSender {
 
 }
 
-extension ViewController {
+extension CanvasViewController {
 
     @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
         canvasViewModel.onTapClearTexture(canvasView: canvasView)
