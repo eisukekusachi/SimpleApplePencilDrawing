@@ -17,7 +17,7 @@ final class CanvasViewModel {
     private let drawingTool = CanvasDrawingTool()
 
     /// An iterator for managing grayscale points.
-    private var grayscaleTexturePointIterator: CanvasGrayscaleTexturePointIterator?
+    private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
 
     /// A class for managing the currently drawing texture
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
@@ -59,7 +59,7 @@ extension CanvasViewModel {
 
         if touchPhase == .began {
             pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
-            grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
+            grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
         }
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
@@ -71,7 +71,7 @@ extension CanvasViewModel {
         }
 
         // Add points to the iterator.
-        grayscaleTexturePointIterator?.append(
+        grayscaleTextureCurveIterator?.append(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
@@ -81,7 +81,7 @@ extension CanvasViewModel {
         )
 
         drawPoints(
-            textureCurvePoints: grayscaleTexturePointIterator?.makeCurvePoints(
+            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
             touchPhase: touchPhase,
@@ -102,7 +102,7 @@ extension CanvasViewModel {
 
         if touchPhase == .began {
             pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
-            grayscaleTexturePointIterator = CanvasGrayscaleTexturePointIterator()
+            grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
         }
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
@@ -114,7 +114,7 @@ extension CanvasViewModel {
         }
 
         // Add points to the iterator.
-        grayscaleTexturePointIterator?.append(
+        grayscaleTextureCurveIterator?.append(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
@@ -124,7 +124,7 @@ extension CanvasViewModel {
         )
 
         drawPoints(
-            textureCurvePoints: grayscaleTexturePointIterator?.makeCurvePoints(
+            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
             touchPhase: touchPhase,
@@ -218,7 +218,7 @@ extension CanvasViewModel {
 
         if touchPhase == .ended || touchPhase == .cancelled {
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
-            grayscaleTexturePointIterator = nil
+            grayscaleTextureCurveIterator = nil
         }
     }
 
