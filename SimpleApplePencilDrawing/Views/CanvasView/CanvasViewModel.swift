@@ -136,6 +136,8 @@ extension CanvasViewModel {
         else { return }
 
         let latestScreenTouchArray = pencilScreenTouchPoints.latestActualTouchPoints
+        pencilScreenTouchPoints.updateLatestActualTouchPoint()
+
         let touchPhase = latestScreenTouchArray.currentTouchPhase
 
         let latestTextureTouchArray = latestScreenTouchArray.map {
