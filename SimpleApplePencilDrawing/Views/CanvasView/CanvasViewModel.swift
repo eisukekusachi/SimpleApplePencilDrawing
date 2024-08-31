@@ -134,7 +134,7 @@ extension CanvasViewModel {
             // Wait to ensure sufficient time has passed since the previous process
             // as the operation may not work correctly if the time difference is too short.
             pencilScreenTouchPoints.hasSufficientTimeElapsedSincePreviousProcess(allowedDifferenceInSeconds: 0.01) ||
-                pencilScreenTouchPoints.hasDrawingFinished
+            [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(pencilScreenTouchPoints.actualTouchPointArray.currentTouchPhase)
         else { return }
 
         let latestScreenTouchArray = pencilScreenTouchPoints.latestActualTouchPoints

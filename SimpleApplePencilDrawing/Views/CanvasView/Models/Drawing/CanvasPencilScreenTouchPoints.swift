@@ -49,9 +49,6 @@ extension CanvasPencilScreenTouchPoints {
         actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
     }
 
-    var hasDrawingFinished: Bool {
-        [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(actualTouchPointArray.currentTouchPhase)
-    }
     var hasActualValueReplacementCompleted: Bool {
         actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndexAtCompletion
     }
