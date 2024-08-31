@@ -91,7 +91,7 @@ extension CanvasViewController: CanvasFingerInputGestureSender {
 extension CanvasViewController: CanvasPencilInputGestureSender {
 
     func sendPencilEstimatedTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
-        canvasViewModel.onPencilInputGesture(
+        canvasViewModel.onPencilGestureDetected(
             touches: touches,
             with: event,
             view: view,
@@ -100,7 +100,11 @@ extension CanvasViewController: CanvasPencilInputGestureSender {
     }
 
     func sendPencilActualTouches(_ touches: Set<UITouch>, on view: UIView) {
-
+        canvasViewModel.onPencilGestureDetected(
+            actualTouches: touches,
+            view: view,
+            canvasView: canvasView
+        )
     }
 
 }
