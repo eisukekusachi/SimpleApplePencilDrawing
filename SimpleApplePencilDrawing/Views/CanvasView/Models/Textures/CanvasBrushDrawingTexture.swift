@@ -19,9 +19,7 @@ final class CanvasBrushDrawingTexture: CanvasDrawingTexture {
 
 extension CanvasBrushDrawingTexture {
 
-    func initTexture(
-        _ textureSize: CGSize
-    ) {
+    func initTexture(textureSize: CGSize) {
         grayscaleDrawingTexture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
