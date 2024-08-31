@@ -37,7 +37,6 @@ extension CanvasViewModel {
         _ drawableTextureSize: CGSize,
         canvasView: CanvasViewProtocol
     ) {
-        // Initialize the canvas here if the renderTexture's texture is nil
         if canvasView.renderTexture == nil {
             initCanvas(
                 textureSize: drawableTextureSize,
@@ -70,7 +69,6 @@ extension CanvasViewModel {
             )
         }
 
-        // Add points to the iterator.
         grayscaleTextureCurveIterator?.append(
             textureTouchPoints.map {
                 .init(
@@ -113,7 +111,6 @@ extension CanvasViewModel {
             )
         }
 
-        // Add points to the iterator.
         grayscaleTextureCurveIterator?.append(
             textureTouchPoints.map {
                 .init(
@@ -171,7 +168,7 @@ extension CanvasViewModel {
     private func pauseDisplayLinkOnCanvas(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
         pauseDisplayLinkSubject.send(isPaused)
 
-        // Call `canvas.setNeedsDisplay` when stopping as the last line isn’t drawn
+        // Call `canvasView.setNeedsDisplay` when stopping as the last line isn’t drawn
         if isPaused {
             canvasView.setNeedsDisplay()
         }
@@ -182,14 +179,14 @@ extension CanvasViewModel {
         touchPhase: UITouch.Phase,
         on canvasView: CanvasViewProtocol
     ) {
-        // Draw curve points on the `drawingTexture.texture`.
+        // Draw curve points on the `drawingTexture`
         drawingTexture.drawPointsOnTexture(
             grayscaleTexturePoints: textureCurvePoints,
             color: drawingToolStatus.brushColor,
             with: canvasView.commandBuffer
         )
 
-        // Render the `drawingTexture` onto the `renderTexture`
+        // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
         MTLRenderer.drawTextures(
             [currentTexture.currentTexture,
              drawingTexture.texture],
@@ -198,8 +195,8 @@ extension CanvasViewModel {
             with: canvasView.commandBuffer
         )
 
-        // At touch end, render `drawingTexture.texture` on `layerManager.currentTexture`.
-        // Then, clear `drawingTexture.texture` for the next drawing.
+        // At touch end, render `drawingTexture` on `currentTexture`
+        // Then, clear `drawingTexture` for the next drawing.
         if touchPhase == .ended {
             MTLRenderer.merge(
                 drawingTexture.texture,
