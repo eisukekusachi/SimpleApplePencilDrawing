@@ -22,11 +22,11 @@ extension CanvasBrushDrawingTexture {
     func initTexture(
         _ textureSize: CGSize
     ) {
-        grayscaleDrawingTexture = MTLTextureManager.makeBlankTexture(
+        grayscaleDrawingTexture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
         )
-        texture = MTLTextureManager.makeBlankTexture(
+        texture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
         )

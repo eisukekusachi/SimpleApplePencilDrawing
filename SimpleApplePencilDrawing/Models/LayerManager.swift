@@ -18,7 +18,7 @@ extension LayerManager {
     func initTexture(
         _ textureSize: CGSize
     ) {
-        currentTexture = MTLTextureManager.makeBlankTexture(
+        currentTexture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
         )

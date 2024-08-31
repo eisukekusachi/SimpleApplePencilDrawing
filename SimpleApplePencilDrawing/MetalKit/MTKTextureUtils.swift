@@ -1,5 +1,5 @@
 //
-//  MTLTextureManager.swift
+//  MTKTextureUtils.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -8,7 +8,7 @@
 import MetalKit
 import Accelerate
 
-enum MTLTextureManager {
+enum MTKTextureUtils {
 
     static func makeBlankTexture(
         with device: MTLDevice,
@@ -30,7 +30,7 @@ enum MTLTextureManager {
 
 }
 
-extension MTLTextureManager {
+extension MTKTextureUtils {
 
     private static func makeTexture(
         with device: MTLDevice,

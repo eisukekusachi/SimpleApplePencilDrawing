@@ -69,7 +69,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         let minLength: CGFloat = CGFloat(MTLRenderer.threadGroupLength)
         assert(textureSize.width >= minLength && textureSize.height >= minLength, "The textureSize is not appropriate")
 
-        renderTexture = MTLTextureManager.makeBlankTexture(with: device!, textureSize)
+        renderTexture = MTKTextureUtils.makeBlankTexture(with: device!, textureSize)
     }
 
     // MARK: - DrawTexture
