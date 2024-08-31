@@ -9,14 +9,14 @@ import MetalKit
 
 final class CanvasCurrentTexture {
 
-    private (set) var currentTexture: MTLTexture?
+    private (set) var texture: MTLTexture?
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 }
 
 extension CanvasCurrentTexture {
     func initTexture(textureSize: CGSize) {
-        currentTexture = MTKTextureUtils.makeBlankTexture(
+        texture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
         )
@@ -24,7 +24,7 @@ extension CanvasCurrentTexture {
 
     func clearTexture() {
         let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
-        MTLRenderer.clear(currentTexture, with: commandBuffer)
+        MTLRenderer.clear(texture, with: commandBuffer)
         commandBuffer.commit()
     }
 

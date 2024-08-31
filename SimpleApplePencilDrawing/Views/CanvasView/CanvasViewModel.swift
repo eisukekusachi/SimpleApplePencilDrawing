@@ -14,18 +14,18 @@ final class CanvasViewModel {
         pauseDisplayLinkSubject.eraseToAnyPublisher()
     }
 
-    private let drawingTool = CanvasDrawingTool()
-
-    /// An iterator for managing grayscale points.
+    /// An iterator for managing a grayscale curve
     private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
 
-    /// A class for managing the currently drawing texture
+    /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
 
-    /// A texture that combines the texture of the currently selected `TextureLayer` and `DrawingTexture`
+    /// A texture currently being displayed
     private let currentTexture = CanvasCurrentTexture()
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
+
+    private let drawingToolStatus = CanvasDrawingToolStatus()
 
     private var backgroundColor: UIColor = .white
 
@@ -37,7 +37,6 @@ extension CanvasViewModel {
         _ drawableTextureSize: CGSize,
         canvasView: CanvasViewProtocol
     ) {
-        // Initialize the canvas here if the renderTexture's texture is nil
         if canvasView.renderTexture == nil {
             initCanvas(
                 textureSize: drawableTextureSize,
@@ -70,12 +69,11 @@ extension CanvasViewModel {
             )
         }
 
-        // Add points to the iterator.
         grayscaleTextureCurveIterator?.append(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
-                    diameter: CGFloat(drawingTool.brushDiameter)
+                    diameter: CGFloat(drawingToolStatus.brushDiameter)
                 )
             }
         )
@@ -113,12 +111,11 @@ extension CanvasViewModel {
             )
         }
 
-        // Add points to the iterator.
         grayscaleTextureCurveIterator?.append(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
-                    diameter: CGFloat(drawingTool.brushDiameter)
+                    diameter: CGFloat(drawingToolStatus.brushDiameter)
                 )
             }
         )
@@ -171,7 +168,7 @@ extension CanvasViewModel {
     private func pauseDisplayLinkOnCanvas(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
         pauseDisplayLinkSubject.send(isPaused)
 
-        // Call `canvas.setNeedsDisplay` when stopping as the last line isn’t drawn
+        // Call `canvasView.setNeedsDisplay` when stopping as the last line isn’t drawn
         if isPaused {
             canvasView.setNeedsDisplay()
         }
@@ -182,28 +179,28 @@ extension CanvasViewModel {
         touchPhase: UITouch.Phase,
         on canvasView: CanvasViewProtocol
     ) {
-        // Draw curve points on the `drawingTexture.texture`.
+        // Draw curve points on the `drawingTexture`
         drawingTexture.drawPointsOnTexture(
             grayscaleTexturePoints: textureCurvePoints,
-            color: drawingTool.brushColor,
+            color: drawingToolStatus.brushColor,
             with: canvasView.commandBuffer
         )
 
-        // Render the `drawingTexture` onto the `renderTexture`
+        // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
         MTLRenderer.drawTextures(
-            [currentTexture.currentTexture,
+            [currentTexture.texture,
              drawingTexture.texture],
             withBackgroundColor: backgroundColor.rgba,
             on: canvasView.renderTexture,
             with: canvasView.commandBuffer
         )
 
-        // At touch end, render `drawingTexture.texture` on `layerManager.currentTexture`.
-        // Then, clear `drawingTexture.texture` for the next drawing.
+        // At touch end, render `drawingTexture` on `currentTexture`
+        // Then, clear `drawingTexture` for the next drawing.
         if touchPhase == .ended {
             MTLRenderer.merge(
                 drawingTexture.texture,
-                into: currentTexture.currentTexture,
+                into: currentTexture.texture,
                 with: canvasView.commandBuffer
             )
             drawingTexture.clearTexture(
