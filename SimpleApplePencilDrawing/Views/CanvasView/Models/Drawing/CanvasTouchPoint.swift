@@ -15,6 +15,8 @@ struct CanvasTouchPoint: Equatable {
     let phase: UITouch.Phase
     /// Index for identifying the estimated value
     var estimationUpdateIndex: NSNumber? = nil
+
+    let timestamp: TimeInterval
 }
 
 extension CanvasTouchPoint {
@@ -28,6 +30,7 @@ extension CanvasTouchPoint {
         self.maximumPossibleForce = touch.maximumPossibleForce
         self.phase = touch.phase
         self.estimationUpdateIndex = touch.estimationUpdateIndex
+        self.timestamp = touch.timestamp
     }
 
     func convertToTextureCoordinates(
@@ -63,7 +66,8 @@ extension CanvasTouchPoint {
             force: force,
             maximumPossibleForce: maximumPossibleForce,
             phase: phase,
-            estimationUpdateIndex: estimationUpdateIndex
+            estimationUpdateIndex: estimationUpdateIndex,
+            timestamp: timestamp
         )
     }
 
