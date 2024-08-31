@@ -22,8 +22,8 @@ final class CanvasViewModel {
     /// A class for managing the currently drawing texture
     private let drawingTexture: DrawingTexture = CanvasBrushDrawingTexture()
 
-    /// A class for managing textures
-    private let layerManager = LayerManager()
+    /// A texture that combines the texture of the currently selected `TextureLayer` and `DrawingTexture`
+    private let currentTexture = CanvasCurrentTexture()
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
 
@@ -136,10 +136,15 @@ extension CanvasViewModel {
         drawingTexture.clearTexture(
             with: canvasView.commandBuffer
         )
-        layerManager.resetAllTextures(
-            canvasView,
-            withBackgroundColor: backgroundColor.rgb
+
+        currentTexture.clearTexture()
+
+        MTLRenderer.fill(
+            backgroundColor.rgb,
+            on: canvasView.renderTexture,
+            with: canvasView.commandBuffer
         )
+
         canvasView.setNeedsDisplay()
     }
 
@@ -155,13 +160,12 @@ extension CanvasViewModel {
         drawingTexture.initTexture(
             textureSize
         )
-        layerManager.initTexture(
+        currentTexture.initTexture(
             textureSize
         )
 
         canvasView.initTexture(with: textureSize)
 
-        // Add a background color to the render target’s texture
         MTLRenderer.fill(
             backgroundColor.rgb,
             on: canvasView.renderTexture,
@@ -194,7 +198,7 @@ extension CanvasViewModel {
 
         // Render the `drawingTexture` onto the `renderTexture`
         MTLRenderer.drawTextures(
-            [layerManager.currentTexture,
+            [currentTexture.currentTexture,
              drawingTexture.texture],
             withBackgroundColor: backgroundColor.rgba,
             on: canvasView.renderTexture,
@@ -206,7 +210,7 @@ extension CanvasViewModel {
         if touchPhase == .ended {
             MTLRenderer.merge(
                 drawingTexture.texture,
-                into: layerManager.currentTexture,
+                into: currentTexture.currentTexture,
                 with: canvasView.commandBuffer
             )
             drawingTexture.clearTexture(
