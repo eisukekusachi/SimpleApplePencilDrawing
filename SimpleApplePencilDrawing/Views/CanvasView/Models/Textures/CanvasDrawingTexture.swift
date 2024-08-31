@@ -11,9 +11,7 @@ protocol CanvasDrawingTexture {
 
     var texture: MTLTexture? { get }
 
-    func initTexture(
-        _ textureSize: CGSize
-    )
+    func initTexture(textureSize: CGSize)
 
     func drawPointsOnTexture(
         grayscaleTexturePoints: [CanvasGrayscaleDotPoint],

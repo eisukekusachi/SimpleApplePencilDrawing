@@ -134,7 +134,6 @@ extension CanvasViewModel {
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {
         drawingTexture.clearTexture()
-
         currentTexture.clearTexture()
 
         MTLRenderer.fill(
@@ -155,14 +154,10 @@ extension CanvasViewModel {
         textureSize: CGSize,
         canvasView: CanvasViewProtocol
     ) {
-        drawingTexture.initTexture(
-            textureSize
-        )
-        currentTexture.initTexture(
-            textureSize
-        )
+        drawingTexture.initTexture(textureSize: textureSize)
+        currentTexture.initTexture(textureSize: textureSize)
 
-        canvasView.initTexture(with: textureSize)
+        canvasView.initTexture(textureSize: textureSize)
 
         MTLRenderer.fill(
             backgroundColor.rgb,

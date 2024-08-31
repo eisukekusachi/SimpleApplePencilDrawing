@@ -15,9 +15,7 @@ final class CanvasCurrentTexture {
 }
 
 extension CanvasCurrentTexture {
-    func initTexture(
-        _ textureSize: CGSize
-    ) {
+    func initTexture(textureSize: CGSize) {
         currentTexture = MTKTextureUtils.makeBlankTexture(
             with: device,
             textureSize
