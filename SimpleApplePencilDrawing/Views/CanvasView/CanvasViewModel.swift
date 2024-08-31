@@ -109,7 +109,9 @@ extension CanvasViewModel {
             .sorted { $0.timestamp < $1.timestamp }
             .forEach { touch in
                 event?.coalescedTouches(for: touch)?.forEach { coalescedTouch in
-                    pencilScreenTouchPoints.appendEstimatedValue(coalescedTouch, in: view)
+                    pencilScreenTouchPoints.appendEstimatedValue(
+                        .init(touch: coalescedTouch, view: view)
+                    )
                 }
             }
     }
