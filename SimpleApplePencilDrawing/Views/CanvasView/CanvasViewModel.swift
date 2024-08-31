@@ -16,13 +16,13 @@ final class CanvasViewModel {
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
-    /// An iterator for managing grayscale points.
+    /// An iterator for managing a grayscale curve
     private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
 
-    /// A class for managing the currently drawing texture
+    /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
 
-    /// A texture that combines the texture of the currently selected `TextureLayer` and `DrawingTexture`
+    /// A texture currently being displayed
     private let currentTexture = CanvasCurrentTexture()
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
