@@ -89,6 +89,7 @@ extension CanvasViewModel {
 
     func onPencilInputGesture(
         touches: Set<UITouch>,
+        with event: UIEvent?,
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
