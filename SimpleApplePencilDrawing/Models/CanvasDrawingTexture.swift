@@ -1,5 +1,5 @@
 //
-//  DrawingTexture.swift
+//  CanvasDrawingTexture.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,7 +7,7 @@
 
 import MetalKit
 /// Manage the currently drawn texture
-protocol DrawingTexture {
+protocol CanvasDrawingTexture {
 
     var texture: MTLTexture? { get }
 
@@ -22,5 +22,7 @@ protocol DrawingTexture {
     )
 
     func clearTexture(with commandBuffer: MTLCommandBuffer)
+
+    func clearTexture()
 
 }

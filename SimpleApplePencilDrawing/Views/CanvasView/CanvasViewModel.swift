@@ -20,7 +20,7 @@ final class CanvasViewModel {
     private var grayscaleTexturePointIterator: CanvasGrayscaleTexturePointIterator?
 
     /// A class for managing the currently drawing texture
-    private let drawingTexture: DrawingTexture = CanvasBrushDrawingTexture()
+    private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
 
     /// A texture that combines the texture of the currently selected `TextureLayer` and `DrawingTexture`
     private let currentTexture = CanvasCurrentTexture()
@@ -133,9 +133,7 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {
-        drawingTexture.clearTexture(
-            with: canvasView.commandBuffer
-        )
+        drawingTexture.clearTexture()
 
         currentTexture.clearTexture()
 
