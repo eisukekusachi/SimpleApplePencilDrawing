@@ -25,7 +25,7 @@ final class CanvasPencilScreenTouchPoints {
     /// An element processed in `actualTouchPointArray`
     private (set) var latestActualTouchPoint: CanvasTouchPoint? = nil
 
-    private var lastEstimationUpdateIndex: NSNumber?
+    private var lastEstimationUpdateIndexAtCompletion: NSNumber?
 
     init(
         actualTouchPointArray: [CanvasTouchPoint] = [],
@@ -53,7 +53,7 @@ extension CanvasPencilScreenTouchPoints {
         [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(actualTouchPointArray.currentTouchPhase)
     }
     var hasActualValueReplacementCompleted: Bool {
-        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndex
+        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndexAtCompletion
     }
 
     /// Checks if the time difference between when the end of the line was drawn
@@ -76,7 +76,7 @@ extension CanvasPencilScreenTouchPoints {
         // When the touch ends, the `estimationUpdateIndex` of UITouch becomes nil,
         // so the `estimationUpdateIndex` of the previous UITouch is retained.
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase) {
-            lastEstimationUpdateIndex = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
+            lastEstimationUpdateIndexAtCompletion = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
         }
     }
 
@@ -121,7 +121,7 @@ extension CanvasPencilScreenTouchPoints {
         estimatedTouchPointArray = []
         latestEstimatedTouchArrayIndex = 0
         latestActualTouchPoint = nil
-        lastEstimationUpdateIndex = nil
+        lastEstimationUpdateIndexAtCompletion = nil
     }
 
 }
