@@ -127,7 +127,7 @@ extension CanvasViewModel {
             pencilScreenTouchPoints.appendActualValueWithEstimatedValue(actualTouch)
         }
         if pencilScreenTouchPoints.hasActualValueReplacementCompleted {
-            pencilScreenTouchPoints.finishReplacementProcessWithActualValues()
+            pencilScreenTouchPoints.appendLastEstimatedTouchPointToActualTouchPointArray()
         }
 
         guard

@@ -107,7 +107,7 @@ extension CanvasPencilScreenTouchPoints {
 
     /// Add an element with `UITouch.Phase.ended` to the end of `actualTouchPointArray`
     /// since `UITouchPhase.ended` is not included in actual values.
-    func finishReplacementProcessWithActualValues() {
+    func appendLastEstimatedTouchPointToActualTouchPointArray() {
         guard let point = estimatedTouchPointArray.last else { return }
         actualTouchPointArray.append(point)
     }
