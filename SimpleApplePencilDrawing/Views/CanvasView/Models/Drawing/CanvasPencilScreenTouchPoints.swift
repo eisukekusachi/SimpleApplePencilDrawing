@@ -6,11 +6,12 @@
 //
 
 import UIKit
-/// Since Apple Pencil is a separate device from iPad,
-/// UIKit returns estimated values first, followed by the actual values after a short delay within touch events.
-/// In this class, estimated values are stored in `estimatedTouchPointArray`.
-/// When the actual values are received, they are combined with the estimated values to create accurate elements,
-/// which are then stored in `actualTouchPointArray`.
+/// https://developer.apple.com/documentation/uikit/apple_pencil_interactions/handling_input_from_apple_pencil/
+/// Since an Apple Pencil is a separate device from an iPad,
+/// `UIGestureRecognizer` initially sends estimated values and then sends the actual values shortly after.
+///  This class is a model that combines estimated and actual values to create an array of `CanvasTouchPoint`.
+///  It stores the estimated values in `estimatedTouchPointArray` and then combines them with the actual values received later
+///  to create the values for `actualTouchPointArray`.
 final class CanvasPencilScreenTouchPoints {
 
     /// An array that holds elements combining actualTouches, where the force values are accurate, and estimatedTouchPointArray.
@@ -43,8 +44,7 @@ final class CanvasPencilScreenTouchPoints {
 
 extension CanvasPencilScreenTouchPoints {
 
-    /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing.
-    /// After using the array, update `latestActualTouchPoint` with the last element of `actualTouchPointArray` and use it for the next drawing.
+    /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing
     var latestActualTouchPoints: [CanvasTouchPoint] {
         actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
     }
@@ -102,6 +102,7 @@ extension CanvasPencilScreenTouchPoints {
         actualTouchPointArray.append(point)
     }
 
+    /// After using the array, update `latestActualTouchPoint` with the last element of `actualTouchPointArray` and use it for the next drawing.
     func updateLatestActualTouchPoint() {
         latestActualTouchPoint = actualTouchPointArray.last
     }
