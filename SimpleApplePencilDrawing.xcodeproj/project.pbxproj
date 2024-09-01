@@ -45,6 +45,9 @@
 		D4D0FDD52C82D4B900E91B4B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */; };
 		D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */; };
 		D4D0FDDD2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDDC2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift */; };
+		D4D0FDEA2C8349EB00E91B4B /* CanvasTouchPointDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDE92C8349EB00E91B4B /* CanvasTouchPointDummy.swift */; };
+		D4D0FDEF2C834A2200E91B4B /* CanvasPencilScreenTouchPointsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDEE2C834A2200E91B4B /* CanvasPencilScreenTouchPointsTests.swift */; };
+		D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDF02C834A3C00E91B4B /* UITouchDummy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +110,9 @@
 		D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtensions.swift; sourceTree = "<group>"; };
 		D4D0FDDC2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilScreenTouchPoints.swift; sourceTree = "<group>"; };
+		D4D0FDE92C8349EB00E91B4B /* CanvasTouchPointDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasTouchPointDummy.swift; sourceTree = "<group>"; };
+		D4D0FDEE2C834A2200E91B4B /* CanvasPencilScreenTouchPointsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilScreenTouchPointsTests.swift; sourceTree = "<group>"; };
+		D4D0FDF02C834A3C00E91B4B /* UITouchDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchDummy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -259,6 +265,8 @@
 		D4B17E2B2C0ABCB40056C270 /* SimpleApplePencilDrawingTests */ = {
 			isa = PBXGroup;
 			children = (
+				D4D0FDE82C8349DA00E91B4B /* Dummies */,
+				D4D0FDEB2C8349FD00E91B4B /* Views */,
 				D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */,
 			);
 			path = SimpleApplePencilDrawingTests;
@@ -300,6 +308,39 @@
 				D462E1A72C0C684300E0503E /* CanvasDrawingToolStatus.swift */,
 			);
 			path = Status;
+			sourceTree = "<group>";
+		};
+		D4D0FDE82C8349DA00E91B4B /* Dummies */ = {
+			isa = PBXGroup;
+			children = (
+				D4D0FDE92C8349EB00E91B4B /* CanvasTouchPointDummy.swift */,
+				D4D0FDF02C834A3C00E91B4B /* UITouchDummy.swift */,
+			);
+			path = Dummies;
+			sourceTree = "<group>";
+		};
+		D4D0FDEB2C8349FD00E91B4B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D4D0FDEC2C834A0900E91B4B /* CanvasView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D4D0FDEC2C834A0900E91B4B /* CanvasView */ = {
+			isa = PBXGroup;
+			children = (
+				D4D0FDED2C834A1200E91B4B /* Models */,
+			);
+			path = CanvasView;
+			sourceTree = "<group>";
+		};
+		D4D0FDED2C834A1200E91B4B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D4D0FDEE2C834A2200E91B4B /* CanvasPencilScreenTouchPointsTests.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -473,6 +514,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */,
+				D4D0FDEA2C8349EB00E91B4B /* CanvasTouchPointDummy.swift in Sources */,
+				D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */,
+				D4D0FDEF2C834A2200E91B4B /* CanvasPencilScreenTouchPointsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
