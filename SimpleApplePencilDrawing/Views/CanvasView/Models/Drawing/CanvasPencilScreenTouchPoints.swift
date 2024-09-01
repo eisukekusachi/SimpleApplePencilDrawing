@@ -43,8 +43,8 @@ final class CanvasPencilScreenTouchPoints {
 
 extension CanvasPencilScreenTouchPoints {
 
-    /// Use the elements of `actualTouchPointArray` after `startAfterActualTouchPoint` for line drawing.
-    /// After using the array, update `startAfterActualTouchPoint` with the last element of `actualTouchPointArray` and use it for the next drawing.
+    /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing.
+    /// After using the array, update `latestActualTouchPoint` with the last element of `actualTouchPointArray` and use it for the next drawing.
     var latestActualTouchPoints: [CanvasTouchPoint] {
         actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
     }
