@@ -23,6 +23,9 @@ final class CanvasViewModel {
     /// A texture currently being displayed
     private let currentTexture = CanvasCurrentTexture()
 
+    /// A manager for handling Apple Pencil input values
+    private let pencilScreenTouchPoints = CanvasPencilScreenTouchPoints()
+
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
@@ -87,23 +90,59 @@ extension CanvasViewModel {
         )
     }
 
-    func onPencilInputGesture(
+    func onPencilGestureDetected(
         touches: Set<UITouch>,
+        with event: UIEvent?,
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
-        let touchScreenPoints: [CanvasTouchPoint] = touches.map {
-            .init(touch: $0, view: view)
-        }
-
-        let touchPhase = touchScreenPoints.currentTouchPhase
-
-        if touchPhase == .began {
-            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
+        // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
+        if touches.contains(where: {$0.phase == .began}) {
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
+            pauseDisplayLinkSubject.send(false)
+
+            pencilScreenTouchPoints.reset()
         }
 
-        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
+        event?.allTouches?
+            .compactMap { $0.type == .pencil ? $0 : nil }
+            .sorted { $0.timestamp < $1.timestamp }
+            .forEach { touch in
+                event?.coalescedTouches(for: touch)?.forEach { coalescedTouch in
+                    pencilScreenTouchPoints.appendEstimatedValue(
+                        .init(touch: coalescedTouch, view: view)
+                    )
+                }
+            }
+    }
+
+    func onPencilGestureDetected(
+        actualTouches: Set<UITouch>,
+        view: UIView,
+        canvasView: CanvasViewProtocol
+    ) {
+        // Combine `actualTouches` with the estimated values to create actual values, and append them to an array
+        let actualTouchArray = Array(actualTouches).sorted { $0.timestamp < $1.timestamp }
+        actualTouchArray.forEach { actualTouch in
+            pencilScreenTouchPoints.appendActualValueWithEstimatedValue(actualTouch)
+        }
+        if pencilScreenTouchPoints.hasActualValueReplacementCompleted {
+            pencilScreenTouchPoints.appendLastEstimatedTouchPointToActualTouchPointArray()
+        }
+
+        guard
+            // Wait to ensure sufficient time has passed since the previous process
+            // as the operation may not work correctly if the time difference is too short.
+            pencilScreenTouchPoints.hasSufficientTimeElapsedSincePreviousProcess(allowedDifferenceInSeconds: 0.01) ||
+            [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(pencilScreenTouchPoints.actualTouchPointArray.currentTouchPhase)
+        else { return }
+
+        let latestScreenTouchArray = pencilScreenTouchPoints.latestActualTouchPoints
+        pencilScreenTouchPoints.updateLatestActualTouchPoint()
+
+        let touchPhase = latestScreenTouchArray.currentTouchPhase
+
+        let latestTextureTouchArray = latestScreenTouchArray.map {
             $0.convertToTextureCoordinates(
                 frameSize: view.frame.size,
                 renderTextureSize: canvasView.renderTexture?.size ?? .zero,
@@ -112,7 +151,7 @@ extension CanvasViewModel {
         }
 
         grayscaleTextureCurveIterator?.append(
-            textureTouchPoints.map {
+            latestTextureTouchArray.map {
                 .init(
                     touchPoint: $0,
                     diameter: CGFloat(drawingToolStatus.brushDiameter)
@@ -127,6 +166,13 @@ extension CanvasViewModel {
             touchPhase: touchPhase,
             on: canvasView
         )
+
+        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
+            pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
+            grayscaleTextureCurveIterator = nil
+
+            pencilScreenTouchPoints.reset()
+        }
     }
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {

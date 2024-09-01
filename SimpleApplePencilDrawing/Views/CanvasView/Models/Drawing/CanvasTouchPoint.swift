@@ -10,11 +10,13 @@ import UIKit
 struct CanvasTouchPoint: Equatable {
 
     let location: CGPoint
+    let phase: UITouch.Phase
     let force: CGFloat
     let maximumPossibleForce: CGFloat
-    let phase: UITouch.Phase
     /// Index for identifying the estimated value
     var estimationUpdateIndex: NSNumber? = nil
+
+    let timestamp: TimeInterval
 }
 
 extension CanvasTouchPoint {
@@ -24,10 +26,11 @@ extension CanvasTouchPoint {
         view: UIView
     ) {
         self.location = touch.preciseLocation(in: view)
+        self.phase = touch.phase
         self.force = touch.force
         self.maximumPossibleForce = touch.maximumPossibleForce
-        self.phase = touch.phase
         self.estimationUpdateIndex = touch.estimationUpdateIndex
+        self.timestamp = touch.timestamp
     }
 
     func convertToTextureCoordinates(
@@ -60,10 +63,11 @@ extension CanvasTouchPoint {
 
         return .init(
             location: locationOnTexture,
+            phase: phase,
             force: force,
             maximumPossibleForce: maximumPossibleForce,
-            phase: phase,
-            estimationUpdateIndex: estimationUpdateIndex
+            estimationUpdateIndex: estimationUpdateIndex,
+            timestamp: timestamp
         )
     }
 
