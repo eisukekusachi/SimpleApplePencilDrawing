@@ -68,12 +68,7 @@ extension CanvasPencilScreenTouchPoints {
 
     func appendEstimatedValue(_ touchPoint: CanvasTouchPoint) {
         estimatedTouchPointArray.append(touchPoint)
-
-        // When the touch ends, `estimationUpdateIndex` of `UITouch` becomes nil,
-        // so the `estimationUpdateIndex` of the previous `UITouch` is retained.
-        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase) {
-            lastEstimationUpdateIndexAtCompletion = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
-        }
+        updateLastEstimationUpdateIndexAtCompletionForTouchCompletion()
     }
 
     /// Combine `actualTouches` with the estimated values to create elements and append them to `actualTouchPointArray`
@@ -109,6 +104,14 @@ extension CanvasPencilScreenTouchPoints {
 
     func updateLatestActualTouchPoint() {
         latestActualTouchPoint = actualTouchPointArray.last
+    }
+
+    func updateLastEstimationUpdateIndexAtCompletionForTouchCompletion() {
+        // When the touch ends, `estimationUpdateIndex` of `UITouch` becomes nil,
+        // so the `estimationUpdateIndex` of the previous `UITouch` is retained.
+        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase) {
+            lastEstimationUpdateIndexAtCompletion = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
+        }
     }
 
     func reset() {
