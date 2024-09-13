@@ -302,11 +302,19 @@ extension CanvasViewModel {
     ) {
         guard
             let texture,
-            let destinationTexture,
+            let destinationTexture
+        else { return }
+
+        let sourceSize: CGSize = .init(
+            width: texture.size.width * ViewSize.getScaleToFit(texture.size, to: destinationTexture.size),
+            height: texture.size.height * ViewSize.getScaleToFit(texture.size, to: destinationTexture.size)
+        )
+
+        guard
             let device = MTLCreateSystemDefaultDevice(),
             let textureBuffers = MTLBuffers.makeAspectFitTextureBuffers(
                 device: device,
-                sourceSize: texture.size,
+                sourceSize: sourceSize,
                 destinationSize: destinationTexture.size,
                 nodes: textureNodes
             )
