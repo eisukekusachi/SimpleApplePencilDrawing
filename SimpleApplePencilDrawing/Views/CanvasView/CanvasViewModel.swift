@@ -77,14 +77,16 @@ extension CanvasViewModel {
         }
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
-            let location: CGPoint = convertToTextureCoordinates(
-                location: $0.location,
-                frameSize: view.frame.size,
-                renderTextureSize: canvasTexture?.size ?? .zero,
-                drawableSize: canvasView.renderTexture?.size ?? .zero
-            )
+            let scaleFrameToTexture = ViewSize.getScaleToFit(view.frame.size, to: canvasView.renderTexture?.size ?? .zero)
             return CanvasTouchPoint.init(
-                location: location,
+                location: convertToTextureCoordinates(
+                    location: .init(
+                        x: $0.location.x * scaleFrameToTexture,
+                        y: $0.location.y * scaleFrameToTexture
+                    ),
+                    renderTextureSize: canvasTexture?.size ?? .zero,
+                    drawableSize: canvasView.renderTexture?.size ?? .zero
+                ),
                 touch: $0
             )
         }
@@ -165,14 +167,16 @@ extension CanvasViewModel {
         let touchPhase = latestScreenTouchArray.currentTouchPhase
 
         let latestTextureTouchArray = latestScreenTouchArray.map {
-            let location: CGPoint = convertToTextureCoordinates(
-                location: $0.location,
-                frameSize: view.frame.size,
-                renderTextureSize: canvasTexture?.size ?? .zero,
-                drawableSize: canvasView.renderTexture?.size ?? .zero
-            )
+            let scaleFrameToTexture = ViewSize.getScaleToFit(view.frame.size, to: canvasView.renderTexture?.size ?? .zero)
             return CanvasTouchPoint.init(
-                location: location,
+                location: convertToTextureCoordinates(
+                    location: .init(
+                        x: $0.location.x * scaleFrameToTexture,
+                        y: $0.location.y * scaleFrameToTexture
+                    ),
+                    renderTextureSize: canvasTexture?.size ?? .zero,
+                    drawableSize: canvasView.renderTexture?.size ?? .zero
+                ),
                 touch: $0
             )
         }
@@ -319,19 +323,11 @@ extension CanvasViewModel {
 
     private func convertToTextureCoordinates(
         location: CGPoint,
-        frameSize: CGSize,
         renderTextureSize: CGSize,
         drawableSize: CGSize
     ) -> CGPoint {
 
-        let scaleFrameToTexture = ViewSize.getScaleToFit(frameSize, to: drawableSize)
-
-        var locationOnDrawable: CGPoint = .init(
-            x: location.x * scaleFrameToTexture,
-            y: location.y * scaleFrameToTexture
-        )
-
-        var locationOnTexture = locationOnDrawable
+        var locationOnTexture = location
 
         if renderTextureSize != drawableSize {
             let widthRatio = renderTextureSize.width / drawableSize.width
@@ -339,13 +335,13 @@ extension CanvasViewModel {
 
             if widthRatio > heightRatio {
                 locationOnTexture = .init(
-                    x: locationOnDrawable.x * widthRatio + (renderTextureSize.width - drawableSize.width * widthRatio) * 0.5,
-                    y: locationOnDrawable.y * widthRatio + (renderTextureSize.height - drawableSize.height * widthRatio) * 0.5
+                    x: location.x * widthRatio + (renderTextureSize.width - drawableSize.width * widthRatio) * 0.5,
+                    y: location.y * widthRatio + (renderTextureSize.height - drawableSize.height * widthRatio) * 0.5
                 )
             } else {
                 locationOnTexture = .init(
-                    x: locationOnDrawable.x * heightRatio + (renderTextureSize.width - drawableSize.width * heightRatio) * 0.5,
-                    y: locationOnDrawable.y * heightRatio + (renderTextureSize.height - drawableSize.height * heightRatio) * 0.5
+                    x: location.x * heightRatio + (renderTextureSize.width - drawableSize.width * heightRatio) * 0.5,
+                    y: location.y * heightRatio + (renderTextureSize.height - drawableSize.height * heightRatio) * 0.5
                 )
             }
         }
