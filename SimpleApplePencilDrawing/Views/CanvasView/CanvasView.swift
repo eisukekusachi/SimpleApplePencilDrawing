@@ -6,14 +6,12 @@
 //
 
 import MetalKit
+import Combine
 
 protocol CanvasViewProtocol {
     var commandBuffer: MTLCommandBuffer { get }
 
     var renderTexture: MTLTexture? { get }
-    var viewDrawable: CAMetalDrawable? { get }
-
-    func initTexture(textureSize: CGSize)
 
     func setNeedsDisplay()
 }
@@ -21,14 +19,26 @@ protocol CanvasViewProtocol {
 /// A custom view for displaying textures with Metal support.
 class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
-    @objc dynamic var renderTexture: MTLTexture?
-
     var commandBuffer: MTLCommandBuffer {
         commandManager.currentCommandBuffer
     }
-    var viewDrawable: (any CAMetalDrawable)? {
-        currentDrawable
+
+    var updateTexturePublisher: AnyPublisher<Void, Never> {
+        updateTextureSubject.eraseToAnyPublisher()
     }
+    var renderTexture: MTLTexture? {
+        _renderTexture
+    }
+
+    private var _renderTexture: MTLTexture? {
+        didSet {
+            updateTextureSubject.send(())
+        }
+    }
+
+    private var textureBuffers: TextureBuffers?
+
+    private let updateTextureSubject = PassthroughSubject<Void, Never>()
 
     private var commandManager: MTLCommandManager!
 
@@ -52,6 +62,8 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
         commandManager = MTLCommandManager(device: self.device!)
 
+        textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: flippedTextureNodes)
+
         // Configure the display link for rendering.
         displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
         displayLink?.add(to: .current, forMode: .common)
@@ -65,31 +77,19 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         self.backgroundColor = .white
     }
 
-    func initTexture(textureSize: CGSize) {
-        let minLength: CGFloat = CGFloat(MTLRenderer.threadGroupLength)
-        assert(textureSize.width >= minLength && textureSize.height >= minLength, "The textureSize is not appropriate")
-
-        renderTexture = MTKTextureUtils.makeBlankTexture(with: device!, textureSize)
-    }
-
     // MARK: - DrawTexture
     func draw(in view: MTKView) {
         guard
             let device,
+            let textureBuffers,
             let renderTexture,
-            let drawable = view.currentDrawable,
-            let textureBuffers = MTLBuffers.makeAspectFitTextureBuffers(
-                device: device,
-                sourceSize: renderTexture.size,
-                destinationSize: drawable.texture.size,
-                nodes: textureNodes
-            )
+            let drawable = view.currentDrawable
         else { return }
 
+        // Draw `renderTexture` directly onto `drawable.texture`
         MTLRenderer.drawTexture(
             renderTexture,
             buffers: textureBuffers,
-            withBackgroundColor: (230, 230, 230),
             on: drawable.texture,
             with: commandBuffer
         )
@@ -102,7 +102,8 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        setNeedsDisplay()
+        // Align the size of `_renderTexture` with `drawableSize`
+        _renderTexture = MTKTextureUtils.makeBlankTexture(with: device!, size)
     }
 
 }
