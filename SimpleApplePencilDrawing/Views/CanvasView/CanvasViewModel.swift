@@ -324,8 +324,12 @@ extension CanvasViewModel {
         drawableSize: CGSize
     ) -> CGPoint {
 
-        var locationOnDrawable: CGPoint = location
-        locationOnDrawable = location.scale(frameSize, to: drawableSize)
+        let scaleFrameToTexture = ViewSize.getScaleToFit(frameSize, to: drawableSize)
+
+        var locationOnDrawable: CGPoint = .init(
+            x: location.x * scaleFrameToTexture,
+            y: location.y * scaleFrameToTexture
+        )
 
         var locationOnTexture = locationOnDrawable
 
