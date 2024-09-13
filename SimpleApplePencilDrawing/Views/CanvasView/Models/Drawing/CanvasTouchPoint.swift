@@ -33,42 +33,16 @@ extension CanvasTouchPoint {
         self.timestamp = touch.timestamp
     }
 
-    func convertToTextureCoordinates(
-        frameSize: CGSize,
-        renderTextureSize: CGSize,
-        drawableSize: CGSize
-    ) -> Self {
-
-        var locationOnDrawable: CGPoint = self.location
-        locationOnDrawable = location.scale(frameSize, to: drawableSize)
-
-        var locationOnTexture = locationOnDrawable
-
-        if renderTextureSize != drawableSize {
-            let widthRatio = renderTextureSize.width / drawableSize.width
-            let heightRatio = renderTextureSize.height / drawableSize.height
-
-            if widthRatio > heightRatio {
-                locationOnTexture = .init(
-                    x: locationOnDrawable.x * widthRatio + (renderTextureSize.width - drawableSize.width * widthRatio) * 0.5,
-                    y: locationOnDrawable.y * widthRatio + (renderTextureSize.height - drawableSize.height * widthRatio) * 0.5
-                )
-            } else {
-                locationOnTexture = .init(
-                    x: locationOnDrawable.x * heightRatio + (renderTextureSize.width - drawableSize.width * heightRatio) * 0.5,
-                    y: locationOnDrawable.y * heightRatio + (renderTextureSize.height - drawableSize.height * heightRatio) * 0.5
-                )
-            }
-        }
-
-        return .init(
-            location: locationOnTexture,
-            phase: phase,
-            force: force,
-            maximumPossibleForce: maximumPossibleForce,
-            estimationUpdateIndex: estimationUpdateIndex,
-            timestamp: timestamp
-        )
+    init(
+        location: CGPoint,
+        touch: CanvasTouchPoint
+    ) {
+        self.location = location
+        self.phase = touch.phase
+        self.force = touch.force
+        self.maximumPossibleForce = touch.maximumPossibleForce
+        self.estimationUpdateIndex = touch.estimationUpdateIndex
+        self.timestamp = touch.timestamp
     }
 
 }
