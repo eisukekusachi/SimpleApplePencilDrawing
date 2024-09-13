@@ -121,6 +121,28 @@ enum MTLBuffers {
         )
     }
 
+    static func makeTextureBuffers(
+        device: MTLDevice?,
+        nodes: TextureNodes
+    ) -> TextureBuffers? {
+        let vertices = nodes.vertices
+        let texCoords = nodes.texCoords
+        let indices = nodes.indices
+
+        guard
+            let vertexBuffer = device?.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size),
+            let texCoordsBuffer = device?.makeBuffer(bytes: texCoords, length: texCoords.count * MemoryLayout<Float>.size),
+            let indexBuffer = device?.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.size)
+        else { return nil }
+
+        return (
+            vertexBuffer: vertexBuffer,
+            texCoordsBuffer: texCoordsBuffer,
+            indexBuffer: indexBuffer,
+            indicesCount: indices.count
+        )
+    }
+
     static func makeAspectFitTextureBuffers(
         device: MTLDevice?,
         sourceSize: CGSize,
