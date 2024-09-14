@@ -62,7 +62,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
         commandManager = MTLCommandManager(device: self.device!)
 
-        textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: flippedTextureNodes)
+        textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: textureNodes)
 
         // Configure the display link for rendering.
         displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
