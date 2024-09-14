@@ -80,7 +80,6 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
     // MARK: - DrawTexture
     func draw(in view: MTKView) {
         guard
-            let device,
             let textureBuffers,
             let renderTexture,
             let drawable = view.currentDrawable
