@@ -341,24 +341,6 @@ extension CanvasViewModel {
         )
     }
 
-    private func convertToTextureCoordinates(
-        location: CGPoint,
-        sourceSize: CGSize,
-        destinationSize: CGSize
-    ) -> CGPoint {
-        var locationOnTexture = location
-
-        if sourceSize != destinationSize {
-            let ratio = ViewSize.getScaleToFill(sourceSize, to: destinationSize)
-            locationOnTexture = .init(
-                x: location.x * ratio + (sourceSize.width - destinationSize.width * ratio) * 0.5,
-                y: location.y * ratio + (sourceSize.height - destinationSize.height * ratio) * 0.5
-            )
-        }
-
-        return locationOnTexture
-    }
-
     /// Scales the `sourceTextureLocation` by applying the aspect fill ratio of `sourceTextureSize` to `destinationTextureSize`,
     /// ensuring the aspect ratio is maintained, and centers the scaled location within `destinationTextureSize`.
     private func scaleAndCenterAspectFill(
