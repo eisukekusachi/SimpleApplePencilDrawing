@@ -65,6 +65,11 @@ extension CanvasViewModel {
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
+        guard
+            let canvasTexture,
+            let renderTexture = canvasView.renderTexture
+        else { return }
+
         let touchScreenPoints: [CanvasTouchPoint] = touches.map {
             .init(touch: $0, view: view)
         }
@@ -77,15 +82,12 @@ extension CanvasViewModel {
         }
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
-            let scaleFrameToTexture = ViewSize.getScaleToFit(view.frame.size, to: canvasView.renderTexture?.size ?? .zero)
-            return CanvasTouchPoint.init(
-                location: convertToTextureCoordinates(
-                    location: .init(
-                        x: $0.location.x * scaleFrameToTexture,
-                        y: $0.location.y * scaleFrameToTexture
-                    ),
-                    sourceSize: canvasTexture?.size ?? .zero,
-                    destinationSize: canvasView.renderTexture?.size ?? .zero
+            // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
+            CanvasTouchPoint.init(
+                location: scaleAndCenterAspectFill(
+                    sourceTextureLocation: $0.location,
+                    sourceTextureSize: view.frame.size,
+                    destinationTextureSize: canvasTexture.size
                 ),
                 touch: $0
             )
@@ -145,6 +147,11 @@ extension CanvasViewModel {
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
+        guard
+            let canvasTexture,
+            let renderTexture = canvasView.renderTexture
+        else { return }
+
         // Combine `actualTouches` with the estimated values to create actual values, and append them to an array
         let actualTouchArray = Array(actualTouches).sorted { $0.timestamp < $1.timestamp }
         actualTouchArray.forEach { actualTouch in
@@ -167,15 +174,12 @@ extension CanvasViewModel {
         let touchPhase = latestScreenTouchArray.currentTouchPhase
 
         let latestTextureTouchArray = latestScreenTouchArray.map {
-            let scaleFrameToTexture = ViewSize.getScaleToFit(view.frame.size, to: canvasView.renderTexture?.size ?? .zero)
-            return CanvasTouchPoint.init(
-                location: convertToTextureCoordinates(
-                    location: .init(
-                        x: $0.location.x * scaleFrameToTexture,
-                        y: $0.location.y * scaleFrameToTexture
-                    ),
-                    sourceSize: canvasTexture?.size ?? .zero,
-                    destinationSize: canvasView.renderTexture?.size ?? .zero
+            // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
+            CanvasTouchPoint.init(
+                location: scaleAndCenterAspectFill(
+                    sourceTextureLocation: $0.location,
+                    sourceTextureSize: view.frame.size,
+                    destinationTextureSize: canvasTexture.size
                 ),
                 touch: $0
             )
