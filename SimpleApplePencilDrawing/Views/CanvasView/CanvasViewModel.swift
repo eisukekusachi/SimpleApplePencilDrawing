@@ -19,9 +19,10 @@ final class CanvasViewModel {
 
     /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
-
-    /// A texture currently being displayed
+    /// A texture with lines previously drawn
     private let currentTexture = CanvasCurrentTexture()
+    /// A texture with a background color, composed of `drawingTexture` and `currentTexture`
+    private var canvasTexture: MTLTexture?
 
     /// A manager for handling Apple Pencil input values
     private let pencilScreenTouchPoints = CanvasPencilScreenTouchPoints()
@@ -36,11 +37,21 @@ final class CanvasViewModel {
 
 extension CanvasViewModel {
 
+    func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
+            on: canvasView.renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+        canvasView.setNeedsDisplay()
+    }
+
     func onViewDidAppear(
         _ drawableTextureSize: CGSize,
         canvasView: CanvasViewProtocol
     ) {
-        if canvasView.renderTexture == nil {
+        if canvasTexture == nil {
             initCanvas(
                 textureSize: drawableTextureSize,
                 canvasView: canvasView
@@ -53,6 +64,11 @@ extension CanvasViewModel {
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
+        guard
+            let canvasTexture,
+            let renderTexture = canvasView.renderTexture
+        else { return }
+
         let touchScreenPoints: [CanvasTouchPoint] = touches.map {
             .init(touch: $0, view: view)
         }
@@ -65,10 +81,14 @@ extension CanvasViewModel {
         }
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
-            $0.convertToTextureCoordinates(
-                frameSize: view.frame.size,
-                renderTextureSize: canvasView.renderTexture?.size ?? .zero,
-                drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+            // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
+            CanvasTouchPoint.init(
+                location: scaleAndCenterAspectFill(
+                    sourceTextureLocation: $0.location,
+                    sourceTextureSize: view.frame.size,
+                    destinationTextureSize: canvasTexture.size
+                ),
+                touch: $0
             )
         }
 
@@ -88,6 +108,18 @@ extension CanvasViewModel {
             touchPhase: touchPhase,
             on: canvasView
         )
+
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
+            on: renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+
+        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
+            pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
+            grayscaleTextureCurveIterator = nil
+        }
     }
 
     func onPencilGestureDetected(
@@ -121,6 +153,11 @@ extension CanvasViewModel {
         view: UIView,
         canvasView: CanvasViewProtocol
     ) {
+        guard
+            let canvasTexture,
+            let renderTexture = canvasView.renderTexture
+        else { return }
+
         // Combine `actualTouches` with the estimated values to create actual values, and append them to an array
         let actualTouchArray = Array(actualTouches).sorted { $0.timestamp < $1.timestamp }
         actualTouchArray.forEach { actualTouch in
@@ -143,10 +180,14 @@ extension CanvasViewModel {
         let touchPhase = latestScreenTouchArray.currentTouchPhase
 
         let latestTextureTouchArray = latestScreenTouchArray.map {
-            $0.convertToTextureCoordinates(
-                frameSize: view.frame.size,
-                renderTextureSize: canvasView.renderTexture?.size ?? .zero,
-                drawableSize: canvasView.viewDrawable?.texture.size ?? .zero
+            // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
+            CanvasTouchPoint.init(
+                location: scaleAndCenterAspectFill(
+                    sourceTextureLocation: $0.location,
+                    sourceTextureSize: view.frame.size,
+                    destinationTextureSize: canvasTexture.size
+                ),
+                touch: $0
             )
         }
 
@@ -167,6 +208,13 @@ extension CanvasViewModel {
             on: canvasView
         )
 
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
+            on: renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
@@ -179,13 +227,7 @@ extension CanvasViewModel {
         drawingTexture.clearTexture()
         currentTexture.clearTexture()
 
-        MTLRenderer.fill(
-            backgroundColor.rgb,
-            on: canvasView.renderTexture,
-            with: canvasView.commandBuffer
-        )
-
-        canvasView.setNeedsDisplay()
+        clearCanvas(canvasView)
     }
 
 }
@@ -197,15 +239,27 @@ extension CanvasViewModel {
         textureSize: CGSize,
         canvasView: CanvasViewProtocol
     ) {
+        guard let device = MTLCreateSystemDefaultDevice() else { return }
+
         drawingTexture.initTexture(textureSize: textureSize)
         currentTexture.initTexture(textureSize: textureSize)
+        canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
 
-        canvasView.initTexture(textureSize: textureSize)
+        clearCanvas(canvasView)
+    }
 
+    private func clearCanvas(_ canvasView: CanvasViewProtocol) {
         MTLRenderer.fill(
             backgroundColor.rgb,
-            on: canvasView.renderTexture,
+            on: canvasTexture,
             with: canvasView.commandBuffer
+        )
+
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
+            on: canvasView.renderTexture,
+            commandBuffer: canvasView.commandBuffer
         )
 
         canvasView.setNeedsDisplay()
@@ -237,7 +291,7 @@ extension CanvasViewModel {
             [currentTexture.texture,
              drawingTexture.texture],
             withBackgroundColor: backgroundColor.rgba,
-            on: canvasView.renderTexture,
+            on: canvasTexture,
             with: canvasView.commandBuffer
         )
 
@@ -253,11 +307,61 @@ extension CanvasViewModel {
                 with: canvasView.commandBuffer
             )
         }
+    }
 
-        if touchPhase == .ended || touchPhase == .cancelled {
-            pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
-            grayscaleTextureCurveIterator = nil
+    /// Draw `texture` onto `destinationTexture` with aspect fit
+    private func drawTextureWithAspectFit(
+        texture: MTLTexture?,
+        withBackgroundColor color: (Int, Int, Int)? = nil,
+        on destinationTexture: MTLTexture?,
+        commandBuffer: MTLCommandBuffer
+    ) {
+        guard
+            let texture,
+            let destinationTexture
+        else { return }
+
+        let ratio = ViewSize.getScaleToFit(texture.size, to: destinationTexture.size)
+
+        guard
+            let device = MTLCreateSystemDefaultDevice(),
+            let textureBuffers = MTLBuffers.makeTextureBuffers(
+                device: device,
+                sourceSize: .init(
+                    width: texture.size.width * ratio,
+                    height: texture.size.height * ratio
+                ),
+                destinationSize: destinationTexture.size,
+                nodes: textureNodes
+            )
+        else { return }
+
+        MTLRenderer.drawTexture(
+            texture,
+            buffers: textureBuffers,
+            withBackgroundColor: color,
+            on: destinationTexture,
+            with: commandBuffer
+        )
+    }
+
+    /// Scales the `sourceTextureLocation` by applying the aspect fill ratio of `sourceTextureSize` to `destinationTextureSize`,
+    /// ensuring the aspect ratio is maintained, and centers the scaled location within `destinationTextureSize`.
+    private func scaleAndCenterAspectFill(
+        sourceTextureLocation: CGPoint,
+        sourceTextureSize: CGSize,
+        destinationTextureSize: CGSize
+    ) -> CGPoint {
+        if sourceTextureSize == destinationTextureSize {
+            return sourceTextureLocation
         }
+
+        let ratio = ViewSize.getScaleToFill(sourceTextureSize, to: destinationTextureSize)
+
+        return .init(
+            x: sourceTextureLocation.x * ratio + (destinationTextureSize.width - sourceTextureSize.width * ratio) * 0.5,
+            y: sourceTextureLocation.y * ratio + (destinationTextureSize.height - sourceTextureSize.height * ratio) * 0.5
+        )
     }
 
 }

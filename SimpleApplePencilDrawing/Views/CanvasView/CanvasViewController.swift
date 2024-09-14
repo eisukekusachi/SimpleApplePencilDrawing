@@ -68,6 +68,15 @@ extension CanvasViewController {
     }
 
     private func bindViewModel() {
+        canvasView.updateTexturePublisher
+            .sink { [weak self] in
+                guard let `self` else { return }
+                self.canvasViewModel.onUpdateRenderTexture(
+                    canvasView: self.canvasView
+                )
+            }
+            .store(in: &cancellables)
+
         canvasViewModel.pauseDisplayLinkPublish
             .receive(on: DispatchQueue.main)
             .assign(to: \.isPaused, on: canvasView.displayLink)

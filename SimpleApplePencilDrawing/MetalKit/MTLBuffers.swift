@@ -121,50 +121,69 @@ enum MTLBuffers {
         )
     }
 
-    static func makeAspectFitTextureBuffers(
+    static func makeTextureBuffers(
+        device: MTLDevice?,
+        nodes: TextureNodes
+    ) -> TextureBuffers? {
+        let vertices = nodes.vertices
+        let texCoords = nodes.texCoords
+        let indices = nodes.indices
+
+        guard
+            let vertexBuffer = device?.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size),
+            let texCoordsBuffer = device?.makeBuffer(bytes: texCoords, length: texCoords.count * MemoryLayout<Float>.size),
+            let indexBuffer = device?.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.size)
+        else { return nil }
+
+        return (
+            vertexBuffer: vertexBuffer,
+            texCoordsBuffer: texCoordsBuffer,
+            indexBuffer: indexBuffer,
+            indicesCount: indices.count
+        )
+    }
+
+    static func makeTextureBuffers(
         device: MTLDevice?,
         sourceSize: CGSize,
         destinationSize: CGSize,
         nodes: TextureNodes
     ) -> TextureBuffers? {
-        guard let device = device else { return nil }
+        guard let device else { return nil }
 
-        let texCoords = nodes.texCoords
-        let indices = nodes.indices
-
-        // Calculate the scale to fit the source size within the destination size
-        let scale = ViewSize.getScaleToFit(sourceSize, to: destinationSize)
-        let resizedSourceSize = CGSize(
-            width: sourceSize.width * scale,
-            height: sourceSize.height * scale
-        )
-
-        // Helper function to calculate vertex coordinates
-        func calculateVertexPosition(xOffset: CGFloat, yOffset: CGFloat) -> CGPoint {
-            let x = destinationSize.width * 0.5 + xOffset * resizedSourceSize.width * 0.5
-            let y = destinationSize.height * 0.5 + yOffset * resizedSourceSize.height * 0.5
-            return CGPoint(x: x, y: y)
-        }
-
-        // Calculate vertex positions for the four corners
-        let bottomLeft = calculateVertexPosition(xOffset: -1, yOffset: 1)
-        let bottomRight = calculateVertexPosition(xOffset: 1, yOffset: 1)
-        let topRight = calculateVertexPosition(xOffset: 1, yOffset: -1)
-        let topLeft = calculateVertexPosition(xOffset: -1, yOffset: -1)
-
-        // Normalize vertex positions to OpenGL coordinates
+        // Normalize vertex positions
         let vertices: [Float] = [
-            Float(bottomLeft.x / destinationSize.width * 2.0 - 1.0), Float(bottomLeft.y / destinationSize.height * 2.0 - 1.0),
-            Float(bottomRight.x / destinationSize.width * 2.0 - 1.0), Float(bottomRight.y / destinationSize.height * 2.0 - 1.0),
-            Float(topRight.x / destinationSize.width * 2.0 - 1.0), Float(topRight.y / destinationSize.height * 2.0 - 1.0),
-            Float(topLeft.x / destinationSize.width * 2.0 - 1.0), Float(topLeft.y / destinationSize.height * 2.0 - 1.0)
+            // bottomLeft
+            Float((destinationSize.width * 0.5 + -1 * sourceSize.width * 0.5) / destinationSize.width) * 2.0 - 1.0,
+            Float((destinationSize.height * 0.5 + -1 * sourceSize.height * 0.5) / destinationSize.height) * 2.0 - 1.0,
+            // bottomRight
+            Float((destinationSize.width * 0.5 + 1 * sourceSize.width * 0.5) / destinationSize.width) * 2.0 - 1.0,
+            Float((destinationSize.height * 0.5 + -1 * sourceSize.height * 0.5) / destinationSize.height * 2.0 - 1.0),
+            // topRight
+            Float((destinationSize.width * 0.5 + 1 * sourceSize.width * 0.5) / destinationSize.width * 2.0 - 1.0),
+            Float((destinationSize.height * 0.5 + 1 * sourceSize.height * 0.5) / destinationSize.height * 2.0 - 1.0),
+            // topLeft
+            Float((destinationSize.width * 0.5 + -1 * sourceSize.width * 0.5) / destinationSize.width * 2.0 - 1.0),
+            Float((destinationSize.height * 0.5 + 1 * sourceSize.height * 0.5) / destinationSize.height * 2.0 - 1.0)
         ]
 
         // Create buffers
         guard
-            let vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: []),
-            let texCoordsBuffer = device.makeBuffer(bytes: texCoords, length: texCoords.count * MemoryLayout<Float>.size, options: []),
-            let indexBuffer = device.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.size, options: [])
+            let vertexBuffer = device.makeBuffer(
+                bytes: vertices,
+                length: vertices.count * MemoryLayout<Float>.size,
+                options: []
+            ),
+            let texCoordsBuffer = device.makeBuffer(
+                bytes: nodes.texCoords,
+                length: nodes.texCoords.count * MemoryLayout<Float>.size,
+                options: []
+            ),
+            let indexBuffer = device.makeBuffer(
+                bytes: nodes.indices,
+                length: nodes.indices.count * MemoryLayout<UInt16>.size,
+                options: []
+            )
         else {
             return nil
         }
@@ -173,7 +192,7 @@ enum MTLBuffers {
             vertexBuffer: vertexBuffer,
             texCoordsBuffer: texCoordsBuffer,
             indexBuffer: indexBuffer,
-            indicesCount: indices.count
+            indicesCount: nodes.indices.count
         )
     }
 
