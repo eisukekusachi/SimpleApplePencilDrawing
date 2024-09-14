@@ -236,7 +236,7 @@ extension CanvasViewModel {
 
         MTLRenderer.fill(
             backgroundColor.rgb,
-            on: canvasView.renderTexture,
+            on: canvasTexture,
             with: canvasView.commandBuffer
         )
 
