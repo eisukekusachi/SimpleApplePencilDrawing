@@ -84,8 +84,8 @@ extension CanvasViewModel {
                         x: $0.location.x * scaleFrameToTexture,
                         y: $0.location.y * scaleFrameToTexture
                     ),
-                    renderTextureSize: canvasTexture?.size ?? .zero,
-                    drawableSize: canvasView.renderTexture?.size ?? .zero
+                    sourceSize: canvasTexture?.size ?? .zero,
+                    destinationSize: canvasView.renderTexture?.size ?? .zero
                 ),
                 touch: $0
             )
@@ -174,8 +174,8 @@ extension CanvasViewModel {
                         x: $0.location.x * scaleFrameToTexture,
                         y: $0.location.y * scaleFrameToTexture
                     ),
-                    renderTextureSize: canvasTexture?.size ?? .zero,
-                    drawableSize: canvasView.renderTexture?.size ?? .zero
+                    sourceSize: canvasTexture?.size ?? .zero,
+                    destinationSize: canvasView.renderTexture?.size ?? .zero
                 ),
                 touch: $0
             )
@@ -331,27 +331,17 @@ extension CanvasViewModel {
 
     private func convertToTextureCoordinates(
         location: CGPoint,
-        renderTextureSize: CGSize,
-        drawableSize: CGSize
+        sourceSize: CGSize,
+        destinationSize: CGSize
     ) -> CGPoint {
-
         var locationOnTexture = location
 
-        if renderTextureSize != drawableSize {
-            let widthRatio = renderTextureSize.width / drawableSize.width
-            let heightRatio = renderTextureSize.height / drawableSize.height
-
-            if widthRatio > heightRatio {
-                locationOnTexture = .init(
-                    x: location.x * widthRatio + (renderTextureSize.width - drawableSize.width * widthRatio) * 0.5,
-                    y: location.y * widthRatio + (renderTextureSize.height - drawableSize.height * widthRatio) * 0.5
-                )
-            } else {
-                locationOnTexture = .init(
-                    x: location.x * heightRatio + (renderTextureSize.width - drawableSize.width * heightRatio) * 0.5,
-                    y: location.y * heightRatio + (renderTextureSize.height - drawableSize.height * heightRatio) * 0.5
-                )
-            }
+        if sourceSize != destinationSize {
+            let ratio = ViewSize.getScaleToFill(sourceSize, to: destinationSize)
+            locationOnTexture = .init(
+                x: location.x * ratio + (sourceSize.width - destinationSize.width * ratio) * 0.5,
+                y: location.y * ratio + (sourceSize.height - destinationSize.height * ratio) * 0.5
+            )
         }
 
         return locationOnTexture
