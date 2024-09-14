@@ -33,7 +33,6 @@ final class CanvasViewModel {
 
     private var backgroundColor: UIColor = .white
 
-    private let blankAreaBackgroundColor: (Int, Int, Int) = (230, 230, 230)
 }
 
 extension CanvasViewModel {
@@ -41,7 +40,7 @@ extension CanvasViewModel {
     func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: blankAreaBackgroundColor,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: canvasView.renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -112,7 +111,7 @@ extension CanvasViewModel {
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: blankAreaBackgroundColor,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -211,7 +210,7 @@ extension CanvasViewModel {
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: blankAreaBackgroundColor,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -258,7 +257,7 @@ extension CanvasViewModel {
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: blankAreaBackgroundColor,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: canvasView.renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
