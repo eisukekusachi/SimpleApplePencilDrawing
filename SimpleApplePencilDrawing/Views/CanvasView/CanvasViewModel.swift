@@ -110,6 +110,13 @@ extension CanvasViewModel {
             on: canvasView
         )
 
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            withBackgroundColor: blankAreaBackgroundColor,
+            on: renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
@@ -202,6 +209,13 @@ extension CanvasViewModel {
             on: canvasView
         )
 
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            withBackgroundColor: blankAreaBackgroundColor,
+            on: renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
@@ -289,13 +303,6 @@ extension CanvasViewModel {
                 with: canvasView.commandBuffer
             )
         }
-
-        drawTextureWithAspectFit(
-            texture: canvasTexture,
-            withBackgroundColor: blankAreaBackgroundColor,
-            on: canvasView.renderTexture,
-            commandBuffer: canvasView.commandBuffer
-        )
     }
 
     /// Draw `texture` onto `destinationTexture` with aspect fit
