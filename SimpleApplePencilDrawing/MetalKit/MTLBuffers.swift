@@ -143,7 +143,7 @@ enum MTLBuffers {
         )
     }
 
-    static func makeAspectFitTextureBuffers(
+    static func makeTextureBuffers(
         device: MTLDevice?,
         sourceSize: CGSize,
         destinationSize: CGSize,

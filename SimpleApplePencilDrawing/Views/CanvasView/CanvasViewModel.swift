@@ -294,6 +294,7 @@ extension CanvasViewModel {
         )
     }
 
+    /// Draw `texture` onto `destinationTexture` with aspect fit
     private func drawTextureWithAspectFit(
         texture: MTLTexture?,
         withBackgroundColor color: (Int, Int, Int)? = nil,
@@ -305,16 +306,16 @@ extension CanvasViewModel {
             let destinationTexture
         else { return }
 
-        let sourceSize: CGSize = .init(
-            width: texture.size.width * ViewSize.getScaleToFit(texture.size, to: destinationTexture.size),
-            height: texture.size.height * ViewSize.getScaleToFit(texture.size, to: destinationTexture.size)
-        )
+        let ratio = ViewSize.getScaleToFit(texture.size, to: destinationTexture.size)
 
         guard
             let device = MTLCreateSystemDefaultDevice(),
-            let textureBuffers = MTLBuffers.makeAspectFitTextureBuffers(
+            let textureBuffers = MTLBuffers.makeTextureBuffers(
                 device: device,
-                sourceSize: sourceSize,
+                sourceSize: .init(
+                    width: texture.size.width * ratio,
+                    height: texture.size.height * ratio
+                ),
                 destinationSize: destinationTexture.size,
                 nodes: textureNodes
             )
