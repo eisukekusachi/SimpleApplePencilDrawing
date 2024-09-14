@@ -228,13 +228,7 @@ extension CanvasViewModel {
         drawingTexture.clearTexture()
         currentTexture.clearTexture()
 
-        MTLRenderer.fill(
-            backgroundColor.rgb,
-            on: canvasView.renderTexture,
-            with: canvasView.commandBuffer
-        )
-
-        canvasView.setNeedsDisplay()
+        clearCanvas(canvasView)
     }
 
 }
@@ -252,10 +246,21 @@ extension CanvasViewModel {
         currentTexture.initTexture(textureSize: textureSize)
         canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
 
+        clearCanvas(canvasView)
+    }
+
+    private func clearCanvas(_ canvasView: CanvasViewProtocol) {
         MTLRenderer.fill(
             backgroundColor.rgb,
             on: canvasTexture,
             with: canvasView.commandBuffer
+        )
+
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            withBackgroundColor: blankAreaBackgroundColor,
+            on: canvasView.renderTexture,
+            commandBuffer: canvasView.commandBuffer
         )
 
         canvasView.setNeedsDisplay()
