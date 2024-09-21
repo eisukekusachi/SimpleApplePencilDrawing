@@ -42,7 +42,6 @@ extension CanvasViewModel {
     func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: canvasView.renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -113,7 +112,6 @@ extension CanvasViewModel {
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -212,7 +210,6 @@ extension CanvasViewModel {
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -265,7 +262,6 @@ extension CanvasViewModel {
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: canvasView.renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -322,7 +318,6 @@ extension CanvasViewModel {
     /// Draw `texture` onto `destinationTexture` with aspect fit
     private func drawTextureWithAspectFit(
         texture: MTLTexture?,
-        withBackgroundColor color: (Int, Int, Int)? = nil,
         on destinationTexture: MTLTexture?,
         commandBuffer: MTLCommandBuffer
     ) {
@@ -349,7 +344,7 @@ extension CanvasViewModel {
         MTLRenderer.draw(
             texture: texture,
             buffers: textureBuffers,
-            withBackgroundColor: color,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: destinationTexture,
             with: commandBuffer
         )
