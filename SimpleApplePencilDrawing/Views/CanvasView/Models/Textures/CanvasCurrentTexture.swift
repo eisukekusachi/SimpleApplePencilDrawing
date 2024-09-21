@@ -24,7 +24,7 @@ extension CanvasCurrentTexture {
 
     func clearTexture() {
         let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
-        MTLRenderer.clear(texture, with: commandBuffer)
+        MTLRenderer.clear(texture: texture, with: commandBuffer)
         commandBuffer.commit()
     }
 

@@ -66,7 +66,10 @@ extension CanvasBrushDrawingTexture {
 
     func clearTexture(with commandBuffer: MTLCommandBuffer) {
         MTLRenderer.clear(
-            [grayscaleDrawingTexture, texture],
+            textures: [
+                grayscaleDrawingTexture,
+                texture
+            ],
             with: commandBuffer
         )
     }

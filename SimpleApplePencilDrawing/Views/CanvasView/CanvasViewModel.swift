@@ -250,7 +250,7 @@ extension CanvasViewModel {
 
     private func clearCanvas(_ canvasView: CanvasViewProtocol) {
         MTLRenderer.fill(
-            backgroundColor.rgb,
+            color: backgroundColor.rgb,
             on: canvasTexture,
             with: canvasView.commandBuffer
         )
@@ -287,9 +287,11 @@ extension CanvasViewModel {
         )
 
         // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
-        MTLRenderer.drawTextures(
-            [currentTexture.texture,
-             drawingTexture.texture],
+        MTLRenderer.draw(
+            textures: [
+                currentTexture.texture,
+                drawingTexture.texture
+            ],
             withBackgroundColor: backgroundColor.rgba,
             on: canvasTexture,
             with: canvasView.commandBuffer
@@ -299,7 +301,7 @@ extension CanvasViewModel {
         // Then, clear `drawingTexture` for the next drawing.
         if touchPhase == .ended {
             MTLRenderer.merge(
-                drawingTexture.texture,
+                texture: drawingTexture.texture,
                 into: currentTexture.texture,
                 with: canvasView.commandBuffer
             )
@@ -336,8 +338,8 @@ extension CanvasViewModel {
             )
         else { return }
 
-        MTLRenderer.drawTexture(
-            texture,
+        MTLRenderer.draw(
+            texture: texture,
             buffers: textureBuffers,
             withBackgroundColor: color,
             on: destinationTexture,
