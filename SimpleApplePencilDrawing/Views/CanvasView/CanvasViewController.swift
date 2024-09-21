@@ -29,6 +29,10 @@ class CanvasViewController: UIViewController {
         canvasViewModel.onViewDidAppear(canvasView: canvasView)
     }
 
+    @IBAction func tapReplayButton(_ sender: UIButton) {
+        canvasViewModel.onTapReplayButton(canvasView: canvasView)
+    }
+
 }
 
 extension CanvasViewController {

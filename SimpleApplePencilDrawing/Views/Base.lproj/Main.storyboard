@@ -21,6 +21,14 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qWu-T3-OPp">
+                                <rect key="frame" x="159" y="719" width="75" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Replay"/>
+                                <connections>
+                                    <action selector="tapReplayButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9PL-Da-db6"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -28,6 +36,8 @@
                             <constraint firstItem="aRg-sr-ixZ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ism-vs-aiN"/>
                             <constraint firstAttribute="trailing" secondItem="aRg-sr-ixZ" secondAttribute="trailing" id="KON-it-UFv"/>
                             <constraint firstAttribute="bottom" secondItem="aRg-sr-ixZ" secondAttribute="bottom" id="hmz-or-igx"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="qWu-T3-OPp" secondAttribute="bottom" constant="64" id="nbf-oV-GXV"/>
+                            <constraint firstItem="qWu-T3-OPp" firstAttribute="centerX" secondItem="aRg-sr-ixZ" secondAttribute="centerX" id="o2y-h2-3du"/>
                             <constraint firstItem="aRg-sr-ixZ" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="r83-pl-b1h"/>
                         </constraints>
                     </view>

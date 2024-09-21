@@ -29,6 +29,9 @@ final class CanvasViewModel {
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
 
+    private let replayDrawing = CanvasReplayDrawing()
+    private let replayDrawingTextures = CanvasReplayDrawingTextures()
+
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
     private var backgroundColor: UIColor = .white
@@ -55,6 +58,8 @@ extension CanvasViewModel {
             )
             canvasView.setNeedsDisplay()
         }
+
+        replayDrawing.delegate = self
     }
 
     func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
@@ -140,7 +145,11 @@ extension CanvasViewModel {
             commandBuffer: canvasView.commandBuffer
         )
 
+        replayDrawing.appendPointsToCurvePointArray(textureTouchPoints)
+
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
+            replayDrawing.appendCurveToArrayAndReadyForNextDrawing()
+
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
         }
@@ -250,7 +259,11 @@ extension CanvasViewModel {
             commandBuffer: canvasView.commandBuffer
         )
 
+        replayDrawing.appendPointsToCurvePointArray(latestTextureTouchArray)
+
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
+            replayDrawing.appendCurveToArrayAndReadyForNextDrawing()
+
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
 
@@ -271,6 +284,19 @@ extension CanvasViewModel {
         clearCanvas(canvasView)
     }
 
+    func onTapReplayButton(
+        canvasView: CanvasViewProtocol
+    ) {
+        replayDrawingTextures.clearTexture()
+        clearCanvas(canvasView)
+
+        if !replayDrawing.replayDrawing {
+            replayDrawing.drawCurveWhileReplaying(canvasView: canvasView)
+        } else {
+            replayDrawing.finishReplayDrawing()
+        }
+    }
+
 }
 
 extension CanvasViewModel {
@@ -285,6 +311,8 @@ extension CanvasViewModel {
         drawingTexture.initTexture(textureSize: textureSize)
         currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
         canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
+
+        replayDrawingTextures.initTexture(textureSize)
 
         clearCanvas(canvasView)
     }
@@ -425,6 +453,73 @@ extension CanvasViewModel {
             x: sourceTextureLocation.x * ratio + (destinationTextureSize.width - sourceTextureSize.width * ratio) * 0.5,
             y: sourceTextureLocation.y * ratio + (destinationTextureSize.height - sourceTextureSize.height * ratio) * 0.5
         )
+    }
+
+}
+
+extension CanvasViewModel: CanvasDrawingReplayDelegate {
+
+    func sendPointForReplayDrawing(
+        touchPoint: CanvasTouchPoint,
+        drawingTool: String,
+        canvasView: CanvasViewProtocol?
+    ) {
+        guard
+            let canvasView,
+            let renderTexture = canvasView.renderTexture
+        else { return }
+
+        let touchPhase = touchPoint.phase
+
+        if touchPhase == .began {
+            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
+            grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
+        }
+
+        grayscaleTextureCurveIterator?.append(
+            .init(
+                touchPoint: touchPoint,
+                diameter: CGFloat(drawingToolStatus.brushDiameter)
+            )
+        )
+
+        guard
+            replayDrawing.latestTouchPoint == nil ||
+            replayDrawing.hasSufficientTimeElapsedSincePreviousProcess(touchPoint, allowedDifferenceInSeconds: 0.01) ||
+            [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPoint.phase)
+        else { return }
+
+        replayDrawing.latestTouchPoint = touchPoint
+
+        let points = grayscaleTextureCurveIterator?.makeCurvePoints(
+            atEnd: touchPhase == .ended
+        ) ?? []
+
+        // Draw curve points on the `drawingTexture`
+        drawingTexture.drawPointsOnDrawingTexture(
+            grayscaleTexturePoints: points,
+            color: drawingToolStatus.brushColor,
+            with: canvasView.commandBuffer
+        )
+
+        mergeDrawingTexture(
+            withCurrentTexture: replayDrawingTextures.currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: replayDrawingTextures.canvasTexture,
+            with: canvasView.commandBuffer,
+            executeDrawingFinishProcess: touchPhase == .ended
+        )
+
+        drawTextureWithAspectFit(
+            texture: replayDrawingTextures.canvasTexture,
+            on: renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+
+        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
+            pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
+            grayscaleTextureCurveIterator = nil
+        }
     }
 
 }
