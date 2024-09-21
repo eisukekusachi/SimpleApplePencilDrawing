@@ -13,6 +13,8 @@ protocol CanvasViewProtocol {
 
     var renderTexture: MTLTexture? { get }
 
+    func clearCommandBuffer()
+
     func setNeedsDisplay()
 }
 
@@ -108,6 +110,10 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 }
 
 extension CanvasView {
+
+    func clearCommandBuffer() {
+        commandManager.clearCurrentCommandBuffer()
+    }
 
     @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
         setNeedsDisplay()

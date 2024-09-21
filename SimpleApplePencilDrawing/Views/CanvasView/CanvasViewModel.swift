@@ -62,6 +62,7 @@ extension CanvasViewModel {
         canvasView: CanvasViewProtocol
     ) {
         guard
+            pencilScreenTouchPoints.estimatedTouchPointArray.isEmpty,
             let canvasTexture,
             let renderTexture = canvasView.renderTexture
         else { return }
@@ -112,7 +113,7 @@ extension CanvasViewModel {
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: canvasView.commandBuffer,
-            isDrawingFinished: touchPhase == .ended
+            executeDrawingFinishProcess: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
@@ -135,6 +136,10 @@ extension CanvasViewModel {
     ) {
         // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
         if touches.contains(where: {$0.phase == .began}) {
+            if grayscaleTextureCurveIterator != nil {
+                cancelFingerDrawing(canvasView)
+            }
+
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
             pauseDisplayLinkSubject.send(false)
 
@@ -219,7 +224,7 @@ extension CanvasViewModel {
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: canvasView.commandBuffer,
-            isDrawingFinished: touchPhase == .ended
+            executeDrawingFinishProcess: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
@@ -283,6 +288,28 @@ extension CanvasViewModel {
         canvasView.setNeedsDisplay()
     }
 
+    private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
+        canvasView.clearCommandBuffer()
+
+        // Clear `drawingTextures` during drawing
+        drawingTexture.clearTexture()
+
+        mergeDrawingTexture(
+            withCurrentTexture: currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: canvasTexture,
+            with: canvasView.commandBuffer
+        )
+
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            on: canvasView.renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+
+        canvasView.setNeedsDisplay()
+    }
+
     private func pauseDisplayLinkOnCanvas(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
         pauseDisplayLinkSubject.send(isPaused)
 
@@ -297,7 +324,7 @@ extension CanvasViewModel {
         withBackgroundColor backgroundColor: UIColor,
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer,
-        isDrawingFinished: Bool
+        executeDrawingFinishProcess: Bool = false
     ) {
         guard
             let currentTexture,
@@ -317,7 +344,7 @@ extension CanvasViewModel {
 
         // At touch end, render `drawingTexture` on `currentTexture`
         // Then, clear `drawingTexture` for the next drawing.
-        if isDrawingFinished {
+        if executeDrawingFinishProcess {
             MTLRenderer.merge(
                 texture: drawingTexture.texture,
                 into: currentTexture,
