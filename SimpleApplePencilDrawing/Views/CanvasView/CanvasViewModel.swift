@@ -99,7 +99,6 @@ extension CanvasViewModel {
             }
         )
 
-        // Draw curve points on `drawingTexture`
         drawingTexture.drawPointsOnDrawingTexture(
             grayscaleTexturePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
@@ -210,7 +209,6 @@ extension CanvasViewModel {
             }
         )
 
-        // Draw curve points on `drawingTexture`
         drawingTexture.drawPointsOnDrawingTexture(
             grayscaleTexturePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
