@@ -30,10 +30,10 @@ extension CanvasBrushDrawingTexture {
         )
     }
 
-    /// Draws the points in grayscale on grayscaleDrawingTexture with Max blend mode.
+    /// Draws the points in grayscale on `grayscaleDrawingTexture` with Max blend mode.
     /// Converts the grayscale to brightness, adds color, and creates `texture`.
     /// This way, overlapping lines won’t darken within a single stroke.
-    func drawPointsOnTexture(
+    func drawPointsOnDrawingTexture(
         grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer

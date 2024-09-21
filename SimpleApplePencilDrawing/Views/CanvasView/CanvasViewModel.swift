@@ -102,12 +102,21 @@ extension CanvasViewModel {
             }
         )
 
-        drawPoints(
-            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
+        // Draw curve points on `drawingTexture`
+        drawingTexture.drawPointsOnDrawingTexture(
+            grayscaleTexturePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
-            touchPhase: touchPhase,
-            on: canvasView
+            color: drawingToolStatus.brushColor,
+            with: canvasView.commandBuffer
+        )
+
+        mergeDrawingTexture(
+            withCurrentTexture: currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: canvasTexture,
+            with: canvasView.commandBuffer,
+            isDrawingFinished: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
@@ -200,12 +209,21 @@ extension CanvasViewModel {
             }
         )
 
-        drawPoints(
-            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
+        // Draw curve points on `drawingTexture`
+        drawingTexture.drawPointsOnDrawingTexture(
+            grayscaleTexturePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
-            touchPhase: touchPhase,
-            on: canvasView
+            color: drawingToolStatus.brushColor,
+            with: canvasView.commandBuffer
+        )
+
+        mergeDrawingTexture(
+            withCurrentTexture: currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: canvasTexture,
+            with: canvasView.commandBuffer,
+            isDrawingFinished: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
@@ -278,17 +296,17 @@ extension CanvasViewModel {
         }
     }
 
-    private func drawPoints(
-        textureCurvePoints: [CanvasGrayscaleDotPoint],
-        touchPhase: UITouch.Phase,
-        on canvasView: CanvasViewProtocol
+    private func mergeDrawingTexture(
+        withCurrentTexture currentTexture: MTLTexture?,
+        withBackgroundColor backgroundColor: UIColor,
+        on destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer,
+        isDrawingFinished: Bool
     ) {
-        // Draw curve points on the `drawingTexture`
-        drawingTexture.drawPointsOnTexture(
-            grayscaleTexturePoints: textureCurvePoints,
-            color: drawingToolStatus.brushColor,
-            with: canvasView.commandBuffer
-        )
+        guard
+            let currentTexture,
+            let destinationTexture
+        else { return }
 
         // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
         MTLRenderer.draw(
@@ -297,20 +315,20 @@ extension CanvasViewModel {
                 drawingTexture.texture
             ],
             withBackgroundColor: backgroundColor.rgba,
-            on: canvasTexture,
-            with: canvasView.commandBuffer
+            on: destinationTexture,
+            with: commandBuffer
         )
 
         // At touch end, render `drawingTexture` on `currentTexture`
         // Then, clear `drawingTexture` for the next drawing.
-        if touchPhase == .ended {
+        if isDrawingFinished {
             MTLRenderer.merge(
                 texture: drawingTexture.texture,
                 into: currentTexture,
-                with: canvasView.commandBuffer
+                with: commandBuffer
             )
             drawingTexture.clearTexture(
-                with: canvasView.commandBuffer
+                with: commandBuffer
             )
         }
     }
