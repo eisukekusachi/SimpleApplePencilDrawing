@@ -19,8 +19,8 @@ final class CanvasViewModel {
 
     /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
-    /// A texture with lines previously drawn
-    private let currentTexture = CanvasCurrentTexture()
+    /// A texture with lines
+    private var currentTexture: MTLTexture?
     /// A texture with a background color, composed of `drawingTexture` and `currentTexture`
     private var canvasTexture: MTLTexture?
 
@@ -32,6 +32,8 @@ final class CanvasViewModel {
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
     private var backgroundColor: UIColor = .white
+
+    private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
 }
 
@@ -225,7 +227,13 @@ extension CanvasViewModel {
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {
         drawingTexture.clearTexture()
-        currentTexture.clearTexture()
+
+        let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+        MTLRenderer.clear(
+            texture: currentTexture,
+            with: commandBuffer
+        )
+        commandBuffer.commit()
 
         clearCanvas(canvasView)
     }
@@ -242,7 +250,7 @@ extension CanvasViewModel {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
 
         drawingTexture.initTexture(textureSize: textureSize)
-        currentTexture.initTexture(textureSize: textureSize)
+        currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
         canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
 
         clearCanvas(canvasView)
@@ -289,7 +297,7 @@ extension CanvasViewModel {
         // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
         MTLRenderer.draw(
             textures: [
-                currentTexture.texture,
+                currentTexture,
                 drawingTexture.texture
             ],
             withBackgroundColor: backgroundColor.rgba,
@@ -302,7 +310,7 @@ extension CanvasViewModel {
         if touchPhase == .ended {
             MTLRenderer.merge(
                 texture: drawingTexture.texture,
-                into: currentTexture.texture,
+                into: currentTexture,
                 with: canvasView.commandBuffer
             )
             drawingTexture.clearTexture(
