@@ -20,7 +20,7 @@ enum MTKTextureUtils {
         else { return nil }
 
         MTLRenderer.clear(
-            texture,
+            texture: texture,
             with: commandBuffer
         )
         commandBuffer.commit()

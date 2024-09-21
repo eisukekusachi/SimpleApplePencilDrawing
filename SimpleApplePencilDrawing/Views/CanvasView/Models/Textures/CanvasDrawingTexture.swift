@@ -13,7 +13,7 @@ protocol CanvasDrawingTexture {
 
     func initTexture(textureSize: CGSize)
 
-    func drawPointsOnTexture(
+    func drawPointsOnDrawingTexture(
         grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer

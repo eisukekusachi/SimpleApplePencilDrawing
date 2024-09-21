@@ -19,8 +19,8 @@ final class CanvasViewModel {
 
     /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
-    /// A texture with lines previously drawn
-    private let currentTexture = CanvasCurrentTexture()
+    /// A texture with lines
+    private var currentTexture: MTLTexture?
     /// A texture with a background color, composed of `drawingTexture` and `currentTexture`
     private var canvasTexture: MTLTexture?
 
@@ -33,30 +33,27 @@ final class CanvasViewModel {
 
     private var backgroundColor: UIColor = .white
 
+    private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
+
 }
 
 extension CanvasViewModel {
 
     func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
+        // Initialize the canvas here if `canvasTexture` is nil
+        if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
+            initCanvas(
+                textureSize: textureSize,
+                canvasView: canvasView
+            )
+        }
+
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: canvasView.renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
         canvasView.setNeedsDisplay()
-    }
-
-    func onViewDidAppear(
-        _ drawableTextureSize: CGSize,
-        canvasView: CanvasViewProtocol
-    ) {
-        if canvasTexture == nil {
-            initCanvas(
-                textureSize: drawableTextureSize,
-                canvasView: canvasView
-            )
-        }
     }
 
     func onFingerInputGesture(
@@ -65,6 +62,7 @@ extension CanvasViewModel {
         canvasView: CanvasViewProtocol
     ) {
         guard
+            pencilScreenTouchPoints.estimatedTouchPointArray.isEmpty,
             let canvasTexture,
             let renderTexture = canvasView.renderTexture
         else { return }
@@ -101,17 +99,24 @@ extension CanvasViewModel {
             }
         )
 
-        drawPoints(
-            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
+        drawingTexture.drawPointsOnDrawingTexture(
+            grayscaleTexturePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
-            touchPhase: touchPhase,
-            on: canvasView
+            color: drawingToolStatus.brushColor,
+            with: canvasView.commandBuffer
+        )
+
+        mergeDrawingTexture(
+            withCurrentTexture: currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: canvasTexture,
+            with: canvasView.commandBuffer,
+            executeDrawingFinishProcess: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -130,6 +135,10 @@ extension CanvasViewModel {
     ) {
         // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
         if touches.contains(where: {$0.phase == .began}) {
+            if grayscaleTextureCurveIterator != nil {
+                cancelFingerDrawing(canvasView)
+            }
+
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
             pauseDisplayLinkSubject.send(false)
 
@@ -200,17 +209,24 @@ extension CanvasViewModel {
             }
         )
 
-        drawPoints(
-            textureCurvePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
+        drawingTexture.drawPointsOnDrawingTexture(
+            grayscaleTexturePoints: grayscaleTextureCurveIterator?.makeCurvePoints(
                 atEnd: touchPhase == .ended
             ) ?? [],
-            touchPhase: touchPhase,
-            on: canvasView
+            color: drawingToolStatus.brushColor,
+            with: canvasView.commandBuffer
+        )
+
+        mergeDrawingTexture(
+            withCurrentTexture: currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: canvasTexture,
+            with: canvasView.commandBuffer,
+            executeDrawingFinishProcess: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -225,7 +241,13 @@ extension CanvasViewModel {
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {
         drawingTexture.clearTexture()
-        currentTexture.clearTexture()
+
+        let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+        MTLRenderer.clear(
+            texture: currentTexture,
+            with: commandBuffer
+        )
+        commandBuffer.commit()
 
         clearCanvas(canvasView)
     }
@@ -242,7 +264,7 @@ extension CanvasViewModel {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
 
         drawingTexture.initTexture(textureSize: textureSize)
-        currentTexture.initTexture(textureSize: textureSize)
+        currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
         canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
 
         clearCanvas(canvasView)
@@ -250,14 +272,35 @@ extension CanvasViewModel {
 
     private func clearCanvas(_ canvasView: CanvasViewProtocol) {
         MTLRenderer.fill(
-            backgroundColor.rgb,
+            color: backgroundColor.rgb,
             on: canvasTexture,
             with: canvasView.commandBuffer
         )
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
+            on: canvasView.renderTexture,
+            commandBuffer: canvasView.commandBuffer
+        )
+
+        canvasView.setNeedsDisplay()
+    }
+
+    private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
+        canvasView.clearCommandBuffer()
+
+        // Clear `drawingTextures` during drawing
+        drawingTexture.clearTexture()
+
+        mergeDrawingTexture(
+            withCurrentTexture: currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: canvasTexture,
+            with: canvasView.commandBuffer
+        )
+
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
             on: canvasView.renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
@@ -274,37 +317,39 @@ extension CanvasViewModel {
         }
     }
 
-    private func drawPoints(
-        textureCurvePoints: [CanvasGrayscaleDotPoint],
-        touchPhase: UITouch.Phase,
-        on canvasView: CanvasViewProtocol
+    private func mergeDrawingTexture(
+        withCurrentTexture currentTexture: MTLTexture?,
+        withBackgroundColor backgroundColor: UIColor,
+        on destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer,
+        executeDrawingFinishProcess: Bool = false
     ) {
-        // Draw curve points on the `drawingTexture`
-        drawingTexture.drawPointsOnTexture(
-            grayscaleTexturePoints: textureCurvePoints,
-            color: drawingToolStatus.brushColor,
-            with: canvasView.commandBuffer
-        )
+        guard
+            let currentTexture,
+            let destinationTexture
+        else { return }
 
         // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
-        MTLRenderer.drawTextures(
-            [currentTexture.texture,
-             drawingTexture.texture],
+        MTLRenderer.draw(
+            textures: [
+                currentTexture,
+                drawingTexture.texture
+            ],
             withBackgroundColor: backgroundColor.rgba,
-            on: canvasTexture,
-            with: canvasView.commandBuffer
+            on: destinationTexture,
+            with: commandBuffer
         )
 
         // At touch end, render `drawingTexture` on `currentTexture`
         // Then, clear `drawingTexture` for the next drawing.
-        if touchPhase == .ended {
+        if executeDrawingFinishProcess {
             MTLRenderer.merge(
-                drawingTexture.texture,
-                into: currentTexture.texture,
-                with: canvasView.commandBuffer
+                texture: drawingTexture.texture,
+                into: currentTexture,
+                with: commandBuffer
             )
             drawingTexture.clearTexture(
-                with: canvasView.commandBuffer
+                with: commandBuffer
             )
         }
     }
@@ -312,7 +357,6 @@ extension CanvasViewModel {
     /// Draw `texture` onto `destinationTexture` with aspect fit
     private func drawTextureWithAspectFit(
         texture: MTLTexture?,
-        withBackgroundColor color: (Int, Int, Int)? = nil,
         on destinationTexture: MTLTexture?,
         commandBuffer: MTLCommandBuffer
     ) {
@@ -336,10 +380,10 @@ extension CanvasViewModel {
             )
         else { return }
 
-        MTLRenderer.drawTexture(
-            texture,
+        MTLRenderer.draw(
+            texture: texture,
             buffers: textureBuffers,
-            withBackgroundColor: color,
+            withBackgroundColor: Constants.blankAreaBackgroundColor,
             on: destinationTexture,
             with: commandBuffer
         )

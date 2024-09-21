@@ -11,8 +11,8 @@ final class MTLRenderer {
 
     static let threadGroupLength: Int = 16
 
-    static func drawTextures(
-        _ textures: [MTLTexture?],
+    static func draw(
+        textures: [MTLTexture?],
         withBackgroundColor color: (Int, Int, Int, Int),
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
@@ -20,7 +20,7 @@ final class MTLRenderer {
         guard let destinationTexture else { return }
 
         MTLRenderer.fill(
-            color,
+            color: color,
             on: destinationTexture,
             with: commandBuffer
         )
@@ -28,7 +28,7 @@ final class MTLRenderer {
         textures.forEach { texture in
             if let texture {
                 MTLRenderer.merge(
-                    texture,
+                    texture: texture,
                     into: destinationTexture,
                     with: commandBuffer
                 )
@@ -36,35 +36,8 @@ final class MTLRenderer {
         }
     }
 
-    static func fill(
-        _ color: (Int, Int, Int),
-        on destinationTexture: MTLTexture?,
-        with commandBuffer: MTLCommandBuffer?
-    ) {
-        guard let destinationTexture else { return }
-
-        fill(
-            (color.0, color.1, color.2, 255),
-            on: destinationTexture,
-            with: commandBuffer
-        )
-    }
-
-    static func clear(
-        _ textures: [MTLTexture?],
-        with commandBuffer: MTLCommandBuffer
-    ) {
-        textures.forEach {
-            clear($0, with: commandBuffer)
-        }
-    }
-
-}
-
-extension MTLRenderer {
-
-    static func drawTexture(
-        _ texture: MTLTexture,
+    static func draw(
+        texture: MTLTexture,
         buffers: TextureBuffers,
         withBackgroundColor color: (Int, Int, Int)? = nil,
         on destinationTexture: MTLTexture?,
@@ -102,11 +75,11 @@ extension MTLRenderer {
 
     static func drawPointsWithMaxBlendMode(
         grayscalePointBuffers buffers: GrayscalePointBuffers,
-        on texture: MTLTexture?,
+        on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer?
     ) {
         let descriptor = MTLRenderPassDescriptor()
-        descriptor.colorAttachments[0].texture = texture
+        descriptor.colorAttachments[0].texture = destinationTexture
         descriptor.colorAttachments[0].loadAction = .load
 
         let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)
@@ -123,8 +96,26 @@ extension MTLRenderer {
         encoder?.endEncoding()
     }
 
+}
+
+extension MTLRenderer {
+
     static func fill(
-        _ color: (Int, Int, Int, Int),
+        color: (Int, Int, Int),
+        on destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer?
+    ) {
+        guard let destinationTexture else { return }
+
+        fill(
+            color: (color.0, color.1, color.2, 255),
+            on: destinationTexture,
+            with: commandBuffer
+        )
+    }
+
+    static func fill(
+        color: (Int, Int, Int, Int),
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer?
     ) {
@@ -159,7 +150,16 @@ extension MTLRenderer {
     }
 
     static func clear(
-        _ texture: MTLTexture?,
+        textures: [MTLTexture?],
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        textures.forEach {
+            clear(texture: $0, with: commandBuffer)
+        }
+    }
+
+    static func clear(
+        texture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
         guard let texture else { return }
@@ -187,7 +187,7 @@ extension MTLRenderer {
     }
 
     static func merge(
-        _ texture: MTLTexture?,
+        texture: MTLTexture?,
         alpha: Int = 255,
         into destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
