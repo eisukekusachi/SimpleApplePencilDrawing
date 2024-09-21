@@ -28,14 +28,6 @@ class CanvasViewController: UIViewController {
         super.viewDidLayoutSubviews()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        canvasViewModel.onViewDidAppear(
-            canvasView.drawableSize,
-            canvasView: canvasView
-        )
-    }
-
 }
 
 extension CanvasViewController {
