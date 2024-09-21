@@ -40,24 +40,20 @@ final class CanvasViewModel {
 extension CanvasViewModel {
 
     func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
+        // Initialize the canvas here if `canvasTexture` is nil
+        if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
+            initCanvas(
+                textureSize: textureSize,
+                canvasView: canvasView
+            )
+        }
+
         drawTextureWithAspectFit(
             texture: canvasTexture,
             on: canvasView.renderTexture,
             commandBuffer: canvasView.commandBuffer
         )
         canvasView.setNeedsDisplay()
-    }
-
-    func onViewDidAppear(
-        _ drawableTextureSize: CGSize,
-        canvasView: CanvasViewProtocol
-    ) {
-        if canvasTexture == nil {
-            initCanvas(
-                textureSize: drawableTextureSize,
-                canvasView: canvasView
-            )
-        }
     }
 
     func onFingerInputGesture(
