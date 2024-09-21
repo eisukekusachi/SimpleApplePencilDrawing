@@ -24,8 +24,9 @@ class CanvasViewController: UIViewController {
         setupCanvasViewModel()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        canvasViewModel.onViewDidAppear(canvasView: canvasView)
     }
 
 }

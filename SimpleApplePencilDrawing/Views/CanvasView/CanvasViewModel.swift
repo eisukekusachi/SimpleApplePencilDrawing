@@ -39,8 +39,25 @@ final class CanvasViewModel {
 
 extension CanvasViewModel {
 
+    func onViewDidAppear(canvasView: CanvasViewProtocol) {
+        // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
+        // initialize the canvas here.
+        if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
+            initCanvas(
+                textureSize: textureSize,
+                canvasView: canvasView
+            )
+
+            drawTextureWithAspectFit(
+                texture: canvasTexture,
+                on: canvasView.renderTexture,
+                commandBuffer: canvasView.commandBuffer
+            )
+            canvasView.setNeedsDisplay()
+        }
+    }
+
     func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
-        // Initialize the canvas here if `canvasTexture` is nil
         if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
             initCanvas(
                 textureSize: textureSize,
@@ -48,6 +65,8 @@ extension CanvasViewModel {
             )
         }
 
+        // Redraws the canvas when the screen rotates and the canvas size changes.
+        // Therefore, this code is placed outside the block.
         drawTextureWithAspectFit(
             texture: canvasTexture,
             on: canvasView.renderTexture,
