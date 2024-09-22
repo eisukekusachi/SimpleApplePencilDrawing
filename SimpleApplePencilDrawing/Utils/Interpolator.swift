@@ -15,7 +15,7 @@ enum Interpolator {
         controlPoint2: CGPoint,
         endPoint: CGPoint,
         duration: Int,
-        addLastPoint: Bool = true
+        addLastPoint: Bool
     ) -> [CGPoint] {
 
         var result: [CGPoint] = []
@@ -55,7 +55,7 @@ enum Interpolator {
         begin: CGFloat,
         change: CGFloat,
         duration: Int,
-        addLastPoint: Bool = false
+        addLastPoint: Bool
     ) -> [CGFloat] {
 
         var result: [CGFloat] = []

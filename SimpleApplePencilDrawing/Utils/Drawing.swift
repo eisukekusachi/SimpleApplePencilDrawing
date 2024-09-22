@@ -14,7 +14,7 @@ enum Drawing {
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
-        addLastPoint: Bool = false
+        addLastPoint: Bool
     ) -> [CGPoint] {
 
         let cbVector = CGVector(left: pointB, right: pointC)
@@ -53,7 +53,7 @@ enum Drawing {
         startPoint: CGPoint,
         endPoint: CGPoint,
         nextPoint: CGPoint,
-        addLastPoint: Bool = false
+        addLastPoint: Bool
     ) -> [CGPoint] {
 
         let abVector = CGVector(left: startPoint, right: previousPoint)
@@ -93,7 +93,7 @@ enum Drawing {
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
-        addLastPoint: Bool = false
+        addLastPoint: Bool
     ) -> [CGPoint] {
 
         let abVector = CGVector(left: pointB, right: pointA)

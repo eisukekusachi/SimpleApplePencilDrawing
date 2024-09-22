@@ -133,7 +133,8 @@ extension CanvasGrayscaleCurveIterator {
             previousPoint: previousPoint.location,
             startPoint: startPoint.location,
             endPoint: endPoint.location,
-            nextPoint: nextPoint.location
+            nextPoint: nextPoint.location,
+            addLastPoint: false
         )
 
         let duration = locations.count
@@ -141,13 +142,15 @@ extension CanvasGrayscaleCurveIterator {
         let brightnessArray = Interpolator.getLinearInterpolationValues(
             begin: previousPoint.brightness,
             change: startPoint.brightness,
-            duration: duration
+            duration: duration,
+            addLastPoint: false
         )
 
         let diameterArray = Interpolator.getLinearInterpolationValues(
             begin: previousPoint.diameter,
             change: startPoint.diameter,
-            duration: duration
+            duration: duration,
+            addLastPoint: false
         )
 
         for i in 0 ..< locations.count {
@@ -178,22 +181,21 @@ extension CanvasGrayscaleCurveIterator {
             addLastPoint: true
         )
 
-        // Since the last value is added with `addLastPoint`, `let duration` should be set to `locations.count` minus 1
+        // `let duration` should be set to `locations.count` minus 1 since the last value is added with `addLastPoint`
         let duration = locations.count - 1
-        let addLastPoint = true
 
         let brightnessArray = Interpolator.getLinearInterpolationValues(
             begin: startPoint.brightness,
             change: endPoint.brightness,
             duration: duration,
-            addLastPoint: addLastPoint
+            addLastPoint: true
         )
 
         let diameterArray = Interpolator.getLinearInterpolationValues(
             begin: startPoint.diameter,
             change: endPoint.diameter,
             duration: duration,
-            addLastPoint: addLastPoint
+            addLastPoint: true
         )
 
         for i in 0 ..< locations.count {
