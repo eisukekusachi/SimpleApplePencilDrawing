@@ -28,7 +28,7 @@ final class InterpolatorTests {
                     addLastPoint: true
                 ),
                 /// Confirm that the last value is included.
-                /// If `duration` is `0`, the result will have `1` values.
+                /// If `duration` is `0`, the last value is added to the array, so the array count will be `1`.
                 [
                     .init(x: 1.0, y: 0.0)
                 ]
@@ -55,7 +55,7 @@ final class InterpolatorTests {
                     addLastPoint: true
                 ),
                 /// Confirm that the last value is included.
-                /// If `duration` is `1`, the result will have `2` values.
+                /// If `duration` is `1`, the last value is added to the array, so the array count will be `2`.
                 [
                     .init(x: 0.0, y: 0.0),
                     .init(x: 1.0, y: 0.0)
@@ -85,7 +85,7 @@ final class InterpolatorTests {
                     addLastPoint: true
                 ),
                 /// Confirm that the last value is included.
-                /// If `duration` is `4`, the result will have `5` values.
+                /// If `duration` is `4`, the last value is added to the array, so the array count will be `5`.
                 [
                     CGPoint(x: 0.0, y: 0.0),
                     CGPoint(x: 0.15625, y: 0.5625),
@@ -137,7 +137,7 @@ final class InterpolatorTests {
                     addLastPoint: true
                 ),
                 /// Confirm that the last value is included.
-                /// If `duration` is `5`, the result will have `6` values.
+                /// If `duration` is `0`, the last value is added to the array, so the array count will be `1`.
                 [
                     1.0
                 ]
@@ -163,7 +163,7 @@ final class InterpolatorTests {
                     addLastPoint: true
                 ),
                 /// Confirm that the last value is included.
-                /// If `duration` is `5`, the result will have `6` values.
+                /// If `duration` is `1`, the last value is added to the array, so the array count will be `2`.
                 [
                     0.0,
                     1.0
@@ -190,7 +190,7 @@ final class InterpolatorTests {
                     addLastPoint: true
                 ),
                 /// Confirm that the last value is included.
-                /// If `duration` is `5`, the result will have `6` values.
+                /// If `duration` is `5`, the last value is added to the array, so the array count will be `6`.
                 [
                     0.0,
                     0.2,
