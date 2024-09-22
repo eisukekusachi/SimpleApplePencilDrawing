@@ -14,16 +14,16 @@ enum Interpolator {
         controlPoint1: CGPoint,
         controlPoint2: CGPoint,
         endPoint: CGPoint,
-        totalPointNum: Int,
+        duration: Int,
         addLastPoint: Bool = true
     ) -> [CGPoint] {
 
         var result: [CGPoint] = []
 
         var t: Float = 0.0
-        let step: Float = 1.0 / Float(totalPointNum)
+        let step: Float = 1.0 / Float(duration)
 
-        for _ in 0 ..< totalPointNum {
+        for _ in 0 ..< duration {
             let moveX = movePoint.x * CGFloat(powf(1.0 - t, 3.0))
             let control1X = controlPoint1.x * CGFloat(3.0 * t * powf(1.0 - t, 2.0))
             let control2X = controlPoint2.x * CGFloat(3.0 * (1.0 - t) * powf(t, 2.0))
@@ -51,7 +51,7 @@ enum Interpolator {
         return result
     }
 
-    static func getLinearGradientValues(
+    static func getLinearInterpolationValues(
         begin: CGFloat,
         change: CGFloat,
         duration: Int,

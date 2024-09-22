@@ -27,8 +27,7 @@ extension CanvasGrayscaleCurveIterator {
                     contentsOf: makeFirstCurve(
                         previousPoint: array[0],
                         startPoint: array[1],
-                        endPoint: array[2],
-                        addLastPoint: false
+                        endPoint: array[2]
                     )
                 )
             }
@@ -49,8 +48,7 @@ extension CanvasGrayscaleCurveIterator {
                     contentsOf: makeFirstCurve(
                         previousPoint: array[0],
                         startPoint: array[1],
-                        endPoint: array[2],
-                        addLastPoint: false
+                        endPoint: array[2]
                     )
                 )
             }
@@ -65,8 +63,7 @@ extension CanvasGrayscaleCurveIterator {
                     contentsOf: makeLastCurve(
                         startPoint: array[index0],
                         endPoint: array[index1],
-                        nextPoint: array[index2],
-                        addLastPoint: true
+                        nextPoint: array[index2]
                     )
                 )
             }
@@ -82,8 +79,7 @@ extension CanvasGrayscaleCurveIterator {
     private func makeFirstCurve(
         previousPoint: T,
         startPoint: T,
-        endPoint: T,
-        addLastPoint: Bool = false
+        endPoint: T
     ) -> [T] {
 
         var curve: [T] = []
@@ -92,21 +88,23 @@ extension CanvasGrayscaleCurveIterator {
             pointA: previousPoint.location,
             pointB: startPoint.location,
             pointC: endPoint.location,
-            addLastPoint: addLastPoint
+            addLastPoint: false
         )
 
         let duration = locations.count
 
-        let brightnessArray = Interpolator.getLinearGradientValues(
+        let brightnessArray = Interpolator.getLinearInterpolationValues(
             begin: previousPoint.brightness,
             change: startPoint.brightness,
-            duration: duration
+            duration: duration,
+            addLastPoint: false
         )
 
-        let diameterArray = Interpolator.getLinearGradientValues(
+        let diameterArray = Interpolator.getLinearInterpolationValues(
             begin: previousPoint.diameter,
             change: startPoint.diameter,
-            duration: duration
+            duration: duration,
+            addLastPoint: false
         )
 
         for i in 0 ..< locations.count {
@@ -140,13 +138,13 @@ extension CanvasGrayscaleCurveIterator {
 
         let duration = locations.count
 
-        let brightnessArray = Interpolator.getLinearGradientValues(
+        let brightnessArray = Interpolator.getLinearInterpolationValues(
             begin: previousPoint.brightness,
             change: startPoint.brightness,
             duration: duration
         )
 
-        let diameterArray = Interpolator.getLinearGradientValues(
+        let diameterArray = Interpolator.getLinearInterpolationValues(
             begin: previousPoint.diameter,
             change: startPoint.diameter,
             duration: duration
@@ -168,8 +166,7 @@ extension CanvasGrayscaleCurveIterator {
     private func makeLastCurve(
         startPoint: T,
         endPoint: T,
-        nextPoint: T,
-        addLastPoint: Bool = false
+        nextPoint: T
     ) -> [T] {
 
         var curve: [T] = []
@@ -178,21 +175,25 @@ extension CanvasGrayscaleCurveIterator {
             pointA: startPoint.location,
             pointB: endPoint.location,
             pointC: nextPoint.location,
+            addLastPoint: true
+        )
+
+        // Since the last value is added with `addLastPoint`, `let duration` should be set to `locations.count` minus 1
+        let duration = locations.count - 1
+        let addLastPoint = true
+
+        let brightnessArray = Interpolator.getLinearInterpolationValues(
+            begin: startPoint.brightness,
+            change: endPoint.brightness,
+            duration: duration,
             addLastPoint: addLastPoint
         )
 
-        let duration = locations.count
-
-        let brightnessArray = Interpolator.getLinearGradientValues(
-            begin: startPoint.brightness,
-            change: endPoint.brightness,
-            duration: duration
-        )
-
-        let diameterArray = Interpolator.getLinearGradientValues(
+        let diameterArray = Interpolator.getLinearInterpolationValues(
             begin: startPoint.diameter,
             change: endPoint.diameter,
-            duration: duration
+            duration: duration,
+            addLastPoint: addLastPoint
         )
 
         for i in 0 ..< locations.count {

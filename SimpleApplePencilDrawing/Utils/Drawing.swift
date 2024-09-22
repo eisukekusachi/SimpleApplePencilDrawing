@@ -38,14 +38,13 @@ enum Drawing {
             Calculator.getLength(cp0, to: cp1) +
             Calculator.getLength(cp1, to: pointB)
         ))
-        print(circumference)
 
         return Interpolator.getCubicCurvePoints(
             movePoint: pointA,
             controlPoint1: cp0,
             controlPoint2: cp1,
             endPoint: pointB,
-            totalPointNum: circumference,
+            duration: circumference,
             addLastPoint: addLastPoint
         )
     }
@@ -86,7 +85,7 @@ enum Drawing {
             controlPoint1: cp0,
             controlPoint2: cp1,
             endPoint: endPoint,
-            totalPointNum: circumference,
+            duration: circumference,
             addLastPoint: addLastPoint
         )
     }
@@ -124,7 +123,7 @@ enum Drawing {
             controlPoint1: cp0,
             controlPoint2: cp1,
             endPoint: pointC,
-            totalPointNum: circumference,
+            duration: circumference,
             addLastPoint: addLastPoint
         )
     }
