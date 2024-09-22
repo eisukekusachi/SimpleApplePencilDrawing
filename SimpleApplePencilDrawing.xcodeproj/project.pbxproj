@@ -32,6 +32,8 @@
 		D462E1AC2C0C6A8800E0503E /* CGPointExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1AB2C0C6A8800E0503E /* CGPointExtensions.swift */; };
 		D462E1AE2C0C70A700E0503E /* CanvasPencilInputGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1AD2C0C70A700E0503E /* CanvasPencilInputGestureRecognizer.swift */; };
 		D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C036A2C95D0DC001658C5 /* Constants.swift */; };
+		D476E9A02CA0073200F2332E /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D476E99F2CA0073200F2332E /* Drawing.swift */; };
+		D476E9A82CA00B3B00F2332E /* InterpolatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */; };
 		D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D478DD9C2C7978CA0031521D /* SetExtensions.swift */; };
 		D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E152C0ABCB30056C270 /* AppDelegate.swift */; };
 		D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */; };
@@ -93,6 +95,8 @@
 		D462E1AB2C0C6A8800E0503E /* CGPointExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPointExtensions.swift; sourceTree = "<group>"; };
 		D462E1AD2C0C70A700E0503E /* CanvasPencilInputGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilInputGestureRecognizer.swift; sourceTree = "<group>"; };
 		D46C036A2C95D0DC001658C5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		D476E99F2CA0073200F2332E /* Drawing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
+		D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpolatorTests.swift; sourceTree = "<group>"; };
 		D478DD9C2C7978CA0031521D /* SetExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetExtensions.swift; sourceTree = "<group>"; };
 		D4B17E122C0ABCB30056C270 /* SimpleApplePencilDrawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleApplePencilDrawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4B17E152C0ABCB30056C270 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -208,6 +212,7 @@
 		D462E1812C0C56E000E0503E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				D476E99F2CA0073200F2332E /* Drawing.swift */,
 				D462E1A32C0C680400E0503E /* Interpolator.swift */,
 				D462E1A12C0C67DC00E0503E /* Iterator.swift */,
 				D462E1822C0C580600E0503E /* ViewSize.swift */,
@@ -225,6 +230,14 @@
 				D4D0FDCF2C82B24B00E91B4B /* Status */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		D476E9A62CA00B2700F2332E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		D4B17E092C0ABCB30056C270 = {
@@ -267,6 +280,7 @@
 			isa = PBXGroup;
 			children = (
 				D4D0FDE82C8349DA00E91B4B /* Dummies */,
+				D476E9A62CA00B2700F2332E /* Utils */,
 				D4D0FDEB2C8349FD00E91B4B /* Views */,
 				D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */,
 			);
@@ -506,6 +520,7 @@
 				D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */,
 				D4D0FDDD2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift in Sources */,
 				D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */,
+				D476E9A02CA0073200F2332E /* Drawing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +529,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */,
+				D476E9A82CA00B3B00F2332E /* InterpolatorTests.swift in Sources */,
 				D4D0FDEA2C8349EB00E91B4B /* CanvasTouchPointDummy.swift in Sources */,
 				D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */,
 				D4D0FDEF2C834A2200E91B4B /* CanvasPencilScreenTouchPointsTests.swift in Sources */,
@@ -758,14 +774,15 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 59LR79WH8J;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -778,14 +795,15 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 59LR79WH8J;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -797,13 +815,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 59LR79WH8J;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -815,13 +834,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 59LR79WH8J;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eisukekusachi.SimpleApplePencilDrawingUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
