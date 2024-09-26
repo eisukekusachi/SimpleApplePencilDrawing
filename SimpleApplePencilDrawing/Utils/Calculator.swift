@@ -9,6 +9,19 @@ import Foundation
 
 enum Calculator {
 
+    static func getCenterPoint(_ pointA: CGPoint, _ pointB: CGPoint) -> CGPoint {
+        .init(x: (pointA.x + pointB.x) * 0.5, y: (pointA.y + pointB.y) * 0.5)
+    }
+
+    /// Get the total distance by connecting points
+    static func getTotalLength(points: CGPoint...) -> CGFloat {
+        var totalLength: CGFloat = 0.0
+        for i in 0 ..< points.count - 1 {
+            totalLength += Calculator.getLength(points[i], to: points[i + 1])
+        }
+        return totalLength
+    }
+
     static func getLength(_ leftHandSide: CGPoint, to rightHandSide: CGPoint) -> CGFloat {
         sqrt(pow(rightHandSide.x - leftHandSide.x, 2) + pow(rightHandSide.y - leftHandSide.y, 2))
     }

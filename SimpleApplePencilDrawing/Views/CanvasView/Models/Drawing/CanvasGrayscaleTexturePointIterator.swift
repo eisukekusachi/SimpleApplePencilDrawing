@@ -84,7 +84,7 @@ extension CanvasGrayscaleCurveIterator {
 
         var curve: [T] = []
 
-        let locations = Drawing.getFirstCurvePoints(
+        let locations = BezierCurve.getFirstCurvePoints(
             pointA: previousPoint.location,
             pointB: startPoint.location,
             pointC: endPoint.location,
@@ -129,7 +129,7 @@ extension CanvasGrayscaleCurveIterator {
 
         var curve: [T] = []
 
-        let locations = Drawing.getCurvePoints(
+        let locations = BezierCurve.getCurvePoints(
             previousPoint: previousPoint.location,
             startPoint: startPoint.location,
             endPoint: endPoint.location,
@@ -174,7 +174,7 @@ extension CanvasGrayscaleCurveIterator {
 
         var curve: [T] = []
 
-        let locations = Drawing.getLastCurvePoints(
+        let locations = BezierCurve.getLastCurvePoints(
             pointA: startPoint.location,
             pointB: endPoint.location,
             pointC: nextPoint.location,
