@@ -16,6 +16,8 @@ class CanvasViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    @IBOutlet weak var imageView: UIImageView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -49,11 +51,11 @@ extension CanvasViewController {
 
     private func subscribeEvents() {
         // Remove `/* */` to enable finger drawing
-        /*
+
         canvasView.addGestureRecognizer(
             CanvasFingerInputGestureRecognizer(self)
         )
-        */
+        
         canvasView.addGestureRecognizer(
             CanvasPencilInputGestureRecognizer(self)
         )
@@ -77,6 +79,14 @@ extension CanvasViewController {
         canvasViewModel.pauseDisplayLinkPublish
             .receive(on: DispatchQueue.main)
             .assign(to: \.isPaused, on: canvasView.displayLink)
+            .store(in: &cancellables)
+
+        canvasViewModel.sendImage
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] image in
+                guard let `self`, let image else { return }
+                imageView.image = image
+            }
             .store(in: &cancellables)
     }
 

@@ -15,6 +15,8 @@ final class CanvasReplayDrawingTextures {
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
+    var imageArray: [UIImage] = []
+
     func initTexture(_ textureSize: CGSize) {
         currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
         canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)

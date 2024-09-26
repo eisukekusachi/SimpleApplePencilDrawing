@@ -13,6 +13,7 @@ protocol CanvasDrawingReplayDelegate {
         drawingTool: String,
         canvasView: CanvasViewProtocol?
     )
+    func finishReplaying()
 }
 
 final class CanvasReplayDrawing {
@@ -132,6 +133,8 @@ extension CanvasReplayDrawing {
         currentPointIndex = 0
 
         latestTouchPoint = nil
+
+        delegate?.finishReplaying()
     }
 
 }

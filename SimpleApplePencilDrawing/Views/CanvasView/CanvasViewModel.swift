@@ -7,12 +7,15 @@
 
 import MetalKit
 import Combine
+import Accelerate
 
 final class CanvasViewModel {
 
     var pauseDisplayLinkPublish: AnyPublisher<Bool, Never> {
         pauseDisplayLinkSubject.eraseToAnyPublisher()
     }
+
+    let sendImage = CurrentValueSubject<UIImage?, Never>(nil)
 
     /// An iterator for managing a grayscale curve
     private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
@@ -469,6 +472,8 @@ extension CanvasViewModel: CanvasDrawingReplayDelegate {
             let renderTexture = canvasView.renderTexture
         else { return }
 
+        let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+
         let touchPhase = touchPoint.phase
 
         if touchPhase == .began {
@@ -499,27 +504,88 @@ extension CanvasViewModel: CanvasDrawingReplayDelegate {
         drawingTexture.drawPointsOnDrawingTexture(
             grayscaleTexturePoints: points,
             color: drawingToolStatus.brushColor,
-            with: canvasView.commandBuffer
+            with: commandBuffer
         )
 
         mergeDrawingTexture(
             withCurrentTexture: replayDrawingTextures.currentTexture,
             withBackgroundColor: backgroundColor,
             on: replayDrawingTextures.canvasTexture,
-            with: canvasView.commandBuffer,
+            with: commandBuffer,
             executeDrawingFinishProcess: touchPhase == .ended
         )
 
+        /*
         drawTextureWithAspectFit(
             texture: replayDrawingTextures.canvasTexture,
             on: renderTexture,
-            commandBuffer: canvasView.commandBuffer
+            commandBuffer: commandBuffer
         )
 
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
             pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
         }
+        */
+
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+
+        if let image = replayDrawingTextures.canvasTexture?.upsideDownUIImage {
+            replayDrawingTextures.imageArray.append(image)
+            sendImage.send(image)
+        }
+    }
+
+    func finishReplaying() {
+        print("replay images")
+        replayDrawingTextures.imageArray.forEach {
+            print($0)
+        }
+    }
+
+}
+
+extension MTLTexture {
+
+    var upsideDownUIImage: UIImage? {
+        let width = self.width
+        let height = self.height
+        let numComponents = 4
+        let bytesPerRow = width * numComponents
+        let totalBytes = bytesPerRow * height
+        let region = MTLRegionMake2D(0, 0, width, height)
+        var bgraBytes = [UInt8](repeating: 0, count: totalBytes)
+        self.getBytes(&bgraBytes, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
+        // use Accelerate framework to convert from BGRA to RGBA
+        var bgraBuffer = vImage_Buffer(data: UnsafeMutableRawPointer(mutating: bgraBytes),
+                    height: vImagePixelCount(height), width: vImagePixelCount(width), rowBytes: bytesPerRow)
+        let rgbaBytes = [UInt8](repeating: 0, count: totalBytes)
+        var rgbaBuffer = vImage_Buffer(data: UnsafeMutableRawPointer(mutating: rgbaBytes),
+                    height: vImagePixelCount(height), width: vImagePixelCount(width), rowBytes: bytesPerRow)
+        let map: [UInt8] = [2, 1, 0, 3]
+        vImagePermuteChannels_ARGB8888(&bgraBuffer, &rgbaBuffer, map, 0)
+        // flipping image vertically
+        let flippedBytes = bgraBytes // share the buffer
+        var flippedBuffer = vImage_Buffer(data: UnsafeMutableRawPointer(mutating: flippedBytes),
+                    height: vImagePixelCount(self.height), width: vImagePixelCount(self.width), rowBytes: bytesPerRow)
+        vImageVerticalReflect_ARGB8888(&rgbaBuffer, &flippedBuffer, 0)
+        // create CGImage with RGBA Flipped Bytes
+        guard let data = CFDataCreate(nil, flippedBytes, totalBytes) else { return nil }
+        guard let dataProvider = CGDataProvider(data: data) else { return nil }
+        let cgImage = CGImage(width: self.width,
+                              height: self.height,
+                              bitsPerComponent: 8,
+                              bitsPerPixel: 8 * numComponents,
+                              bytesPerRow: bytesPerRow,
+                              space: CGColorSpaceCreateDeviceRGB(),
+                              bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+                              provider: dataProvider,
+                              decode: nil,
+                              shouldInterpolate: true,
+                              intent: .defaultIntent)
+        guard let cgImage = cgImage else { return nil }
+        return UIImage(cgImage: cgImage)
     }
 
 }
