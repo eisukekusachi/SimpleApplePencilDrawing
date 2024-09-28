@@ -31,7 +31,7 @@ enum BezierCurve {
         )
 
         let duration = Int(round(
-            Calculator.getTotalLength(points: pointA, handlePoints.handleA, handlePoints.handleB, pointB)
+            Calculator.getTotalLength(points: [pointA, handlePoints.handleA, handlePoints.handleB, pointB])
         ))
 
         return Interpolator.getCubicCurvePoints(
@@ -73,7 +73,7 @@ enum BezierCurve {
         )
 
         let duration = Int(round(
-            Calculator.getTotalLength(points: startPoint, handlePoints.handleA, handlePoints.handleB, endPoint)
+            Calculator.getTotalLength(points: [startPoint, handlePoints.handleA, handlePoints.handleB, endPoint])
         ))
 
         return Interpolator.getCubicCurvePoints(
@@ -106,7 +106,7 @@ enum BezierCurve {
         )
 
         let duration = Int(round(
-            Calculator.getTotalLength(points: pointB, handlePoints.handleA, handlePoints.handleB, pointC)
+            Calculator.getTotalLength(points: [pointB, handlePoints.handleA, handlePoints.handleB, pointC])
         ))
 
         return Interpolator.getCubicCurvePoints(

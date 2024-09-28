@@ -14,7 +14,7 @@ enum Calculator {
     }
 
     /// Get the total distance by connecting points
-    static func getTotalLength(points: CGPoint...) -> CGFloat {
+    static func getTotalLength(points: [CGPoint]) -> CGFloat {
         var totalLength: CGFloat = 0.0
         for i in 0 ..< points.count - 1 {
             totalLength += Calculator.getLength(points[i], to: points[i + 1])
