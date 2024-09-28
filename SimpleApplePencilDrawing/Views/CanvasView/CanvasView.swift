@@ -9,20 +9,20 @@ import MetalKit
 import Combine
 
 protocol CanvasViewProtocol {
-    var commandBuffer: MTLCommandBuffer { get }
+    var commandBuffer: MTLCommandBuffer? { get }
 
     var renderTexture: MTLTexture? { get }
 
-    func clearCommandBuffer()
+    func makeNewCommandBuffer()
 
-    func setNeedsDisplay()
+    func commitCommandBufferAndDisplayRenderTexture()
 }
 
 /// A custom view for displaying textures with Metal support.
 class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
-    var commandBuffer: MTLCommandBuffer {
-        commandManager.currentCommandBuffer
+    var commandBuffer: MTLCommandBuffer? {
+        commandManager.commandBuffer
     }
 
     var updateTexturePublisher: AnyPublisher<Void, Never> {
@@ -86,6 +86,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
     // MARK: - DrawTexture
     func draw(in view: MTKView) {
         guard
+            let commandBuffer,
             let textureBuffers,
             let renderTexture,
             let drawable = view.currentDrawable
@@ -103,7 +104,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
 
-        commandManager.clearCurrentCommandBuffer()
+        makeNewCommandBuffer()
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -115,8 +116,12 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
 extension CanvasView {
 
-    func clearCommandBuffer() {
-        commandManager.clearCurrentCommandBuffer()
+    func makeNewCommandBuffer() {
+        commandManager.makeNewCommandBuffer()
+    }
+
+    func commitCommandBufferAndDisplayRenderTexture() {
+        setNeedsDisplay()
     }
 
     @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {

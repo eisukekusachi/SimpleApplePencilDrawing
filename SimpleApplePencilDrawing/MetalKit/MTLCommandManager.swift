@@ -11,23 +11,15 @@ final class MTLCommandManager {
 
     private let queue: MTLCommandQueue
 
-    /// Return the buffer if available, create the buffer if not.
-    var currentCommandBuffer: MTLCommandBuffer {
-        if storedBuffer == nil {
-            storedBuffer = queue.makeCommandBuffer()
-        }
-        return storedBuffer!
-    }
-
-    private var storedBuffer: MTLCommandBuffer?
+    private (set) var commandBuffer: MTLCommandBuffer?
 
     init(device: MTLDevice) {
-        let newQueue = device.makeCommandQueue()!
-        self.queue = newQueue
+        self.queue = device.makeCommandQueue()!
+        makeNewCommandBuffer()
     }
 
-    func clearCurrentCommandBuffer() {
-        self.storedBuffer = nil
+    func makeNewCommandBuffer() {
+        commandBuffer = queue.makeCommandBuffer()
     }
 
 }
