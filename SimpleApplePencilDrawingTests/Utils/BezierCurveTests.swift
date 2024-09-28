@@ -134,9 +134,9 @@ final class BezierCurveTests: XCTestCase {
         let points: [CGPoint] = [
             .init(x: 0, y: 0),
             .init(x: 10, y: 10),
-            .init(x: 15, y: 0),
-            .init(x: 20, y: 10),
-            .init(x: 25, y: 0)
+            .init(x: 20, y: 0),
+            .init(x: 30, y: 10),
+            .init(x: 40, y: 0)
         ]
 
         /// In this case, an array of `CGPoint` is used where the x-coordinates shift positively by `10`, and the y-coordinates alternate in height.
