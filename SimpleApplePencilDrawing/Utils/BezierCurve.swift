@@ -17,7 +17,7 @@ enum BezierCurve {
         pointC: CGPoint,
         addLastPoint: Bool
     ) -> [CGPoint] {
-        /// This is used to reduce the effect of the curve when the angle becomes narrower.
+        // This is used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValue = handleLengthRatioBasedOnRadian(
             pointA: pointA,
             pointB: pointB,
@@ -51,7 +51,7 @@ enum BezierCurve {
         nextPoint: CGPoint,
         addLastPoint: Bool
     ) -> [CGPoint] {
-        /// They are used to reduce the effect of the curve when the angle becomes narrower.
+        // They are used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValueA = handleLengthRatioBasedOnRadian(
             pointA: previousPoint,
             pointB: startPoint,
@@ -92,7 +92,7 @@ enum BezierCurve {
         pointC: CGPoint,
         addLastPoint: Bool
     ) -> [CGPoint] {
-        /// This is used to reduce the effect of the curve when the angle becomes narrower.
+        // This is used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValue = handleLengthRatioBasedOnRadian(
             pointA: pointA,
             pointB: pointB, 
@@ -134,17 +134,17 @@ extension BezierCurve {
         return max(0.0, min(Calculator.getRadian(vectorAB, Calculator.getReversedVector(vectorBC)) / .pi, 1.0))
     }
 
-    /// `getFirstBezierCurveHandlePoints` is a method that returns two handle positions for a Bézier curve: `handleA` and `handleB`.
-    /// `handleA` is the handle extending from `pointA`, and `handleB` is the handle extending from `pointB`.
-    /// The direction of `handleA` from `pointA` aligns with the direction from `pointA` to `pointB`, as the start point does not need to curve.
-    /// The direction of `handleB` from `pointB` aligns with the direction from `pointC` to `pointA`, allowing for a smooth connection with the next curve.
-    /// The length of the handles is calculated by multiplying the distance between `pointA` and `pointB` by `handleLengthRatio`.
+    /// A method that returns two handle positions for the Bézier curve used in the first curve
     static func getFirstBezierCurveHandlePoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
         handleLengthRatio: CGFloat
     ) -> BezierCurveHandlePoints {
+        // `handleA` is the handle extending from `pointA`, and `handleB` is the handle extending from `pointB`.
+        // The direction of `handleA` from `pointA` aligns with the direction from `pointA` to `pointB`, as the start point does not need to curve.
+        // The direction of `handleB` from `pointB` aligns with the direction from `pointC` to `pointA`, allowing for a smooth connection with the next curve.
+        // The length of the handle is calculated by multiplying the distance between `pointA` and `pointB` by `handleLengthRatio`.
         let vectorAB = CGVector(origin: pointA, to: pointB)
         let vectorCA = CGVector(origin: pointC, to: pointA)
 
@@ -165,17 +165,17 @@ extension BezierCurve {
         )
     }
 
-    /// `getLastBezierCurveHandlePoints` is a method that returns two handle positions for a Bézier curve: `handleA` and `handleB`.
-    /// `handleA` is the handle extending from `pointB`, and `handleB` is the handle extending from `pointC`.
-    /// The direction of `handleA` from `pointB` aligns with the direction from `pointA` to `pointC`, allowing for a smooth connection with the previous curve.
-    /// The direction of `handleB` from `pointC` aligns with the direction from `pointC` to `pointB`, as the end point does not need to curve.
-    /// The length of the handles is calculated by multiplying the distance between `pointC` and `pointB` by `handleLengthRatio`.
+    /// A method that returns two handle positions for the Bézier curve used in the last curve
     static func getLastBezierCurveHandlePoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
         handleLengthRatio: CGFloat
     ) -> BezierCurveHandlePoints {
+        // `handleA` is the handle extending from `pointB`, and `handleB` is the handle extending from `pointC`.
+        // The direction of `handleA` from `pointB` aligns with the direction from `pointA` to `pointC`, allowing for a smooth connection with the previous curve.
+        // The direction of `handleB` from `pointC` aligns with the direction from `pointC` to `pointB`, as the end point does not need to curve.
+        // The length of the handle is calculated by multiplying the distance between `pointC` and `pointB` by `handleLengthRatio`.
         let vectorAC = CGVector(origin: pointA, to: pointC)
         let vectorCB = CGVector(origin: pointC, to: pointB)
 
@@ -196,12 +196,7 @@ extension BezierCurve {
         )
     }
 
-    /// `func getBezierCurveHandlePoints` is a method that returns two handle positions, `handleA` and `handleB` for a Bézier curve.
-    /// `handleA` is the handle extending from `startPoint`, and `handleB` is the handle extending from `endPoint`.
-    /// The direction of `handleA` from `startPoint` is aligned with the direction from `previousPoint` to `endPoint`,
-    /// while the direction of `handleB` from `endPoint` is aligned with the direction from `nextPoint` to `startPoint`.
-    /// The length of the handles is calculated by multiplying the distance between `startPoint` and `endPoint` by `handleLengthRatio`.
-    /// These allow for a smooth connection with the curves created by `func getLastBezierCurveHandlePoints` and `func getFirstBezierCurveHandlePoints`.
+    /// A method that returns two handle positions for the Bézier curve.
     static func getBezierCurveHandlePoints(
         previousPoint: CGPoint,
         startPoint: CGPoint,
@@ -210,6 +205,11 @@ extension BezierCurve {
         handleLengthRatioA: CGFloat,
         handleLengthRatioB: CGFloat
     ) -> BezierCurveHandlePoints {
+        // `handleA` is the handle extending from `startPoint`, and `handleB` is the handle extending from `endPoint`.
+        // The direction of `handleA` from `startPoint` is aligned with the direction from `previousPoint` to `endPoint`,
+        // while the direction of `handleB` from `endPoint` is aligned with the direction from `nextPoint` to `startPoint`.
+        // The length of the handles are calculated by multiplying the distance between `startPoint` and `endPoint` by `handleLengthRatio`.
+        // These allow for a smooth connection with the curves created by `func getLastBezierCurveHandlePoints` and `func getFirstBezierCurveHandlePoints`.
         let vectorAC = CGVector(origin: previousPoint, to: endPoint)
         let vectorDB = CGVector(origin: nextPoint, to: startPoint)
         let vectorBC = CGVector(origin: startPoint, to: endPoint)

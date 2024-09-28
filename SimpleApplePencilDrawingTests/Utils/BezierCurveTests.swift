@@ -9,6 +9,7 @@ import XCTest
 @testable import SimpleApplePencilDrawing
 
 final class BezierCurveTests: XCTestCase {
+    /// Confirms that appropriate values are returned based on the angles of the three points.
     func testHandleLengthRatioBasedOnRadian() {
         struct Condition {
             let firstPoint: CGPoint
@@ -32,7 +33,7 @@ final class BezierCurveTests: XCTestCase {
                 )
             ),
             (
-                /// When `firstPoint`, `secondPoint`, and `endPoint` form a right angle, the ratio is `0.5`.
+                /// When `firstPoint`, `secondPoint`, and `endPoint` form a right angle, the ratio becomes `0.5`.
                 condition: .init(
                     firstPoint: .init(x: 0, y: 0),
                     secondPoint: .init(x: 10, y: 10),
@@ -43,7 +44,7 @@ final class BezierCurveTests: XCTestCase {
                 )
             ),
             (
-                /// When `firstPoint`, `secondPoint`, and `endPoint` form a right angle, the ratio is `0.5`.
+                /// When `firstPoint`, `secondPoint`, and `endPoint` form a right angle, the ratio becomes `0.5`.
                 condition: .init(
                     firstPoint: .init(x: 0, y: 0),
                     secondPoint: .init(x: 10, y: 10),
@@ -54,7 +55,7 @@ final class BezierCurveTests: XCTestCase {
                 )
             ),
             (
-                /// When `firstPoint`, `secondPoint`, and `endPoint` form a right angle, the ratio is `0.5`.
+                /// When `firstPoint`, `secondPoint`, and `endPoint` are aligned in a straight line, the ratio becomes `1.0`
                 condition: .init(
                     firstPoint: .init(x: 0, y: 0),
                     secondPoint: .init(x: 10, y: 10),
@@ -79,6 +80,7 @@ final class BezierCurveTests: XCTestCase {
         }
     }
 
+    /// Confirms that the handle positions for the first Bézier curve are returned from the three points.
     func testGetFirstBezierCurveHandlePoints() {
         struct Condition {
             let firstPoint: CGPoint
@@ -116,6 +118,7 @@ final class BezierCurveTests: XCTestCase {
         XCTAssertEqual(result.handleB, expectation.handleB)
     }
 
+    /// Confirms that the handle positions for the Bézier curve are returned from the four points.
     func testGetBezierCurveHandlePoints() {
         struct Condition {
             let previousPoint: CGPoint
@@ -187,6 +190,7 @@ final class BezierCurveTests: XCTestCase {
         }
     }
 
+    /// Confirms that the handle positions for the last Bézier curve are returned from the three points.
     func testGetLastBezierCurveHandlePoints() {
         struct Condition {
             let firstPoint: CGPoint
