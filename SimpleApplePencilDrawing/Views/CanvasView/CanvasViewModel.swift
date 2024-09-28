@@ -259,9 +259,11 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {
-        drawingTexture.clearTexture()
 
         let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+
+        drawingTexture.clearTexture(with: commandBuffer)
+
         MTLRenderer.clear(
             texture: currentTexture,
             with: commandBuffer
@@ -309,7 +311,7 @@ extension CanvasViewModel {
         canvasView.clearCommandBuffer()
 
         // Clear `drawingTextures` during drawing
-        drawingTexture.clearTexture()
+        drawingTexture.clearTexture(with: canvasView.commandBuffer)
 
         mergeDrawingTexture(
             withCurrentTexture: currentTexture,
