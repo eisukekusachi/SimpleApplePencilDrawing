@@ -74,10 +74,4 @@ extension CanvasBrushDrawingTexture {
         )
     }
 
-    func clearTexture() {
-        let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
-        clearTexture(with: commandBuffer)
-        commandBuffer.commit()
-    }
-
 }

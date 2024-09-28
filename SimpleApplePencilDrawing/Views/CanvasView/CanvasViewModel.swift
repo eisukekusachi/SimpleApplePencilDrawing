@@ -40,6 +40,8 @@ final class CanvasViewModel {
 extension CanvasViewModel {
 
     func onViewDidAppear(canvasView: CanvasViewProtocol) {
+        guard let commandBuffer = canvasView.commandBuffer else { return }
+
         // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
         // initialize the canvas here.
         if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
@@ -51,13 +53,15 @@ extension CanvasViewModel {
             drawTextureWithAspectFit(
                 texture: canvasTexture,
                 on: canvasView.renderTexture,
-                commandBuffer: canvasView.commandBuffer
+                commandBuffer: commandBuffer
             )
-            canvasView.setNeedsDisplay()
+            canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
         }
     }
 
     func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
+        guard let commandBuffer = canvasView.commandBuffer else { return }
+
         if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
             initCanvas(
                 textureSize: textureSize,
@@ -70,9 +74,9 @@ extension CanvasViewModel {
         drawTextureWithAspectFit(
             texture: canvasTexture,
             on: canvasView.renderTexture,
-            commandBuffer: canvasView.commandBuffer
+            commandBuffer: commandBuffer
         )
-        canvasView.setNeedsDisplay()
+        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
     }
 
     func onFingerInputGesture(
@@ -83,6 +87,7 @@ extension CanvasViewModel {
         guard
             pencilScreenTouchPoints.estimatedTouchPointArray.isEmpty,
             let canvasTexture,
+            let commandBuffer = canvasView.commandBuffer,
             let renderTexture = canvasView.renderTexture
         else { return }
 
@@ -93,7 +98,7 @@ extension CanvasViewModel {
         let touchPhase = touchScreenPoints.currentTouchPhase
 
         if touchPhase == .began {
-            pauseDisplayLinkOnCanvas(false, canvasView: canvasView)
+            pauseCommitCommandBufferInDisplayLink(false, canvasView: canvasView)
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
         }
 
@@ -123,25 +128,25 @@ extension CanvasViewModel {
                 atEnd: touchPhase == .ended
             ) ?? [],
             color: drawingToolStatus.brushColor,
-            with: canvasView.commandBuffer
+            with: commandBuffer
         )
 
         mergeDrawingTexture(
             withCurrentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
-            with: canvasView.commandBuffer,
+            with: commandBuffer,
             executeDrawingFinishProcess: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
             on: renderTexture,
-            commandBuffer: canvasView.commandBuffer
+            commandBuffer: commandBuffer
         )
 
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
-            pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
+            pauseCommitCommandBufferInDisplayLink(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
         }
     }
@@ -159,7 +164,7 @@ extension CanvasViewModel {
             }
 
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
-            pauseDisplayLinkSubject.send(false)
+            pauseCommitCommandBufferInDisplayLink(false, canvasView: canvasView)
 
             pencilScreenTouchPoints.reset()
         }
@@ -183,6 +188,7 @@ extension CanvasViewModel {
     ) {
         guard
             let canvasTexture,
+            let commandBuffer = canvasView.commandBuffer,
             let renderTexture = canvasView.renderTexture
         else { return }
 
@@ -233,25 +239,25 @@ extension CanvasViewModel {
                 atEnd: touchPhase == .ended
             ) ?? [],
             color: drawingToolStatus.brushColor,
-            with: canvasView.commandBuffer
+            with: commandBuffer
         )
 
         mergeDrawingTexture(
             withCurrentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
-            with: canvasView.commandBuffer,
+            with: commandBuffer,
             executeDrawingFinishProcess: touchPhase == .ended
         )
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
             on: renderTexture,
-            commandBuffer: canvasView.commandBuffer
+            commandBuffer: commandBuffer
         )
 
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
-            pauseDisplayLinkOnCanvas(true, canvasView: canvasView)
+            pauseCommitCommandBufferInDisplayLink(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
 
             pencilScreenTouchPoints.reset()
@@ -259,9 +265,11 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture(canvasView: CanvasViewProtocol) {
-        drawingTexture.clearTexture()
 
         let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+
+        drawingTexture.clearTexture(with: commandBuffer)
+
         MTLRenderer.clear(
             texture: currentTexture,
             with: commandBuffer
@@ -290,6 +298,8 @@ extension CanvasViewModel {
     }
 
     private func clearCanvas(_ canvasView: CanvasViewProtocol) {
+        guard let commandBuffer = canvasView.commandBuffer else { return }
+
         MTLRenderer.fill(
             color: backgroundColor.rgb,
             on: canvasTexture,
@@ -299,40 +309,42 @@ extension CanvasViewModel {
         drawTextureWithAspectFit(
             texture: canvasTexture,
             on: canvasView.renderTexture,
-            commandBuffer: canvasView.commandBuffer
+            commandBuffer: commandBuffer
         )
 
-        canvasView.setNeedsDisplay()
+        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
     }
 
     private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
-        canvasView.clearCommandBuffer()
+        canvasView.makeNewCommandBuffer()
+
+        guard let commandBuffer = canvasView.commandBuffer else { return }
 
         // Clear `drawingTextures` during drawing
-        drawingTexture.clearTexture()
+        drawingTexture.clearTexture(with: commandBuffer)
 
         mergeDrawingTexture(
             withCurrentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
-            with: canvasView.commandBuffer
+            with: commandBuffer
         )
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
             on: canvasView.renderTexture,
-            commandBuffer: canvasView.commandBuffer
+            commandBuffer: commandBuffer
         )
 
-        canvasView.setNeedsDisplay()
+        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
     }
 
-    private func pauseDisplayLinkOnCanvas(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
+    private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
         pauseDisplayLinkSubject.send(isPaused)
 
-        // Call `canvasView.setNeedsDisplay` when stopping as the last line isn’t drawn
+        // Call `canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture` when stopping as the last line isn’t drawn
         if isPaused {
-            canvasView.setNeedsDisplay()
+            canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
         }
     }
 
