@@ -55,7 +55,7 @@ extension CanvasViewModel {
                 on: canvasView.renderTexture,
                 commandBuffer: commandBuffer
             )
-            canvasView.commitCommandBufferAndDisplayRenderTexture()
+            canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
         }
     }
 
@@ -76,7 +76,7 @@ extension CanvasViewModel {
             on: canvasView.renderTexture,
             commandBuffer: commandBuffer
         )
-        canvasView.commitCommandBufferAndDisplayRenderTexture()
+        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
     }
 
     func onFingerInputGesture(
@@ -312,7 +312,7 @@ extension CanvasViewModel {
             commandBuffer: commandBuffer
         )
 
-        canvasView.commitCommandBufferAndDisplayRenderTexture()
+        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
     }
 
     private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
@@ -336,15 +336,15 @@ extension CanvasViewModel {
             commandBuffer: commandBuffer
         )
 
-        canvasView.commitCommandBufferAndDisplayRenderTexture()
+        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
     }
 
     private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
         pauseDisplayLinkSubject.send(isPaused)
 
-        // Call `canvasView.commitCommandBufferAndDisplayRenderTexture` when stopping as the last line isn’t drawn
+        // Call `canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture` when stopping as the last line isn’t drawn
         if isPaused {
-            canvasView.commitCommandBufferAndDisplayRenderTexture()
+            canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
         }
     }
 

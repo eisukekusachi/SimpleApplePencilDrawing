@@ -15,7 +15,7 @@ protocol CanvasViewProtocol {
 
     func makeNewCommandBuffer()
 
-    func commitCommandBufferAndDisplayRenderTexture()
+    func commitAndRefreshCommandBufferToDisplayRenderTexture()
 }
 
 /// A custom view for displaying textures with Metal support.
@@ -118,7 +118,7 @@ extension CanvasView {
         commandBuffer = commandQueue.makeCommandBuffer()
     }
 
-    func commitCommandBufferAndDisplayRenderTexture() {
+    func commitAndRefreshCommandBufferToDisplayRenderTexture() {
         setNeedsDisplay()
     }
 
