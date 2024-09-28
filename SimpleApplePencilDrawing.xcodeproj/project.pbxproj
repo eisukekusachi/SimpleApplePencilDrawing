@@ -11,7 +11,6 @@
 		D42930442CA5938A00983863 /* BezierCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930432CA5938A00983863 /* BezierCurve.swift */; };
 		D42930462CA599DD00983863 /* BezierCurveHandlePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */; };
 		D462E16E2C0C555900E0503E /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E16D2C0C555900E0503E /* CanvasView.swift */; };
-		D462E1702C0C557D00E0503E /* MTLCommandManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E16F2C0C557D00E0503E /* MTLCommandManager.swift */; };
 		D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1712C0C55B000E0503E /* MTLRenderer.swift */; };
 		D462E1742C0C55D300E0503E /* MTLPipelineManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1732C0C55D300E0503E /* MTLPipelineManager.swift */; };
 		D462E1782C0C562400E0503E /* Texture.metal in Sources */ = {isa = PBXBuildFile; fileRef = D462E1772C0C562400E0503E /* Texture.metal */; };
@@ -77,7 +76,6 @@
 		D42930432CA5938A00983863 /* BezierCurve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierCurve.swift; sourceTree = "<group>"; };
 		D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierCurveHandlePoints.swift; sourceTree = "<group>"; };
 		D462E16D2C0C555900E0503E /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
-		D462E16F2C0C557D00E0503E /* MTLCommandManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLCommandManager.swift; sourceTree = "<group>"; };
 		D462E1712C0C55B000E0503E /* MTLRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLRenderer.swift; sourceTree = "<group>"; };
 		D462E1732C0C55D300E0503E /* MTLPipelineManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLPipelineManager.swift; sourceTree = "<group>"; };
 		D462E1772C0C562400E0503E /* Texture.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Texture.metal; sourceTree = "<group>"; };
@@ -184,7 +182,6 @@
 			isa = PBXGroup;
 			children = (
 				D462E17F2C0C56B700E0503E /* MTLBuffers.swift */,
-				D462E16F2C0C557D00E0503E /* MTLCommandManager.swift */,
 				D462E1732C0C55D300E0503E /* MTLPipelineManager.swift */,
 				D462E1712C0C55B000E0503E /* MTLRenderer.swift */,
 				D462E17A2C0C565300E0503E /* MTKTextureUtils.swift */,
@@ -525,7 +522,6 @@
 				D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */,
 				D462E1A62C0C682300E0503E /* Calculator.swift in Sources */,
 				D462E1A02C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift in Sources */,
-				D462E1702C0C557D00E0503E /* MTLCommandManager.swift in Sources */,
 				D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */,
 				D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */,
 				D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */,

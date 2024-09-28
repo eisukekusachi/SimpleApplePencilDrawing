@@ -21,9 +21,9 @@ protocol CanvasViewProtocol {
 /// A custom view for displaying textures with Metal support.
 class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
-    var commandBuffer: MTLCommandBuffer? {
-        commandManager.commandBuffer
-    }
+    private var commandQueue: MTLCommandQueue!
+
+    private (set) var commandBuffer: MTLCommandBuffer?
 
     var updateTexturePublisher: AnyPublisher<Void, Never> {
         updateTextureSubject.eraseToAnyPublisher()
@@ -42,8 +42,6 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
     private let updateTextureSubject = PassthroughSubject<Void, Never>()
 
-    private var commandManager: MTLCommandManager!
-
     private (set) var displayLink: CADisplayLink!
 
     override init(frame frameRect: CGRect, device: MTLDevice?) {
@@ -57,12 +55,12 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
     private func commonInit() {
         self.device = MTLCreateSystemDefaultDevice()
-        let commandQueue = self.device!.makeCommandQueue()
+        assert(device != nil, "Device is nil.")
 
-        assert(self.device != nil, "Device is nil.")
-        assert(commandQueue != nil, "CommandQueue is nil.")
+        guard let queue = device?.makeCommandQueue() else { return }
 
-        commandManager = MTLCommandManager(device: self.device!)
+        commandQueue = queue
+        makeNewCommandBuffer()
 
         textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: textureNodes)
 
@@ -117,7 +115,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 extension CanvasView {
 
     func makeNewCommandBuffer() {
-        commandManager.makeNewCommandBuffer()
+        commandBuffer = commandQueue.makeCommandBuffer()
     }
 
     func commitCommandBufferAndDisplayRenderTexture() {
