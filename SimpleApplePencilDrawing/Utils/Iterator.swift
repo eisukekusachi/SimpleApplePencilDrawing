@@ -14,48 +14,32 @@ class Iterator<T: Equatable>: IteratorProtocol {
     private(set) var array: [Element] = []
     private(set) var index: Int = 0
 
-    var count: Int {
-        return array.count
-    }
-    var currentIndex: Int {
-        return index - 1
-    }
-    var isFirstProcessing: Bool {
-        return index == 1
-    }
-
+    /// Retrieve a element sequentially
     func next() -> Element? {
         if index < array.count {
-            let elem = array[index]
+            let element = array[index]
             index += 1
-            return elem
+
+            return element
         } else {
             return nil
         }
     }
 
-    func next(range: Int = 1, _ results: ([Element]) -> Void) {
-        if range <= 0 { return }
-
-        while (index + range) <= array.count {
-            results(Array(array[index ..< index + range]))
-            index += 1
-        }
-    }
+    /// Retrieve elements sequentially by specifying a range of 1 or more
     func next(range: Int) -> [Element]? {
-        if range <= 0 { return nil }
+        guard range > 0 else { return nil }
 
         if (index + range) <= array.count {
-
-            let elems = array[index ..< index + range]
+            let elements = array[index ..< index + range]
             index += 1
 
-            return Array(elems)
-
+            return Array(elements)
         } else {
             return nil
         }
     }
+
     func append(_ element: Element) {
         array.append(element)
     }
