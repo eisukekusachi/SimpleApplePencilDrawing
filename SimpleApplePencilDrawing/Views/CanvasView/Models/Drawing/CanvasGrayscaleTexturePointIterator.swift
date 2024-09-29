@@ -8,7 +8,6 @@
 import Foundation
 
 final class CanvasGrayscaleCurveIterator: Iterator<CanvasGrayscaleDotPoint> {
-
     typealias T = CanvasGrayscaleDotPoint
 
     let range: Int = 4
@@ -23,19 +22,36 @@ extension CanvasGrayscaleCurveIterator {
         var curve: [T] = []
 
         if array.count == 3,
-           let points = makeFirstCurvePoints(array) {
-            curve.append(
-                contentsOf: makeFirstCurve(
-                    previousPoint: points.0,
-                    startPoint: points.1,
-                    endPoint: points.2
-                )
-            )
+           let points = makeFirstBezierCurvePoints() {
+            curve.append(contentsOf: makeFirstCurvePoints(points))
         }
 
+        makeBezierCurvePoints().forEach { points in
+            curve.append(contentsOf: makeCurvePoints(points))
+        }
+
+        if atEnd,
+           let points = makeLastBezierCurvePoints() {
+            curve.append(contentsOf: makeLastCurvePoints(points))
+        }
+
+        return curve
+    }
+
+    func makeFirstBezierCurvePoints() -> CanvasFirstBezierCurvePoints? {
+        guard array.count >= 3 else { return nil }
+        return .init(
+            previousPoint: array[0],
+            startPoint: array[1],
+            endPoint: array[2]
+        )
+    }
+
+    func makeBezierCurvePoints() -> [CanvasBezierCurvePoints] {
+        var array: [CanvasBezierCurvePoints] = []
         while let subsequence = next(range: range) {
-            curve.append(
-                contentsOf: makeCurve(
+            array.append(
+                .init(
                     previousPoint: subsequence[0],
                     startPoint: subsequence[1],
                     endPoint: subsequence[2],
@@ -43,38 +59,15 @@ extension CanvasGrayscaleCurveIterator {
                 )
             )
         }
-
-        if atEnd,
-           let points = makeLastCurvePoints(array) {
-            curve.append(
-                contentsOf: makeLastCurve(
-                    startPoint: points.0,
-                    endPoint: points.1,
-                    nextPoint: points.2
-                )
-            )
-        }
-
-        return curve
+        return array
     }
 
-    func makeFirstCurvePoints(_ array: [T]) -> (T, T, T)? {
+    func makeLastBezierCurvePoints() -> CanvasLastBezierCurvePoints? {
         guard array.count >= 3 else { return nil }
-
-        return (
-            array[0],
-            array[1],
-            array[2]
-        )
-    }
-
-    func makeLastCurvePoints(_ array: [T]) -> (T, T, T)? {
-        guard array.count >= 3 else { return nil }
-
-        return (
-            array[array.count - 3],
-            array[array.count - 2],
-            array[array.count - 1]
+        return .init(
+            previousPoint: array[array.count - 3],
+            startPoint: array[array.count - 2],
+            endPoint: array[array.count - 1]
         )
     }
 
@@ -82,33 +75,28 @@ extension CanvasGrayscaleCurveIterator {
 
 extension CanvasGrayscaleCurveIterator {
 
-    private func makeFirstCurve(
-        previousPoint: T,
-        startPoint: T,
-        endPoint: T
-    ) -> [T] {
-
+    private func makeFirstCurvePoints(_ points: CanvasFirstBezierCurvePoints) -> [T] {
         var curve: [T] = []
 
         let locations = BezierCurve.getFirstCurvePoints(
-            pointA: previousPoint.location,
-            pointB: startPoint.location,
-            pointC: endPoint.location,
+            pointA: points.previousPoint.location,
+            pointB: points.startPoint.location,
+            pointC: points.endPoint.location,
             addLastPoint: false
         )
 
         let duration = locations.count
 
         let brightnessArray = Interpolator.getLinearInterpolationValues(
-            begin: previousPoint.brightness,
-            change: startPoint.brightness,
+            begin: points.previousPoint.brightness,
+            change: points.startPoint.brightness,
             duration: duration,
             addLastPoint: false
         )
 
         let diameterArray = Interpolator.getLinearInterpolationValues(
-            begin: previousPoint.diameter,
-            change: startPoint.diameter,
+            begin: points.previousPoint.diameter,
+            change: points.startPoint.diameter,
             duration: duration,
             addLastPoint: false
         )
@@ -126,35 +114,29 @@ extension CanvasGrayscaleCurveIterator {
         return curve
     }
 
-    private func makeCurve(
-        previousPoint: T,
-        startPoint: T,
-        endPoint: T,
-        nextPoint: T
-    ) -> [T] {
-
+    private func makeCurvePoints(_ points: CanvasBezierCurvePoints) -> [T] {
         var curve: [T] = []
 
         let locations = BezierCurve.getCurvePoints(
-            previousPoint: previousPoint.location,
-            startPoint: startPoint.location,
-            endPoint: endPoint.location,
-            nextPoint: nextPoint.location,
+            previousPoint: points.previousPoint.location,
+            startPoint: points.startPoint.location,
+            endPoint: points.endPoint.location,
+            nextPoint: points.nextPoint.location,
             addLastPoint: false
         )
 
         let duration = locations.count
 
         let brightnessArray = Interpolator.getLinearInterpolationValues(
-            begin: previousPoint.brightness,
-            change: startPoint.brightness,
+            begin: points.previousPoint.brightness,
+            change: points.startPoint.brightness,
             duration: duration,
             addLastPoint: false
         )
 
         let diameterArray = Interpolator.getLinearInterpolationValues(
-            begin: previousPoint.diameter,
-            change: startPoint.diameter,
+            begin: points.previousPoint.diameter,
+            change: points.startPoint.diameter,
             duration: duration,
             addLastPoint: false
         )
@@ -172,18 +154,13 @@ extension CanvasGrayscaleCurveIterator {
         return curve
     }
 
-    private func makeLastCurve(
-        startPoint: T,
-        endPoint: T,
-        nextPoint: T
-    ) -> [T] {
-
+    private func makeLastCurvePoints(_ points: CanvasLastBezierCurvePoints) -> [T] {
         var curve: [T] = []
 
         let locations = BezierCurve.getLastCurvePoints(
-            pointA: startPoint.location,
-            pointB: endPoint.location,
-            pointC: nextPoint.location,
+            pointA: points.previousPoint.location,
+            pointB: points.startPoint.location,
+            pointC: points.endPoint.location,
             addLastPoint: true
         )
 
@@ -191,15 +168,15 @@ extension CanvasGrayscaleCurveIterator {
         let duration = locations.count - 1
 
         let brightnessArray = Interpolator.getLinearInterpolationValues(
-            begin: startPoint.brightness,
-            change: endPoint.brightness,
+            begin: points.startPoint.brightness,
+            change: points.endPoint.brightness,
             duration: duration,
             addLastPoint: true
         )
 
         let diameterArray = Interpolator.getLinearInterpolationValues(
-            begin: startPoint.diameter,
-            change: endPoint.diameter,
+            begin: points.startPoint.diameter,
+            change: points.endPoint.diameter,
             duration: duration,
             addLastPoint: true
         )
