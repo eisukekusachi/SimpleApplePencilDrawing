@@ -46,6 +46,7 @@
 		D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */; };
 		D4B17E372C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E362C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift */; };
 		D4B17E392C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E382C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift */; };
+		D4C3C7A52CA8DB8A003E417C /* IteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7A42CA8DB8A003E417C /* IteratorTests.swift */; };
 		D4D0FDD52C82D4B900E91B4B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */; };
 		D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */; };
 		D4D0FDDD2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDDC2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift */; };
@@ -115,6 +116,7 @@
 		D4B17E322C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleApplePencilDrawingUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4B17E362C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingUITests.swift; sourceTree = "<group>"; };
 		D4B17E382C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		D4C3C7A42CA8DB8A003E417C /* IteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IteratorTests.swift; sourceTree = "<group>"; };
 		D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtensions.swift; sourceTree = "<group>"; };
 		D4D0FDDC2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilScreenTouchPoints.swift; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 				D42930412CA5926B00983863 /* BezierCurveTests.swift */,
 				D467BB542CA810180039EA0D /* CalculatorTests.swift */,
 				D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */,
+				D4C3C7A42CA8DB8A003E417C /* IteratorTests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				D42930422CA5926B00983863 /* BezierCurveTests.swift in Sources */,
 				D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */,
 				D476E9A82CA00B3B00F2332E /* InterpolatorTests.swift in Sources */,
+				D4C3C7A52CA8DB8A003E417C /* IteratorTests.swift in Sources */,
 				D4D0FDEA2C8349EB00E91B4B /* CanvasTouchPointDummy.swift in Sources */,
 				D467BB552CA810180039EA0D /* CalculatorTests.swift in Sources */,
 				D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */,
