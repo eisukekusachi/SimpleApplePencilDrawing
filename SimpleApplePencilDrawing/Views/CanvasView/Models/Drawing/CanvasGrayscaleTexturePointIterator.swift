@@ -11,6 +11,8 @@ final class CanvasGrayscaleCurveIterator: Iterator<CanvasGrayscaleDotPoint> {
 
     typealias T = CanvasGrayscaleDotPoint
 
+    let range: Int = 4
+
 }
 
 extension CanvasGrayscaleCurveIterator {
@@ -20,18 +22,18 @@ extension CanvasGrayscaleCurveIterator {
 
         var curve: [T] = []
 
-        while let subsequence = next(range: 4) {
-
-            if isFirstProcessing {
-                curve.append(
-                    contentsOf: makeFirstCurve(
-                        previousPoint: array[0],
-                        startPoint: array[1],
-                        endPoint: array[2]
-                    )
+        if array.count == 3,
+           let points = makeFirstCurvePoints(array) {
+            curve.append(
+                contentsOf: makeFirstCurve(
+                    previousPoint: points.0,
+                    startPoint: points.1,
+                    endPoint: points.2
                 )
-            }
+            )
+        }
 
+        while let subsequence = next(range: range) {
             curve.append(
                 contentsOf: makeCurve(
                     previousPoint: subsequence[0],
@@ -42,34 +44,38 @@ extension CanvasGrayscaleCurveIterator {
             )
         }
 
-        if atEnd {
-            if index == 0 && array.count >= 3 {
-                curve.append(
-                    contentsOf: makeFirstCurve(
-                        previousPoint: array[0],
-                        startPoint: array[1],
-                        endPoint: array[2]
-                    )
+        if atEnd,
+           let points = makeLastCurvePoints(array) {
+            curve.append(
+                contentsOf: makeLastCurve(
+                    startPoint: points.0,
+                    endPoint: points.1,
+                    nextPoint: points.2
                 )
-            }
-
-            if array.count >= 3 {
-
-                let index0 = array.count - 3
-                let index1 = array.count - 2
-                let index2 = array.count - 1
-
-                curve.append(
-                    contentsOf: makeLastCurve(
-                        startPoint: array[index0],
-                        endPoint: array[index1],
-                        nextPoint: array[index2]
-                    )
-                )
-            }
+            )
         }
 
         return curve
+    }
+
+    func makeFirstCurvePoints(_ array: [T]) -> (T, T, T)? {
+        guard array.count >= 3 else { return nil }
+
+        return (
+            array[0],
+            array[1],
+            array[2]
+        )
+    }
+
+    func makeLastCurvePoints(_ array: [T]) -> (T, T, T)? {
+        guard array.count >= 3 else { return nil }
+
+        return (
+            array[array.count - 3],
+            array[array.count - 2],
+            array[array.count - 1]
+        )
     }
 
 }
