@@ -316,7 +316,7 @@ extension CanvasViewModel {
     }
 
     private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
-        canvasView.makeNewCommandBuffer()
+        canvasView.refreshCommandBuffer()
 
         guard let commandBuffer = canvasView.commandBuffer else { return }
 
