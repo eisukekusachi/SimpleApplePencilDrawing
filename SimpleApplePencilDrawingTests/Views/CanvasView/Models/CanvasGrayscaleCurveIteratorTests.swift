@@ -37,15 +37,9 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     .generate(location: .init(x: 2, y: 2))
                 ]),
                 expectation: .init(result: .init(
-                    previousPoint: .generate(
-                        location: .init(x: 0, y: 0)
-                    ),
-                    startPoint: .generate(
-                        location: .init(x: 1, y: 1)
-                    ),
-                    endPoint: .generate(
-                        location: .init(x: 2, y: 2)
-                    )
+                    previousPoint: .generate(location: .init(x: 0, y: 0)),
+                    startPoint: .generate(location: .init(x: 1, y: 1)),
+                    endPoint: .generate(location: .init(x: 2, y: 2))
                 ))
             ),
             /// If there are more than 3 points, it returns the first 3 points from the array.
@@ -57,15 +51,9 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     .generate(location: .init(x: 3, y: 3)),
                 ]),
                 expectation: .init(result: .init(
-                    previousPoint: .generate(
-                        location: .init(x: 0, y: 0)
-                    ),
-                    startPoint: .generate(
-                        location: .init(x: 1, y: 1)
-                    ),
-                    endPoint: .generate(
-                        location: .init(x: 2, y: 2)
-                    )
+                    previousPoint: .generate(location: .init(x: 0, y: 0)),
+                    startPoint: .generate(location: .init(x: 1, y: 1)),
+                    endPoint: .generate(location: .init(x: 2, y: 2))
                 ))
             )
         ]
@@ -220,15 +208,9 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     .generate(location: .init(x: 2, y: 2))
                 ]),
                 expectation: .init(result: .init(
-                    previousPoint: .generate(
-                        location: .init(x: 0, y: 0)
-                    ),
-                    startPoint: .generate(
-                        location: .init(x: 1, y: 1)
-                    ),
-                    endPoint: .generate(
-                        location: .init(x: 2, y: 2)
-                    )
+                    previousPoint: .generate(location: .init(x: 0, y: 0)),
+                    startPoint: .generate(location: .init(x: 1, y: 1)),
+                    endPoint: .generate(location: .init(x: 2, y: 2))
                 ))
             ),
             /// If there are more than 3 points, it returns the last 3 points from the array.
@@ -240,15 +222,9 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     .generate(location: .init(x: 3, y: 3)),
                 ]),
                 expectation: .init(result: .init(
-                    previousPoint: .generate(
-                        location: .init(x: 1, y: 1)
-                    ),
-                    startPoint: .generate(
-                        location: .init(x: 2, y: 2)
-                    ),
-                    endPoint: .generate(
-                        location: .init(x: 3, y: 3)
-                    )
+                    previousPoint: .generate(location: .init(x: 1, y: 1)),
+                    startPoint: .generate(location: .init(x: 2, y: 2)),
+                    endPoint: .generate(location: .init(x: 3, y: 3))
                 ))
             )
         ]
