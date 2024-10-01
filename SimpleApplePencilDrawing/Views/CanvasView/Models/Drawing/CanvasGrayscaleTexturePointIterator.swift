@@ -62,7 +62,7 @@ extension CanvasGrayscaleCurveIterator {
         return array
     }
 
-    func makeLastBezierCurvePoints() -> CanvasLastBezierCurvePoints? {
+    func makeLastBezierCurvePoints() -> BezierCurveLastPoints? {
         guard array.count >= 3 else { return nil }
         return .init(
             previousPoint: array[array.count - 3],
@@ -154,7 +154,7 @@ extension CanvasGrayscaleCurveIterator {
         return curve
     }
 
-    private func makeLastCurvePoints(_ points: CanvasLastBezierCurvePoints) -> [T] {
+    private func makeLastCurvePoints(_ points: BezierCurveLastPoints) -> [T] {
         var curve: [T] = []
 
         let locations = BezierCurve.getLastCurvePoints(
