@@ -17,7 +17,7 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let array: [T]
         }
         struct Expectation {
-            let result: CanvasFirstBezierCurvePoints?
+            let result: BezierCurveFirstPoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [

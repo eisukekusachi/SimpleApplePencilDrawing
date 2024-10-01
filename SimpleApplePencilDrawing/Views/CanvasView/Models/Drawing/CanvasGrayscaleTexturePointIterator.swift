@@ -38,7 +38,7 @@ extension CanvasGrayscaleCurveIterator {
         return curve
     }
 
-    func makeFirstBezierCurvePoints() -> CanvasFirstBezierCurvePoints? {
+    func makeFirstBezierCurvePoints() -> BezierCurveFirstPoints? {
         guard array.count >= 3 else { return nil }
         return .init(
             previousPoint: array[0],
@@ -75,7 +75,7 @@ extension CanvasGrayscaleCurveIterator {
 
 extension CanvasGrayscaleCurveIterator {
 
-    private func makeFirstCurvePoints(_ points: CanvasFirstBezierCurvePoints) -> [T] {
+    private func makeFirstCurvePoints(_ points: BezierCurveFirstPoints) -> [T] {
         var curve: [T] = []
 
         let locations = BezierCurve.getFirstCurvePoints(
