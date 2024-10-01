@@ -1,5 +1,5 @@
 //
-//  CanvasGrayscaleTexturePoints.swift
+//  BezierCurvePoints.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/09/29.
@@ -15,7 +15,7 @@ struct CanvasFirstBezierCurvePoints {
 }
 
 /// A struct that defines the points needed to create a Bézier curve
-struct CanvasBezierCurvePoints {
+struct BezierCurvePoints {
     let previousPoint: CanvasGrayscaleDotPoint
     let startPoint: CanvasGrayscaleDotPoint
     let endPoint: CanvasGrayscaleDotPoint
