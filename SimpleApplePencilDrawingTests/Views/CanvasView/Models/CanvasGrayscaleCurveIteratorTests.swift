@@ -86,8 +86,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
-                    [result.previousPoint.location, result.startPoint.location, result.endPoint.location],
-                    [expectation.previousPoint.location, expectation.startPoint.location, expectation.endPoint.location]
+                    [
+                        result.previousPoint,
+                        result.startPoint,
+                        result.endPoint
+                    ],
+                    [
+                        expectation.previousPoint,
+                        expectation.startPoint,
+                        expectation.endPoint
+                    ]
                 )
             } else {
                 XCTAssertNil(result)
@@ -183,16 +191,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                 let expectation = expectationArray[i]
                 XCTAssertEqual(
                     [
-                        result.previousPoint.location,
-                        result.startPoint.location,
-                        result.endPoint.location,
-                        result.nextPoint.location
+                        result.previousPoint,
+                        result.startPoint,
+                        result.endPoint,
+                        result.nextPoint
                     ],
                     [
-                        expectation.previousPoint.location,
-                        expectation.startPoint.location,
-                        expectation.endPoint.location,
-                        expectation.nextPoint.location
+                        expectation.previousPoint,
+                        expectation.startPoint,
+                        expectation.endPoint,
+                        expectation.nextPoint
                     ]
                 )
             }
@@ -257,8 +265,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
-                    [result.previousPoint.location, result.startPoint.location, result.endPoint.location],
-                    [expectation.previousPoint.location, expectation.startPoint.location, expectation.endPoint.location]
+                    [
+                        result.previousPoint,
+                        result.startPoint,
+                        result.endPoint
+                    ],
+                    [
+                        expectation.previousPoint,
+                        expectation.startPoint,
+                        expectation.endPoint
+                    ]
                 )
             } else {
                 XCTAssertNil(result)
