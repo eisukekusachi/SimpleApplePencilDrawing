@@ -11,7 +11,7 @@ enum BezierCurve {
     /// A value slightly longer than half of half of the line
     private static let handleLengthAdjustmentRatio: CGFloat = 0.38
 
-    static func getFirstCurvePoints(
+    static func getCurveFirstPoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
@@ -44,7 +44,7 @@ enum BezierCurve {
         )
     }
 
-    static func getCurvePoints(
+    static func getCurveIntermediatePoints(
         previousPoint: CGPoint,
         startPoint: CGPoint,
         endPoint: CGPoint,
@@ -63,7 +63,7 @@ enum BezierCurve {
             pointC: nextPoint
         )
 
-        let handlePoints = getBezierCurveHandlePoints(
+        let handlePoints = getBezierCurveIntermediateHandlePoints(
             previousPoint: previousPoint,
             startPoint: startPoint,
             endPoint: endPoint,
@@ -86,7 +86,7 @@ enum BezierCurve {
         )
     }
 
-    static func getLastCurvePoints(
+    static func getCurveLastPoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
@@ -197,7 +197,7 @@ extension BezierCurve {
     }
 
     /// A method that returns two handle positions for the Bézier curve.
-    static func getBezierCurveHandlePoints(
+    static func getBezierCurveIntermediateHandlePoints(
         previousPoint: CGPoint,
         startPoint: CGPoint,
         endPoint: CGPoint,

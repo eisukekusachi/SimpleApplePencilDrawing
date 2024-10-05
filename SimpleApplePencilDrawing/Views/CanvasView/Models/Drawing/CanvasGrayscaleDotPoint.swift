@@ -75,7 +75,7 @@ extension CanvasGrayscaleDotPoint {
         if iterator.array.count >= 3,
            let points = iterator.getBezierCurveFirstPoints() {
 
-            let bezierCurvePoints = BezierCurve.getFirstCurvePoints(
+            let bezierCurvePoints = BezierCurve.getCurveFirstPoints(
                 pointA: points.previousPoint.location,
                 pointB: points.startPoint.location,
                 pointC: points.endPoint.location,
@@ -105,7 +105,7 @@ extension CanvasGrayscaleDotPoint {
         pointArray.enumerated().forEach { (index, points) in
             let shouldIncludeEndPoint = index == pointArray.count - 1 ? shouldIncludeEndPoint : false
 
-            let bezierCurvePoints = BezierCurve.getCurvePoints(
+            let bezierCurvePoints = BezierCurve.getCurveIntermediatePoints(
                 previousPoint: points.previousPoint.location,
                 startPoint: points.startPoint.location,
                 endPoint: points.endPoint.location,
@@ -133,7 +133,7 @@ extension CanvasGrayscaleDotPoint {
         if iterator.array.count >= 3,
            let points = iterator.getBezierCurveLastPoints() {
 
-            let bezierCurvePoints = BezierCurve.getLastCurvePoints(
+            let bezierCurvePoints = BezierCurve.getCurveLastPoints(
                 pointA: points.previousPoint.location,
                 pointB: points.startPoint.location,
                 pointC: points.endPoint.location,
