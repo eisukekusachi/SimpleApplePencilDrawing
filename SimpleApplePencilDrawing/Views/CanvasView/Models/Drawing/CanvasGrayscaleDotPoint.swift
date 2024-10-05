@@ -48,12 +48,12 @@ extension CanvasGrayscaleDotPoint {
 
     static func makeCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator,
-        shouldIncludeFirstCurve: Bool,
         shouldIncludeLastCurve: Bool
     ) -> [Self] {
         var array: [Self] = []
 
-        if shouldIncludeFirstCurve {
+        if iterator.hasArrayThreeElementsButNoFirstCurveDrawn {
+            iterator.setIsNoFirstCurveDrawnToFalse()
             array.append(contentsOf: makeCurveFirstPoints(from: iterator))
         }
 
