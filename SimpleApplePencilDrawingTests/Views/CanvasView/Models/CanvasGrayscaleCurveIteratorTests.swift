@@ -11,8 +11,25 @@ import XCTest
 final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     typealias T = CanvasGrayscaleDotPoint
 
+    /// Confirm if the first curve has been drawn
+    func testHasArrayThreeElementsButNoFirstCurveDrawn() {
+        let iterator = CanvasGrayscaleCurveIterator()
+
+        iterator.append(.generate())
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, false)
+
+        iterator.append(.generate())
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, false)
+
+        iterator.append(.generate())
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, true)
+
+        iterator.setIsNoFirstCurveDrawnToFalse()
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, false)
+    }
+
     /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a first Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
-    func testMakeFirstBezierCurvePoints() {
+    func testGetFirstBezierCurvePoints() {
         struct Condition {
             let array: [T]
         }
@@ -21,16 +38,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
-            /// If there are not 3 points, it returns nil.
             (
+                /// If there are not 3 points, it returns nil.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
                 ]),
                 expectation: .init(result: nil)
             ),
-            /// If there are 3 points, it returns the 3 points.
             (
+                /// If there are 3 points, it returns the 3 points.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -42,8 +59,8 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     endPoint: .generate(location: .init(x: 2, y: 2))
                 ))
             ),
-            /// If there are more than 3 points, it returns the first 3 points from the array.
             (
+                /// If there are more than 3 points, it returns the first 3 points from the array.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -65,12 +82,20 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.array)
 
-            let result = iterator.makeFirstBezierCurvePoints()
+            let result = iterator.getFirstBezierCurvePoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
-                    [result.previousPoint.location, result.startPoint.location, result.endPoint.location],
-                    [expectation.previousPoint.location, expectation.startPoint.location, expectation.endPoint.location]
+                    [
+                        result.previousPoint,
+                        result.startPoint,
+                        result.endPoint
+                    ],
+                    [
+                        expectation.previousPoint,
+                        expectation.startPoint,
+                        expectation.endPoint
+                    ]
                 )
             } else {
                 XCTAssertNil(result)
@@ -79,17 +104,17 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     }
 
     /// Confirms that the four `CanvasGrayscaleDotPoint` points needed to generate the Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
-    func testMakeBezierCurvePoints() {
+    func testGetIntermediateBezierCurvePointsWithFixedRange4() {
         struct Condition {
             let array: [T]
         }
         struct Expectation {
-            let result: [CanvasBezierCurvePoints]
+            let result: [CanvasIntermediateBezierCurvePoints]
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
-            /// If there are not 4 points, it returns [].
             (
+                /// If there are not 4 points, it returns [].
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -97,8 +122,8 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                 ]),
                 expectation: .init(result: [])
             ),
-            /// If there are 4 points, it returns the 4 points.
             (
+                /// If there are 4 points, it returns the 4 points.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -114,10 +139,10 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     )
                 ])
             ),
-            /// If there are more than 4 points, it returns an array of 4 points, shifting by one each step.
-            /// The curve is drawn between `startPoint` and `endPoint`.
-            /// As the points shift by one, a connected curve is drawn.
             (
+                /// If there are more than 4 points, it returns an array of 4 points, shifting by one each step.
+                /// The curve is drawn between `startPoint` and `endPoint`.
+                /// As the points shift by one, a connected curve is drawn.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -156,7 +181,7 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.array)
 
-            let resultArray = iterator.makeBezierCurvePoints()
+            let resultArray = iterator.getIntermediateBezierCurvePointsWithFixedRange4()
             let expectationArray = expectation.result
 
             XCTAssertEqual(resultArray.count, expectationArray.count)
@@ -166,16 +191,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                 let expectation = expectationArray[i]
                 XCTAssertEqual(
                     [
-                        result.previousPoint.location,
-                        result.startPoint.location,
-                        result.endPoint.location,
-                        result.nextPoint.location
+                        result.previousPoint,
+                        result.startPoint,
+                        result.endPoint,
+                        result.nextPoint
                     ],
                     [
-                        expectation.previousPoint.location,
-                        expectation.startPoint.location,
-                        expectation.endPoint.location,
-                        expectation.nextPoint.location
+                        expectation.previousPoint,
+                        expectation.startPoint,
+                        expectation.endPoint,
+                        expectation.nextPoint
                     ]
                 )
             }
@@ -183,7 +208,7 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     }
 
     /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a last Bézier curve are retrieved from  `CanvasGrayscaleDotPoint` array.
-    func testMakeLastBezierCurvePoints() {
+    func testGetLastBezierCurvePoints() {
         struct Condition {
             let array: [T]
         }
@@ -192,16 +217,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
-            /// If there are not 3 points, it returns nil.
             (
+                /// If there are not 3 points, it returns nil.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
                 ]),
                 expectation: .init(result: nil)
             ),
-            /// If there are 3 points, it returns the 3 points.
             (
+                /// If there are 3 points, it returns the 3 points.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -213,8 +238,8 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     endPoint: .generate(location: .init(x: 2, y: 2))
                 ))
             ),
-            /// If there are more than 3 points, it returns the last 3 points from the array.
             (
+                /// If there are more than 3 points, it returns the last 3 points from the array.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -236,12 +261,20 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.array)
 
-            let result = iterator.makeLastBezierCurvePoints()
+            let result = iterator.getLastBezierCurvePoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
-                    [result.previousPoint.location, result.startPoint.location, result.endPoint.location],
-                    [expectation.previousPoint.location, expectation.startPoint.location, expectation.endPoint.location]
+                    [
+                        result.previousPoint,
+                        result.startPoint,
+                        result.endPoint
+                    ],
+                    [
+                        expectation.previousPoint,
+                        expectation.startPoint,
+                        expectation.endPoint
+                    ]
                 )
             } else {
                 XCTAssertNil(result)

@@ -11,11 +11,11 @@ enum BezierCurve {
     /// A value slightly longer than half of half of the line
     private static let handleLengthAdjustmentRatio: CGFloat = 0.38
 
-    static func getFirstCurvePoints(
+    static func makeFirstCurvePoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGPoint] {
         // This is used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValue = handleLengthRatioBasedOnRadian(
@@ -34,22 +34,22 @@ enum BezierCurve {
             Calculator.getTotalLength(points: [pointA, handlePoints.handleA, handlePoints.handleB, pointB])
         ))
 
-        return Interpolator.getCubicCurvePoints(
+        return Interpolator.makeCubicCurvePoints(
             movePoint: pointA,
             controlPoint1: handlePoints.handleA,
             controlPoint2: handlePoints.handleB,
             endPoint: pointB,
             duration: max(1, duration),
-            addLastPoint: addLastPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
     }
 
-    static func getCurvePoints(
+    static func makeIntermediateCurvePoints(
         previousPoint: CGPoint,
         startPoint: CGPoint,
         endPoint: CGPoint,
         nextPoint: CGPoint,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGPoint] {
         // They are used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValueA = handleLengthRatioBasedOnRadian(
@@ -63,7 +63,7 @@ enum BezierCurve {
             pointC: nextPoint
         )
 
-        let handlePoints = getBezierCurveHandlePoints(
+        let handlePoints = getIntermediateBezierCurveHandlePoints(
             previousPoint: previousPoint,
             startPoint: startPoint,
             endPoint: endPoint,
@@ -76,21 +76,21 @@ enum BezierCurve {
             Calculator.getTotalLength(points: [startPoint, handlePoints.handleA, handlePoints.handleB, endPoint])
         ))
 
-        return Interpolator.getCubicCurvePoints(
+        return Interpolator.makeCubicCurvePoints(
             movePoint: startPoint,
             controlPoint1: handlePoints.handleA,
             controlPoint2: handlePoints.handleB,
             endPoint: endPoint,
             duration: max(1, duration),
-            addLastPoint: addLastPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
     }
 
-    static func getLastCurvePoints(
+    static func makeLastCurvePoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGPoint] {
         // This is used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValue = handleLengthRatioBasedOnRadian(
@@ -109,13 +109,13 @@ enum BezierCurve {
             Calculator.getTotalLength(points: [pointB, handlePoints.handleA, handlePoints.handleB, pointC])
         ))
 
-        return Interpolator.getCubicCurvePoints(
+        return Interpolator.makeCubicCurvePoints(
             movePoint: pointB,
             controlPoint1: handlePoints.handleA,
             controlPoint2: handlePoints.handleB,
             endPoint: pointC,
             duration: max(1, duration),
-            addLastPoint: addLastPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
     }
 
@@ -197,7 +197,7 @@ extension BezierCurve {
     }
 
     /// A method that returns two handle positions for the Bézier curve.
-    static func getBezierCurveHandlePoints(
+    static func getIntermediateBezierCurveHandlePoints(
         previousPoint: CGPoint,
         startPoint: CGPoint,
         endPoint: CGPoint,

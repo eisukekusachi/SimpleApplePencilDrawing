@@ -119,7 +119,7 @@ final class BezierCurveTests: XCTestCase {
     }
 
     /// Confirms that the handle positions for the Bézier curve are returned from the four points.
-    func testGetBezierCurveHandlePoints() {
+    func testGetIntermediateBezierCurveHandlePoints() {
         struct Condition {
             let previousPoint: CGPoint
             let startPoint: CGPoint
@@ -140,7 +140,7 @@ final class BezierCurveTests: XCTestCase {
         ]
 
         /// In this case, an array of `CGPoint` is used where the x-coordinates shift positively by `10`, and the y-coordinates alternate in height.
-        /// `func getBezierCurveHandlePoints` uses four points, with `previousPoint` and `endPoint` at the same height, as well as `startPoint` and `nextPoint`.
+        /// `func getIntermediateBezierCurveHandlePoints` uses four points, with `previousPoint` and `endPoint` at the same height, as well as `startPoint` and `nextPoint`.
         /// Therefore, the expected result is that `handleA` will be `startPoint.x` plus `handleLength`, `handleB` will be `endPoint.x` minus `handleLength`.
         let handleLengthRatio = 0.5
         let handleLength0 = Calculator.getLength(points[1], to: points[2]) * handleLengthRatio
@@ -176,7 +176,7 @@ final class BezierCurveTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let handlePoints = BezierCurve.getBezierCurveHandlePoints(
+            let handlePoints = BezierCurve.getIntermediateBezierCurveHandlePoints(
                 previousPoint: condition.previousPoint,
                 startPoint: condition.startPoint,
                 endPoint: condition.endPoint,

@@ -9,13 +9,13 @@ import UIKit
 
 enum Interpolator {
 
-    static func getCubicCurvePoints(
+    static func makeCubicCurvePoints(
         movePoint: CGPoint,
         controlPoint1: CGPoint,
         controlPoint2: CGPoint,
         endPoint: CGPoint,
         duration: Int,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGPoint] {
 
         var result: [CGPoint] = []
@@ -44,7 +44,7 @@ enum Interpolator {
             t += step
         }
 
-        if addLastPoint {
+        if shouldIncludeEndPoint {
             result.append(endPoint)
         }
 
@@ -55,7 +55,7 @@ enum Interpolator {
         begin: CGFloat,
         change: CGFloat,
         duration: Int,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGFloat] {
 
         var result: [CGFloat] = []
@@ -71,7 +71,7 @@ enum Interpolator {
             }
         }
 
-        if addLastPoint {
+        if shouldIncludeEndPoint {
             result.append(change)
         }
 
