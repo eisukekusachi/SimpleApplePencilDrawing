@@ -63,7 +63,7 @@ enum BezierCurve {
             pointC: nextPoint
         )
 
-        let handlePoints = getBezierCurveIntermediateHandlePoints(
+        let handlePoints = getIntermediateBezierCurveHandlePoints(
             previousPoint: previousPoint,
             startPoint: startPoint,
             endPoint: endPoint,
@@ -197,7 +197,7 @@ extension BezierCurve {
     }
 
     /// A method that returns two handle positions for the Bézier curve.
-    static func getBezierCurveIntermediateHandlePoints(
+    static func getIntermediateBezierCurveHandlePoints(
         previousPoint: CGPoint,
         startPoint: CGPoint,
         endPoint: CGPoint,
