@@ -54,20 +54,20 @@ extension CanvasGrayscaleDotPoint {
 
         if iterator.hasArrayThreeElementsButNoFirstCurveDrawn {
             iterator.setIsNoFirstCurveDrawnToFalse()
-            array.append(contentsOf: makeCurveFirstPoints(from: iterator))
+            array.append(contentsOf: makeFirstCurvePoints(from: iterator))
         }
 
-        array.append(contentsOf: makeCurveIntermediatePoints(from: iterator, shouldIncludeEndPoint: false))
+        array.append(contentsOf: makeIntermediateCurvePoints(from: iterator, shouldIncludeEndPoint: false))
 
         if shouldIncludeLastCurve {
-            array.append(contentsOf: makeCurveFirstPoints(from: iterator))
+            array.append(contentsOf: makeLastCurvePoints(from: iterator))
         }
 
         return array
     }
 
     /// Make an array of first curve points from an iterator
-    static func makeCurveFirstPoints(
+    static func makeFirstCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator
     ) -> [Self] {
         var curve: [Self] = []
@@ -79,7 +79,7 @@ extension CanvasGrayscaleDotPoint {
                 pointA: points.previousPoint.location,
                 pointB: points.startPoint.location,
                 pointC: points.endPoint.location,
-                addLastPoint: false
+                shouldIncludeEndPoint: false
             )
             curve.append(
                 contentsOf: interpolateToMatchPointCount(
@@ -94,7 +94,7 @@ extension CanvasGrayscaleDotPoint {
     }
 
     /// Make an array of curve points from an iterator with a range of 4 set
-    static func makeCurveIntermediatePoints(
+    static func makeIntermediateCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator,
         shouldIncludeEndPoint: Bool
     ) -> [Self] {
@@ -110,7 +110,7 @@ extension CanvasGrayscaleDotPoint {
                 startPoint: points.startPoint.location,
                 endPoint: points.endPoint.location,
                 nextPoint: points.nextPoint.location,
-                addLastPoint: shouldIncludeEndPoint
+                shouldIncludeEndPoint: shouldIncludeEndPoint
             )
             curve.append(
                 contentsOf: interpolateToMatchPointCount(
@@ -125,7 +125,7 @@ extension CanvasGrayscaleDotPoint {
     }
 
     /// Make an array of last curve points from an iterator
-    static func makeCurveLastPoints(
+    static func makeLastCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator
     ) -> [Self] {
         var curve: [Self] = []
@@ -137,7 +137,7 @@ extension CanvasGrayscaleDotPoint {
                 pointA: points.previousPoint.location,
                 pointB: points.startPoint.location,
                 pointC: points.endPoint.location,
-                addLastPoint: true
+                shouldIncludeEndPoint: true
             )
             curve.append(
                 contentsOf: interpolateToMatchPointCount(
@@ -171,21 +171,21 @@ extension CanvasGrayscaleDotPoint {
             begin: interpolationStart.brightness,
             change: interpolationEnd.brightness,
             duration: numberOfInterpolations,
-            addLastPoint: shouldIncludeEndPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
 
         let diameterArray = Interpolator.getLinearInterpolationValues(
             begin: interpolationStart.diameter,
             change: interpolationEnd.diameter,
             duration: numberOfInterpolations,
-            addLastPoint: shouldIncludeEndPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
 
         let blurArray = Interpolator.getLinearInterpolationValues(
             begin: interpolationStart.blurSize,
             change: interpolationEnd.blurSize,
             duration: numberOfInterpolations,
-            addLastPoint: shouldIncludeEndPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
 
         for i in 0 ..< targetPoints.count {

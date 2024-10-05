@@ -22,7 +22,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
     }
 
     /// Confirm that the curve array can be created
-    func testMakeCurveIntermediatePoints() {
+    func testMakeIntermediateCurvePoints() {
         struct Condition {
             let shouldIncludeEndPoint: Bool
             let points: [CanvasGrayscaleDotPoint]
@@ -161,7 +161,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.points)
 
-            let result = CanvasGrayscaleDotPoint.makeCurveIntermediatePoints(
+            let result = CanvasGrayscaleDotPoint.makeIntermediateCurvePoints(
                 from: iterator,
                 shouldIncludeEndPoint: condition.shouldIncludeEndPoint
             )
@@ -170,7 +170,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
     }
 
     /// Confirm that the first curve array can be created
-    func testMakeCurveFirstPoints() {
+    func testMakeFirstCurvePoints() {
         struct Condition {
             let points: [CanvasGrayscaleDotPoint]
         }
@@ -218,7 +218,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.points)
 
-            let result = CanvasGrayscaleDotPoint.makeCurveFirstPoints(
+            let result = CanvasGrayscaleDotPoint.makeFirstCurvePoints(
                 from: iterator
             )
             XCTAssertEqual(result, expectation.result)
@@ -226,7 +226,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
     }
 
     /// Confirm that the last curve array can be created
-    func testMakeCurveLastPoints() {
+    func testMakeLastCurvePoints() {
         struct Condition {
             let points: [CanvasGrayscaleDotPoint]
         }
@@ -274,7 +274,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.points)
 
-            let result = CanvasGrayscaleDotPoint.makeCurveLastPoints(
+            let result = CanvasGrayscaleDotPoint.makeLastCurvePoints(
                 from: iterator
             )
             XCTAssertEqual(result, expectation.result)

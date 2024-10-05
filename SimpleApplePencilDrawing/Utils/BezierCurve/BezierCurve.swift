@@ -15,7 +15,7 @@ enum BezierCurve {
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGPoint] {
         // This is used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValue = handleLengthRatioBasedOnRadian(
@@ -40,7 +40,7 @@ enum BezierCurve {
             controlPoint2: handlePoints.handleB,
             endPoint: pointB,
             duration: max(1, duration),
-            addLastPoint: addLastPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
     }
 
@@ -49,7 +49,7 @@ enum BezierCurve {
         startPoint: CGPoint,
         endPoint: CGPoint,
         nextPoint: CGPoint,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGPoint] {
         // They are used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValueA = handleLengthRatioBasedOnRadian(
@@ -82,7 +82,7 @@ enum BezierCurve {
             controlPoint2: handlePoints.handleB,
             endPoint: endPoint,
             duration: max(1, duration),
-            addLastPoint: addLastPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
     }
 
@@ -90,7 +90,7 @@ enum BezierCurve {
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
-        addLastPoint: Bool
+        shouldIncludeEndPoint: Bool
     ) -> [CGPoint] {
         // This is used to reduce the effect of the curve when the angle becomes narrower.
         let approachStraightValue = handleLengthRatioBasedOnRadian(
@@ -115,7 +115,7 @@ enum BezierCurve {
             controlPoint2: handlePoints.handleB,
             endPoint: pointC,
             duration: max(1, duration),
-            addLastPoint: addLastPoint
+            shouldIncludeEndPoint: shouldIncludeEndPoint
         )
     }
 
