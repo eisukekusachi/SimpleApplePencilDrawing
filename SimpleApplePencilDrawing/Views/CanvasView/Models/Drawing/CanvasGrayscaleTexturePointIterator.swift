@@ -27,7 +27,7 @@ extension CanvasGrayscaleCurveIterator {
 
 extension CanvasGrayscaleCurveIterator {
 
-    func getBezierCurveFirstPoints() -> CanvasBezierCurveFirstPoints? {
+    func getFirstBezierCurvePoints() -> CanvasFirstBezierCurvePoints? {
         guard array.count >= 3 else { return nil }
         return .init(
             previousPoint: array[0],
@@ -36,8 +36,8 @@ extension CanvasGrayscaleCurveIterator {
         )
     }
 
-    func getBezierCurvePointsWithFixedRange4() -> [CanvasBezierCurveIntermediatePoints] {
-        var array: [CanvasBezierCurveIntermediatePoints] = []
+    func getIntermediateBezierCurvePointsWithFixedRange4() -> [CanvasIntermediateBezierCurvePoints] {
+        var array: [CanvasIntermediateBezierCurvePoints] = []
         while let subsequence = next(range: 4) {
             array.append(
                 .init(
@@ -51,7 +51,7 @@ extension CanvasGrayscaleCurveIterator {
         return array
     }
 
-    func getBezierCurveLastPoints() -> CanvasBezierCurveLastPoints? {
+    func getLastBezierCurvePoints() -> CanvasLastBezierCurvePoints? {
         guard array.count >= 3 else { return nil }
         return .init(
             previousPoint: array[array.count - 3],

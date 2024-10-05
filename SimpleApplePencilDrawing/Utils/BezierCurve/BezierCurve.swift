@@ -11,7 +11,7 @@ enum BezierCurve {
     /// A value slightly longer than half of half of the line
     private static let handleLengthAdjustmentRatio: CGFloat = 0.38
 
-    static func getCurveFirstPoints(
+    static func makeFirstCurvePoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
@@ -34,7 +34,7 @@ enum BezierCurve {
             Calculator.getTotalLength(points: [pointA, handlePoints.handleA, handlePoints.handleB, pointB])
         ))
 
-        return Interpolator.getCubicCurvePoints(
+        return Interpolator.makeCubicCurvePoints(
             movePoint: pointA,
             controlPoint1: handlePoints.handleA,
             controlPoint2: handlePoints.handleB,
@@ -44,7 +44,7 @@ enum BezierCurve {
         )
     }
 
-    static func getCurveIntermediatePoints(
+    static func makeIntermediateCurvePoints(
         previousPoint: CGPoint,
         startPoint: CGPoint,
         endPoint: CGPoint,
@@ -76,7 +76,7 @@ enum BezierCurve {
             Calculator.getTotalLength(points: [startPoint, handlePoints.handleA, handlePoints.handleB, endPoint])
         ))
 
-        return Interpolator.getCubicCurvePoints(
+        return Interpolator.makeCubicCurvePoints(
             movePoint: startPoint,
             controlPoint1: handlePoints.handleA,
             controlPoint2: handlePoints.handleB,
@@ -86,7 +86,7 @@ enum BezierCurve {
         )
     }
 
-    static func getCurveLastPoints(
+    static func makeLastCurvePoints(
         pointA: CGPoint,
         pointB: CGPoint,
         pointC: CGPoint,
@@ -109,7 +109,7 @@ enum BezierCurve {
             Calculator.getTotalLength(points: [pointB, handlePoints.handleA, handlePoints.handleB, pointC])
         ))
 
-        return Interpolator.getCubicCurvePoints(
+        return Interpolator.makeCubicCurvePoints(
             movePoint: pointB,
             controlPoint1: handlePoints.handleA,
             controlPoint2: handlePoints.handleB,

@@ -9,7 +9,7 @@ import XCTest
 @testable import SimpleApplePencilDrawing
 
 final class InterpolatorTests: XCTestCase {
-    func testGetCubicCurvePoints() {
+    func testMakeCubicCurvePoints() {
         struct Condition {
             let movePoint: CGPoint
             let handlePoint1: CGPoint
@@ -145,7 +145,7 @@ final class InterpolatorTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let resultPoints = Interpolator.getCubicCurvePoints(
+            let resultPoints = Interpolator.makeCubicCurvePoints(
                 movePoint: condition.movePoint,
                 controlPoint1: condition.handlePoint1,
                 controlPoint2: condition.handlePoint2,

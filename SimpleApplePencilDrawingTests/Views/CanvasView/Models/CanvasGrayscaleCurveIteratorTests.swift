@@ -29,12 +29,12 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     }
 
     /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a first Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
-    func testGetCanvasBezierCurveFirstPoints() {
+    func testGetFirstBezierCurvePoints() {
         struct Condition {
             let array: [T]
         }
         struct Expectation {
-            let result: CanvasBezierCurveFirstPoints?
+            let result: CanvasFirstBezierCurvePoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -82,7 +82,7 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.array)
 
-            let result = iterator.getBezierCurveFirstPoints()
+            let result = iterator.getFirstBezierCurvePoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
@@ -104,12 +104,12 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     }
 
     /// Confirms that the four `CanvasGrayscaleDotPoint` points needed to generate the Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
-    func testGetCanvasBezierCurveIntermediatePointsWithFixedRange4() {
+    func testGetIntermediateBezierCurvePointsWithFixedRange4() {
         struct Condition {
             let array: [T]
         }
         struct Expectation {
-            let result: [CanvasBezierCurveIntermediatePoints]
+            let result: [CanvasIntermediateBezierCurvePoints]
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -181,7 +181,7 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.array)
 
-            let resultArray = iterator.getBezierCurvePointsWithFixedRange4()
+            let resultArray = iterator.getIntermediateBezierCurvePointsWithFixedRange4()
             let expectationArray = expectation.result
 
             XCTAssertEqual(resultArray.count, expectationArray.count)
@@ -208,12 +208,12 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     }
 
     /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a last Bézier curve are retrieved from  `CanvasGrayscaleDotPoint` array.
-    func testGetBezierCurveLastPoints() {
+    func testGetLastBezierCurvePoints() {
         struct Condition {
             let array: [T]
         }
         struct Expectation {
-            let result: CanvasBezierCurveLastPoints?
+            let result: CanvasLastBezierCurvePoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -261,7 +261,7 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.array)
 
-            let result = iterator.getBezierCurveLastPoints()
+            let result = iterator.getLastBezierCurvePoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(

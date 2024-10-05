@@ -9,7 +9,7 @@ import UIKit
 
 enum Interpolator {
 
-    static func getCubicCurvePoints(
+    static func makeCubicCurvePoints(
         movePoint: CGPoint,
         controlPoint1: CGPoint,
         controlPoint2: CGPoint,
