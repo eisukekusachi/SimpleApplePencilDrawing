@@ -36,6 +36,7 @@
 		D467BB552CA810180039EA0D /* CalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D467BB542CA810180039EA0D /* CalculatorTests.swift */; };
 		D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C036A2C95D0DC001658C5 /* Constants.swift */; };
 		D46ECA2D2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46ECA2C2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift */; };
+		D46ECA2F2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46ECA2E2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift */; };
 		D476E9A82CA00B3B00F2332E /* InterpolatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */; };
 		D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D478DD9C2C7978CA0031521D /* SetExtensions.swift */; };
 		D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E152C0ABCB30056C270 /* AppDelegate.swift */; };
@@ -48,7 +49,6 @@
 		D4B17E372C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E362C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift */; };
 		D4B17E392C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E382C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift */; };
 		D4C3C7A52CA8DB8A003E417C /* IteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7A42CA8DB8A003E417C /* IteratorTests.swift */; };
-		D4C3C7AF2CA93036003E417C /* BezierCurvePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7AE2CA93036003E417C /* BezierCurvePoints.swift */; };
 		D4C3C7B12CA943A8003E417C /* CanvasGrayscaleCurveIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7B02CA943A8003E417C /* CanvasGrayscaleCurveIteratorTests.swift */; };
 		D4C3C7B32CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7B22CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift */; };
 		D4D0FDD52C82D4B900E91B4B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */; };
@@ -106,6 +106,7 @@
 		D467BB542CA810180039EA0D /* CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorTests.swift; sourceTree = "<group>"; };
 		D46C036A2C95D0DC001658C5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		D46ECA2C2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleDotPointTests.swift; sourceTree = "<group>"; };
+		D46ECA2E2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasBezierCurvePoints.swift; sourceTree = "<group>"; };
 		D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpolatorTests.swift; sourceTree = "<group>"; };
 		D478DD9C2C7978CA0031521D /* SetExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetExtensions.swift; sourceTree = "<group>"; };
 		D4B17E122C0ABCB30056C270 /* SimpleApplePencilDrawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleApplePencilDrawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,7 +123,6 @@
 		D4B17E362C0ABCB40056C270 /* SimpleApplePencilDrawingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingUITests.swift; sourceTree = "<group>"; };
 		D4B17E382C0ABCB40056C270 /* SimpleApplePencilDrawingUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		D4C3C7A42CA8DB8A003E417C /* IteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IteratorTests.swift; sourceTree = "<group>"; };
-		D4C3C7AE2CA93036003E417C /* BezierCurvePoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierCurvePoints.swift; sourceTree = "<group>"; };
 		D4C3C7B02CA943A8003E417C /* CanvasGrayscaleCurveIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleCurveIteratorTests.swift; sourceTree = "<group>"; };
 		D4C3C7B22CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleDotPointDummy.swift; sourceTree = "<group>"; };
 		D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
@@ -324,6 +324,7 @@
 		D4D0FDCE2C82B17500E91B4B /* Drawing */ = {
 			isa = PBXGroup;
 			children = (
+				D46ECA2E2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift */,
 				D462E18E2C0C620500E0503E /* CanvasTouchPoint.swift */,
 				D462E1972C0C651B00E0503E /* CanvasGrayscaleDotPoint.swift */,
 				D462E19F2C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift */,
@@ -381,7 +382,6 @@
 			children = (
 				D42930432CA5938A00983863 /* BezierCurve.swift */,
 				D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */,
-				D4C3C7AE2CA93036003E417C /* BezierCurvePoints.swift */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -539,6 +539,7 @@
 				D462E18F2C0C620500E0503E /* CanvasTouchPoint.swift in Sources */,
 				D42930462CA599DD00983863 /* BezierCurveHandlePoints.swift in Sources */,
 				D462E17E2C0C567E00E0503E /* UIColorExtensions.swift in Sources */,
+				D46ECA2F2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift in Sources */,
 				D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */,
 				D462E1852C0C583900E0503E /* MTLTextureExtensions.swift in Sources */,
 				D462E1832C0C580600E0503E /* ViewSize.swift in Sources */,
@@ -547,7 +548,6 @@
 				D462E1A02C0C67C000E0503E /* CanvasGrayscaleTexturePointIterator.swift in Sources */,
 				D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */,
 				D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */,
-				D4C3C7AF2CA93036003E417C /* BezierCurvePoints.swift in Sources */,
 				D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */,
 				D4D0FDDD2C82D6C500E91B4B /* CanvasPencilScreenTouchPoints.swift in Sources */,
 				D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */,

@@ -29,12 +29,12 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     }
 
     /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a first Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
-    func testGetBezierCurveFirstPoints() {
+    func testGetCanvasBezierCurveFirstPoints() {
         struct Condition {
             let array: [T]
         }
         struct Expectation {
-            let result: BezierCurveFirstPoints?
+            let result: CanvasBezierCurveFirstPoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -104,12 +104,12 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     }
 
     /// Confirms that the four `CanvasGrayscaleDotPoint` points needed to generate the Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
-    func testGetBezierCurvePointsWithFixedRange4() {
+    func testGetCanvasBezierCurveIntermediatePointsWithFixedRange4() {
         struct Condition {
             let array: [T]
         }
         struct Expectation {
-            let result: [BezierCurvePoints]
+            let result: [CanvasBezierCurveIntermediatePoints]
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -213,7 +213,7 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
             let array: [T]
         }
         struct Expectation {
-            let result: BezierCurveLastPoints?
+            let result: CanvasBezierCurveLastPoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
