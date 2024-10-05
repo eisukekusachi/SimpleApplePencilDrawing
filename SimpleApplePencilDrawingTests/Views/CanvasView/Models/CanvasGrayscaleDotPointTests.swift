@@ -294,7 +294,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
             (
-                // Interpolate to match `targetPoints`, including `endPoint` values
+                /// Interpolate to match `targetPoints`, including `endPoint` values
                 condition: .init(
                     shouldIncludeEndPoint: true,
                     targetPoints: [
@@ -307,8 +307,8 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
                     startPoint: .generate(location: .init(x: 9999, y: 9999), diameter: 0, brightness: 0),
                     endPoint: .generate(location: .init(x: 9999, y: 9999), diameter: 1.0, brightness: 1.0)
                 ),
-                // `location` of `startPoint` and `endPoint` are ignored,
-                // and `location` of `targetPoints` is used instead.
+                /// `location` of `startPoint` and `endPoint` are ignored,
+                /// and `location` of `targetPoints` is used instead.
                 expectation: .init(result: [
                     .generate(location: .init(x: 0, y: 0), diameter: 0.0, brightness: 0.0),
                     .generate(location: .init(x: 10, y: 10), diameter: 0.25, brightness: 0.25),
@@ -318,7 +318,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
                 ])
             ),
             (
-                // Interpolate to match `targetPoints`, excluding `endPoint` values
+                /// Interpolate to match `targetPoints`, excluding `endPoint` values
                 condition: .init(
                     shouldIncludeEndPoint: false,
                     targetPoints: [
@@ -330,8 +330,8 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
                     startPoint: .generate( location: .init(x: 9999, y: 9999), diameter: 0, brightness: 0),
                     endPoint: .generate( location: .init(x: 9999, y: 9999), diameter: 1.0, brightness: 1.0)
                 ),
-                // `location` of `startPoint` and `endPoint` are ignored,
-                // and `location` of `targetPoints` is used instead.
+                /// `location` of `startPoint` and `endPoint` are ignored,
+                /// and `location` of `targetPoints` is used instead.
                 expectation: .init(result: [
                     .generate(location: .init(x: 0, y: 0), diameter: 0.0, brightness: 0.0),
                     .generate(location: .init(x: 10, y: 10), diameter: 0.25, brightness: 0.25),

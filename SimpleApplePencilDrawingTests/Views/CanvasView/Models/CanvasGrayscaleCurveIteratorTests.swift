@@ -38,16 +38,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
-            /// If there are not 3 points, it returns nil.
             (
+                /// If there are not 3 points, it returns nil.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
                 ]),
                 expectation: .init(result: nil)
             ),
-            /// If there are 3 points, it returns the 3 points.
             (
+                /// If there are 3 points, it returns the 3 points.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -59,8 +59,8 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     endPoint: .generate(location: .init(x: 2, y: 2))
                 ))
             ),
-            /// If there are more than 3 points, it returns the first 3 points from the array.
             (
+                /// If there are more than 3 points, it returns the first 3 points from the array.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -113,8 +113,8 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
-            /// If there are not 4 points, it returns [].
             (
+                /// If there are not 4 points, it returns [].
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -122,8 +122,8 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                 ]),
                 expectation: .init(result: [])
             ),
-            /// If there are 4 points, it returns the 4 points.
             (
+                /// If there are 4 points, it returns the 4 points.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -139,10 +139,10 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     )
                 ])
             ),
-            /// If there are more than 4 points, it returns an array of 4 points, shifting by one each step.
-            /// The curve is drawn between `startPoint` and `endPoint`.
-            /// As the points shift by one, a connected curve is drawn.
             (
+                /// If there are more than 4 points, it returns an array of 4 points, shifting by one each step.
+                /// The curve is drawn between `startPoint` and `endPoint`.
+                /// As the points shift by one, a connected curve is drawn.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -217,16 +217,16 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
-            /// If there are not 3 points, it returns nil.
             (
+                /// If there are not 3 points, it returns nil.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
                 ]),
                 expectation: .init(result: nil)
             ),
-            /// If there are 3 points, it returns the 3 points.
             (
+                /// If there are 3 points, it returns the 3 points.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),
@@ -238,8 +238,8 @@ final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
                     endPoint: .generate(location: .init(x: 2, y: 2))
                 ))
             ),
-            /// If there are more than 3 points, it returns the last 3 points from the array.
             (
+                /// If there are more than 3 points, it returns the last 3 points from the array.
                 condition: .init(array: [
                     .generate(location: .init(x: 0, y: 0)),
                     .generate(location: .init(x: 1, y: 1)),

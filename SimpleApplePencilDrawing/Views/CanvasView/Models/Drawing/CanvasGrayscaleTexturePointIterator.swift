@@ -15,10 +15,11 @@ final class CanvasGrayscaleCurveIterator: Iterator<CanvasGrayscaleDotPoint> {
 }
 
 extension CanvasGrayscaleCurveIterator {
-
+    /// Set to true when three elements are added to the array while `isNoFirstCurveDrawn` is true
     var hasArrayThreeElementsButNoFirstCurveDrawn: Bool {
         array.count >= 3 && isNoFirstCurveDrawn
     }
+
     func setIsNoFirstCurveDrawnToFalse() {
         isNoFirstCurveDrawn = false
     }
