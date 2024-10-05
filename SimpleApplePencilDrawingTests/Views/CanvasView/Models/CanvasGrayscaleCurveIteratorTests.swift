@@ -11,6 +11,23 @@ import XCTest
 final class CanvasGrayscaleCurveIteratorTests: XCTestCase {
     typealias T = CanvasGrayscaleDotPoint
 
+    /// Confirm if the first curve has been drawn
+    func testHasArrayThreeElementsButNoFirstCurveDrawn() {
+        let iterator = CanvasGrayscaleCurveIterator()
+
+        iterator.append(.generate())
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, false)
+
+        iterator.append(.generate())
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, false)
+
+        iterator.append(.generate())
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, true)
+
+        iterator.setIsNoFirstCurveDrawnToFalse()
+        XCTAssertEqual(iterator.hasArrayThreeElementsButNoFirstCurveDrawn, false)
+    }
+
     /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a first Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
     func testGetBezierCurveFirstPoints() {
         struct Condition {

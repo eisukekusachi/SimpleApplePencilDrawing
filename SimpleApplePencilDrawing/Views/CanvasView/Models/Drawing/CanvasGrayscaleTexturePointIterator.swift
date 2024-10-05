@@ -10,6 +10,19 @@ import Foundation
 final class CanvasGrayscaleCurveIterator: Iterator<CanvasGrayscaleDotPoint> {
     typealias T = CanvasGrayscaleDotPoint
 
+    private var isNoFirstCurveDrawn: Bool = true
+
+}
+
+extension CanvasGrayscaleCurveIterator {
+
+    var hasArrayThreeElementsButNoFirstCurveDrawn: Bool {
+        array.count >= 3 && isNoFirstCurveDrawn
+    }
+    func setIsNoFirstCurveDrawnToFalse() {
+        isNoFirstCurveDrawn = false
+    }
+
 }
 
 extension CanvasGrayscaleCurveIterator {
