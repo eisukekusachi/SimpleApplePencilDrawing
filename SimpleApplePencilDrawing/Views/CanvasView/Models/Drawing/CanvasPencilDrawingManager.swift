@@ -1,5 +1,5 @@
 //
-//  CanvasPencilScreenTouchPoints.swift
+//  CanvasPencilDrawingManager.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/08/31.
@@ -12,7 +12,7 @@ import UIKit
 ///  This class is a model that combines estimated and actual values to create an array of `CanvasTouchPoint`.
 ///  It stores the estimated values in `estimatedTouchPointArray` and then combines them with the actual values received later
 ///  to create the values for `actualTouchPointArray`.
-final class CanvasPencilScreenTouchPoints {
+final class CanvasPencilDrawingManager {
 
     /// An array that holds elements combining actualTouches, where the force values are accurate, and estimatedTouchPointArray.
     private (set) var actualTouchPointArray: [CanvasTouchPoint] = []
@@ -42,7 +42,7 @@ final class CanvasPencilScreenTouchPoints {
 
 }
 
-extension CanvasPencilScreenTouchPoints {
+extension CanvasPencilDrawingManager {
 
     /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing
     var latestActualTouchPoints: [CanvasTouchPoint] {

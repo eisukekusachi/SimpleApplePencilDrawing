@@ -1,5 +1,5 @@
 //
-//  CanvasPencilScreenTouchPointsTests.swift
+//  CanvasPencilDrawingManagerTests.swift
 //  SimpleApplePencilDrawingTests
 //
 //  Created by Eisuke Kusachi on 2024/08/31.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import SimpleApplePencilDrawing
 
-final class CanvasPencilScreenTouchPointsTests: XCTestCase {
+final class CanvasPencilDrawingManagerTests: XCTestCase {
 
     /// Confirms that the replacement with the actual values is complete
     func testHasActualValueReplacementCompleted() {
@@ -22,7 +22,7 @@ final class CanvasPencilScreenTouchPointsTests: XCTestCase {
             UITouchDummy.init(phase: .moved, estimationUpdateIndex: 1)
         ]
 
-        let subject = CanvasPencilScreenTouchPoints(
+        let subject = CanvasPencilDrawingManager(
             estimatedTouchPointArray: estimatedTouchPointArray
         )
         subject.updateLastEstimationUpdateIndexAtCompletionForTouchCompletion()
@@ -60,7 +60,7 @@ final class CanvasPencilScreenTouchPointsTests: XCTestCase {
             (UITouchDummy.init(phase: .moved, estimationUpdateIndex: 3, timestamp: 5), false)
         ]
 
-        let subject = CanvasPencilScreenTouchPoints(
+        let subject = CanvasPencilDrawingManager(
             estimatedTouchPointArray: [
                 .generate(phase: .began, estimationUpdateIndex: 0),
                 .generate(phase: .moved, estimationUpdateIndex: 1),
@@ -99,7 +99,7 @@ final class CanvasPencilScreenTouchPointsTests: XCTestCase {
             UITouchDummy.init(phase: .moved, force: 0.1, estimationUpdateIndex: 2)
         ]
 
-        let subject = CanvasPencilScreenTouchPoints(
+        let subject = CanvasPencilDrawingManager(
             estimatedTouchPointArray: estimatedTouches
         )
         subject.updateLastEstimationUpdateIndexAtCompletionForTouchCompletion()
@@ -134,7 +134,7 @@ final class CanvasPencilScreenTouchPointsTests: XCTestCase {
 
     /// Confirms that on `.ended`, `lastEstimationUpdateIndexAtCompletion` contains the `estimationUpdateIndex` from the second-to-last element of `estimatedTouchPointArray`
     func testUpdateLastEstimationUpdateIndexAtTouchEnded() {
-        let subject = CanvasPencilScreenTouchPoints()
+        let subject = CanvasPencilDrawingManager()
 
         /// When the phase is not `.ended`, `lastEstimationUpdateIndexAtCompletion` will be `nil`
         subject.appendEstimatedValue(.generate(phase: .began, estimationUpdateIndex: 0))
@@ -153,7 +153,7 @@ final class CanvasPencilScreenTouchPointsTests: XCTestCase {
 
     /// Confirms that on `.cancelled`, `lastEstimationUpdateIndexAtCompletion` contains the `estimationUpdateIndex` from the second-to-last element of `estimatedTouchPointArray`
     func testUpdateLastEstimationUpdateIndexAtTouchCancelled() {
-        let subject = CanvasPencilScreenTouchPoints()
+        let subject = CanvasPencilDrawingManager()
 
         /// When the phase is not `.ended`, `lastEstimationUpdateIndexAtCompletion` will be `nil`
         subject.appendEstimatedValue(.generate(phase: .began, estimationUpdateIndex: 0))

@@ -25,7 +25,7 @@ final class CanvasViewModel {
     private var canvasTexture: MTLTexture?
 
     /// A manager for handling Apple Pencil input values
-    private let pencilScreenTouchPoints = CanvasPencilScreenTouchPoints()
+    private let pencilDrawingManager = CanvasPencilDrawingManager()
 
     private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
 
@@ -85,7 +85,7 @@ extension CanvasViewModel {
         canvasView: CanvasViewProtocol
     ) {
         guard
-            pencilScreenTouchPoints.estimatedTouchPointArray.isEmpty,
+            pencilDrawingManager.estimatedTouchPointArray.isEmpty,
             let canvasTexture,
             let commandBuffer = canvasView.commandBuffer,
             let renderTexture = canvasView.renderTexture
@@ -169,7 +169,7 @@ extension CanvasViewModel {
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
             pauseCommitCommandBufferInDisplayLink(false, canvasView: canvasView)
 
-            pencilScreenTouchPoints.reset()
+            pencilDrawingManager.reset()
         }
 
         event?.allTouches?
@@ -177,7 +177,7 @@ extension CanvasViewModel {
             .sorted { $0.timestamp < $1.timestamp }
             .forEach { touch in
                 event?.coalescedTouches(for: touch)?.forEach { coalescedTouch in
-                    pencilScreenTouchPoints.appendEstimatedValue(
+                    pencilDrawingManager.appendEstimatedValue(
                         .init(touch: coalescedTouch, view: view)
                     )
                 }
@@ -198,21 +198,21 @@ extension CanvasViewModel {
         // Combine `actualTouches` with the estimated values to create actual values, and append them to an array
         let actualTouchArray = Array(actualTouches).sorted { $0.timestamp < $1.timestamp }
         actualTouchArray.forEach { actualTouch in
-            pencilScreenTouchPoints.appendActualValueWithEstimatedValue(actualTouch)
+            pencilDrawingManager.appendActualValueWithEstimatedValue(actualTouch)
         }
-        if pencilScreenTouchPoints.hasActualValueReplacementCompleted {
-            pencilScreenTouchPoints.appendLastEstimatedTouchPointToActualTouchPointArray()
+        if pencilDrawingManager.hasActualValueReplacementCompleted {
+            pencilDrawingManager.appendLastEstimatedTouchPointToActualTouchPointArray()
         }
 
         guard
             // Wait to ensure sufficient time has passed since the previous process
             // as the operation may not work correctly if the time difference is too short.
-            pencilScreenTouchPoints.hasSufficientTimeElapsedSincePreviousProcess(allowedDifferenceInSeconds: 0.01) ||
-            [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(pencilScreenTouchPoints.actualTouchPointArray.currentTouchPhase)
+            pencilDrawingManager.hasSufficientTimeElapsedSincePreviousProcess(allowedDifferenceInSeconds: 0.01) ||
+            [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(pencilDrawingManager.actualTouchPointArray.currentTouchPhase)
         else { return }
 
-        let latestScreenTouchArray = pencilScreenTouchPoints.latestActualTouchPoints
-        pencilScreenTouchPoints.updateLatestActualTouchPoint()
+        let latestScreenTouchArray = pencilDrawingManager.latestActualTouchPoints
+        pencilDrawingManager.updateLatestActualTouchPoint()
 
         let touchPhase = latestScreenTouchArray.currentTouchPhase
 
@@ -266,7 +266,7 @@ extension CanvasViewModel {
             pauseCommitCommandBufferInDisplayLink(true, canvasView: canvasView)
             grayscaleTextureCurveIterator = nil
 
-            pencilScreenTouchPoints.reset()
+            pencilDrawingManager.reset()
         }
     }
 
