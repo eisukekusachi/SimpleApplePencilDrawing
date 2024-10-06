@@ -259,6 +259,14 @@
 			path = Point;
 			sourceTree = "<group>";
 		};
+		D47123992CB285D7001F16C6 /* Point */ = {
+			isa = PBXGroup;
+			children = (
+				D46ECA2C2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift */,
+			);
+			path = Point;
+			sourceTree = "<group>";
+		};
 		D476E9A62CA00B2700F2332E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,9 +391,9 @@
 		D4D0FDED2C834A1200E91B4B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				D47123992CB285D7001F16C6 /* Point */,
 				D47123972CB284E3001F16C6 /* CanvasDrawingCurveTests.swift */,
 				D4C3C7B02CA943A8003E417C /* CanvasGrayscaleCurveIteratorTests.swift */,
-				D46ECA2C2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift */,
 				D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingManagerTests.swift */,
 			);
 			path = Models;
