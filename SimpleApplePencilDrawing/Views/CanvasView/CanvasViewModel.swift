@@ -126,7 +126,7 @@ extension CanvasViewModel {
         guard let iterator = grayscaleTextureCurveIterator else { return }
 
         drawingTexture.drawPointsOnDrawingTexture(
-            grayscaleTexturePoints: CanvasGrayscaleDotPoint.makeCurvePoints(
+            grayscaleTexturePoints: CanvasDrawingCurve.makeCurvePoints(
                 from: iterator,
                 shouldIncludeLastCurve: touchPhase == .ended
             ),
@@ -240,7 +240,7 @@ extension CanvasViewModel {
         guard let iterator = grayscaleTextureCurveIterator else { return }
 
         drawingTexture.drawPointsOnDrawingTexture(
-            grayscaleTexturePoints: CanvasGrayscaleDotPoint.makeCurvePoints(
+            grayscaleTexturePoints: CanvasDrawingCurve.makeCurvePoints(
                 from: iterator,
                 shouldIncludeLastCurve: touchPhase == .ended
             ),
