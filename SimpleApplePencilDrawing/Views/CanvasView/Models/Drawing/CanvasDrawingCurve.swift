@@ -1,56 +1,20 @@
 //
-//  CanvasGrayscaleDotPoint.swift
+//  CanvasDrawingCurve.swift
 //  SimpleApplePencilDrawing
 //
-//  Created by Eisuke Kusachi on 2024/06/02.
+//  Created by Eisuke Kusachi on 2024/10/06.
 //
 
-import UIKit
+import Foundation
+/// An enum that defines methods used for curves drawn during drawing
+enum CanvasDrawingCurve {
 
-struct CanvasGrayscaleDotPoint: Equatable {
-
-    let location: CGPoint
-    let diameter: CGFloat
-    let brightness: CGFloat
-
-    var blurSize: CGFloat = 2.0
-
-}
-
-extension CanvasGrayscaleDotPoint {
-
-    init(
-        touchPoint: CanvasTouchPoint,
-        diameter: CGFloat,
-        blurSize: CGFloat = 2.0
-    ) {
-        self.location = touchPoint.location
-        self.diameter = diameter
-        self.brightness = touchPoint.maximumPossibleForce != 0 ? min(touchPoint.force, 1.0) : 1.0
-        self.blurSize = blurSize
-    }
-
-}
-
-extension CanvasGrayscaleDotPoint {
-    /// Calculate the average of two values
-    static func average(_ left: Self, _ right: Self) -> Self {
-        .init(
-            location: left.location == right.location ? left.location : CGPoint(
-                x: (left.location.x + right.location.x) * 0.5,
-                y: (left.location.y + right.location.y) * 0.5
-            ),
-            diameter: left.diameter == right.diameter ? left.diameter : (left.diameter + right.diameter) * 0.5,
-            brightness: left.brightness == right.brightness ? left.brightness : (left.brightness + right.brightness) * 0.5,
-            blurSize: left.blurSize == right.blurSize ? left.blurSize : (left.blurSize + right.blurSize) * 0.5
-        )
-    }
-
+    /// Makes curve points used during drawing from an iterator
     static func makeCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator,
         shouldIncludeLastCurve: Bool
-    ) -> [Self] {
-        var array: [Self] = []
+    ) -> [CanvasGrayscaleDotPoint] {
+        var array: [CanvasGrayscaleDotPoint] = []
 
         if iterator.hasArrayThreeElementsButNoFirstCurveDrawn {
             iterator.setIsNoFirstCurveDrawnToFalse()
@@ -66,11 +30,11 @@ extension CanvasGrayscaleDotPoint {
         return array
     }
 
-    /// Make an array of first curve points from an iterator
+    /// Makes an array of first curve points from an iterator
     static func makeFirstCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator
-    ) -> [Self] {
-        var curve: [Self] = []
+    ) -> [CanvasGrayscaleDotPoint] {
+        var curve: [CanvasGrayscaleDotPoint] = []
 
         if iterator.array.count >= 3,
            let points = iterator.getFirstBezierCurvePoints() {
@@ -93,12 +57,12 @@ extension CanvasGrayscaleDotPoint {
         return curve
     }
 
-    /// Make an array of curve points from an iterator with a range of 4 set
+    /// Makes an array of intermediate curve points from an iterator, setting the range to 4
     static func makeIntermediateCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator,
         shouldIncludeEndPoint: Bool
-    ) -> [Self] {
-        var curve: [Self] = []
+    ) -> [CanvasGrayscaleDotPoint] {
+        var curve: [CanvasGrayscaleDotPoint] = []
 
         let pointArray = iterator.getIntermediateBezierCurvePointsWithFixedRange4()
 
@@ -124,11 +88,11 @@ extension CanvasGrayscaleDotPoint {
         return curve
     }
 
-    /// Make an array of last curve points from an iterator
+    /// Makes an array of last curve points from an iterator
     static func makeLastCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator
-    ) -> [Self] {
-        var curve: [Self] = []
+    ) -> [CanvasGrayscaleDotPoint] {
+        var curve: [CanvasGrayscaleDotPoint] = []
 
         if iterator.array.count >= 3,
            let points = iterator.getLastBezierCurvePoints() {
@@ -151,14 +115,14 @@ extension CanvasGrayscaleDotPoint {
         return curve
     }
 
-    /// Interpolate the values to match the number of elements in `targetPoints` array with that of the other elements array
+    /// Interpolates the values to match the number of elements in `targetPoints` array with that of the other elements array
     static func interpolateToMatchPointCount(
         targetPoints: [CGPoint],
-        interpolationStart: Self,
-        interpolationEnd: Self,
+        interpolationStart: CanvasGrayscaleDotPoint,
+        interpolationEnd: CanvasGrayscaleDotPoint,
         shouldIncludeEndPoint: Bool
-    ) -> [Self] {
-        var curve: [Self] = []
+    ) -> [CanvasGrayscaleDotPoint] {
+        var curve: [CanvasGrayscaleDotPoint] = []
 
         var numberOfInterpolations = targetPoints.count
 

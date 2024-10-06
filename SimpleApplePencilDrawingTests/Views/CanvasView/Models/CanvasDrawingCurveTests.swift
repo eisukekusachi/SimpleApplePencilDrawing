@@ -1,25 +1,14 @@
 //
-//  CanvasGrayscaleDotPointTests.swift
+//  CanvasDrawingCurveTests.swift
 //  SimpleApplePencilDrawingTests
 //
-//  Created by Eisuke Kusachi on 2024/10/05.
+//  Created by Eisuke Kusachi on 2024/10/06.
 //
 
 import XCTest
 @testable import SimpleApplePencilDrawing
 
-final class CanvasGrayscaleDotPointTests: XCTestCase {
-    /// Confirm that the average can be calculated
-    func testAverage() {
-        let result = CanvasGrayscaleDotPoint.average(
-            .generate(location: .init(x: 1, y: 1), diameter: 1, brightness: 1, blurSize: 1),
-            .generate(location: .init(x: 2, y: 2), diameter: 2, brightness: 2, blurSize: 2)
-        )
-        XCTAssertEqual(
-            result,
-            .generate(location: .init(x: 1.5, y: 1.5), diameter: 1.5, brightness: 1.5, blurSize: 1.5)
-        )
-    }
+final class CanvasDrawingCurveTests: XCTestCase {
 
     /// Confirm that the curve array can be created
     func testMakeIntermediateCurvePoints() {
@@ -161,7 +150,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.points)
 
-            let result = CanvasGrayscaleDotPoint.makeIntermediateCurvePoints(
+            let result = CanvasDrawingCurve.makeIntermediateCurvePoints(
                 from: iterator,
                 shouldIncludeEndPoint: condition.shouldIncludeEndPoint
             )
@@ -218,7 +207,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.points)
 
-            let result = CanvasGrayscaleDotPoint.makeFirstCurvePoints(
+            let result = CanvasDrawingCurve.makeFirstCurvePoints(
                 from: iterator
             )
             XCTAssertEqual(result, expectation.result)
@@ -248,7 +237,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
                 )
             ),
             (
-                /// The start of the curve connects to the second point, and the end of the curve connects to the last point. The first point is used to create the Bezier curve handles. 
+                /// The start of the curve connects to the second point, and the end of the curve connects to the last point. The first point is used to create the Bezier curve handles.
                 /// The last curve includes the last point since it does not connect with the next curve.
                 condition: .init(
                     points: [
@@ -274,7 +263,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let iterator = CanvasGrayscaleCurveIterator()
             iterator.append(condition.points)
 
-            let result = CanvasGrayscaleDotPoint.makeLastCurvePoints(
+            let result = CanvasDrawingCurve.makeLastCurvePoints(
                 from: iterator
             )
             XCTAssertEqual(result, expectation.result)
@@ -346,7 +335,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let result = CanvasGrayscaleDotPoint.interpolateToMatchPointCount(
+            let result = CanvasDrawingCurve.interpolateToMatchPointCount(
                 targetPoints: condition.targetPoints,
                 interpolationStart: condition.startPoint,
                 interpolationEnd: condition.endPoint,
