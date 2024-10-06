@@ -6,9 +6,10 @@
 //
 
 import Foundation
-
+/// An enum that defines methods used for curves drawn during drawing
 enum CanvasDrawingCurve {
 
+    /// Makes curve points used during drawing from an iterator
     static func makeCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator,
         shouldIncludeLastCurve: Bool
@@ -29,7 +30,7 @@ enum CanvasDrawingCurve {
         return array
     }
 
-    /// Make an array of first curve points from an iterator
+    /// Makes an array of first curve points from an iterator
     static func makeFirstCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator
     ) -> [CanvasGrayscaleDotPoint] {
@@ -56,7 +57,7 @@ enum CanvasDrawingCurve {
         return curve
     }
 
-    /// Make an array of curve points from an iterator with a range of 4 set
+    /// Makes an array of intermediate curve points from an iterator, setting the range to 4
     static func makeIntermediateCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator,
         shouldIncludeEndPoint: Bool
@@ -87,7 +88,7 @@ enum CanvasDrawingCurve {
         return curve
     }
 
-    /// Make an array of last curve points from an iterator
+    /// Makes an array of last curve points from an iterator
     static func makeLastCurvePoints(
         from iterator: CanvasGrayscaleCurveIterator
     ) -> [CanvasGrayscaleDotPoint] {
@@ -114,7 +115,7 @@ enum CanvasDrawingCurve {
         return curve
     }
 
-    /// Interpolate the values to match the number of elements in `targetPoints` array with that of the other elements array
+    /// Interpolates the values to match the number of elements in `targetPoints` array with that of the other elements array
     static func interpolateToMatchPointCount(
         targetPoints: [CGPoint],
         interpolationStart: CanvasGrayscaleDotPoint,
