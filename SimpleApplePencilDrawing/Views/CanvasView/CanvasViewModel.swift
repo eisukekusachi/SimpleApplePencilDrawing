@@ -123,7 +123,10 @@ extension CanvasViewModel {
             }
         )
 
-        guard let iterator = grayscaleTextureCurveIterator else { return }
+        guard 
+            let iterator = grayscaleTextureCurveIterator,
+            let currentTexture
+        else { return }
 
         drawingTexture.drawPointsOnDrawingTexture(
             grayscaleTexturePoints: CanvasDrawingCurve.makeCurvePoints(
@@ -237,7 +240,10 @@ extension CanvasViewModel {
             }
         )
 
-        guard let iterator = grayscaleTextureCurveIterator else { return }
+        guard 
+            let iterator = grayscaleTextureCurveIterator,
+            let currentTexture
+        else { return }
 
         drawingTexture.drawPointsOnDrawingTexture(
             grayscaleTexturePoints: CanvasDrawingCurve.makeCurvePoints(
@@ -324,7 +330,10 @@ extension CanvasViewModel {
     private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
         canvasView.refreshCommandBuffer()
 
-        guard let commandBuffer = canvasView.commandBuffer else { return }
+        guard 
+            let commandBuffer = canvasView.commandBuffer,
+            let currentTexture
+        else { return }
 
         // Clear `drawingTextures` during drawing
         drawingTexture.clearTexture(with: commandBuffer)
@@ -355,14 +364,13 @@ extension CanvasViewModel {
     }
 
     private func mergeDrawingTexture(
-        withCurrentTexture currentTexture: MTLTexture?,
+        withCurrentTexture currentTexture: MTLTexture,
         withBackgroundColor backgroundColor: UIColor,
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer,
         executeDrawingFinishProcess: Bool = false
     ) {
         guard
-            let currentTexture,
             let destinationTexture
         else { return }
 
