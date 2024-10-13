@@ -129,7 +129,7 @@ extension CanvasViewModel {
         let touchPhase = touchScreenPoints.currentTouchPhase
 
         if touchPhase == .began {
-            pauseCommitCommandBufferInDisplayLink(false)
+            startDisplayLinkToUpdateCanvasView(true)
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
         }
 
@@ -183,7 +183,7 @@ extension CanvasViewModel {
         )
 
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
-            pauseCommitCommandBufferInDisplayLink(true)
+            startDisplayLinkToUpdateCanvasView(false)
             grayscaleTextureCurveIterator = nil
         }
     }
@@ -200,7 +200,7 @@ extension CanvasViewModel {
             }
 
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
-            pauseCommitCommandBufferInDisplayLink(false)
+            startDisplayLinkToUpdateCanvasView(true)
 
             pencilDrawingManager.reset()
         }
@@ -299,7 +299,7 @@ extension CanvasViewModel {
         )
 
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
-            pauseCommitCommandBufferInDisplayLink(true)
+            startDisplayLinkToUpdateCanvasView(false)
             grayscaleTextureCurveIterator = nil
 
             pencilDrawingManager.reset()
@@ -384,11 +384,11 @@ extension CanvasViewModel {
         canvasView.updateCanvasView()
     }
 
-    private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool) {
-        requestingPauseDisplayLink.send(isPaused)
+    private func startDisplayLinkToUpdateCanvasView(_ isStarted: Bool) {
+        requestingPauseDisplayLink.send(!isStarted)
 
         // Call `requestingUpdateCanvasView` when stopping as the last line isn’t drawn
-        if isPaused {
+        if !isStarted {
             requestingUpdateCanvasView.send(())
         }
     }
