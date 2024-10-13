@@ -94,7 +94,8 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         commandBuffer.present(drawable)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
-        onCommandBufferComplete()
+
+        refreshCommandBuffer()
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -105,10 +106,6 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 }
 
 extension CanvasView {
-    private func onCommandBufferComplete() {
-        refreshCommandBuffer()
-    }
-
     func refreshCommandBuffer() {
         commandBuffer = commandQueue.makeCommandBuffer()
     }
