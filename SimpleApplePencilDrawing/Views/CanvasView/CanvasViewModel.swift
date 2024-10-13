@@ -53,13 +53,13 @@ final class CanvasViewModel {
 
         requestingUpdateCanvasView
             .sink { [weak self] _ in
-                self?.canvasView?.commitAndRefreshCommandBufferToDisplayRenderTexture()
+                self?.canvasView?.updateCanvasView()
             }
             .store(in: &cancellables)
     }
 
     @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
-        canvasView?.commitAndRefreshCommandBufferToDisplayRenderTexture()
+        canvasView?.updateCanvasView()
     }
 
 }
@@ -85,7 +85,7 @@ extension CanvasViewModel {
                 on: canvasView.renderTexture,
                 commandBuffer: commandBuffer
             )
-            canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
+            canvasView.updateCanvasView()
         }
     }
 
@@ -106,7 +106,7 @@ extension CanvasViewModel {
             on: canvasView.renderTexture,
             commandBuffer: commandBuffer
         )
-        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
+        canvasView.updateCanvasView()
     }
 
     func onFingerInputGesture(
@@ -354,7 +354,7 @@ extension CanvasViewModel {
             commandBuffer: commandBuffer
         )
 
-        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
+        canvasView.updateCanvasView()
     }
 
     private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
@@ -381,7 +381,7 @@ extension CanvasViewModel {
             commandBuffer: commandBuffer
         )
 
-        canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
+        canvasView.updateCanvasView()
     }
 
     private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
