@@ -29,7 +29,7 @@ final class CanvasViewModel {
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
-    private var displayLink: CADisplayLink?
+    private var displayLinkForRendering: CADisplayLink?
 
     private var canvasView: CanvasViewProtocol?
 
@@ -41,13 +41,13 @@ final class CanvasViewModel {
 
     init() {
         // Configure the display link for rendering.
-        displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
-        displayLink?.add(to: .current, forMode: .common)
-        displayLink?.isPaused = true
+        displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasView(_:)))
+        displayLinkForRendering?.add(to: .current, forMode: .common)
+        displayLinkForRendering?.isPaused = true
 
         requestingPauseDisplayLink
             .sink { [weak self] isPause in
-                self?.displayLink?.isPaused = isPause
+                self?.displayLinkForRendering?.isPaused = isPause
             }
             .store(in: &cancellables)
 
@@ -232,7 +232,7 @@ extension CanvasViewModel {
         clearCanvas()
     }
 
-    @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
+    @objc private func updateCanvasView(_ displayLink: CADisplayLink) {
         guard
             let canvasTexture,
             let renderTexture = canvasView?.renderTexture,
