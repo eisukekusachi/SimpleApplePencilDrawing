@@ -58,10 +58,6 @@ final class CanvasViewModel {
             .store(in: &cancellables)
     }
 
-    @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
-        canvasView?.updateCanvasView()
-    }
-
 }
 
 extension CanvasViewModel {
@@ -116,10 +112,7 @@ extension CanvasViewModel {
     ) {
         guard
             pencilDrawingManager.estimatedTouchPointArray.isEmpty,
-            let canvasView,
-            let canvasTexture,
-            let commandBuffer = canvasView.commandBuffer,
-            let renderTexture = canvasView.renderTexture
+            let canvasTextureSize = canvasTexture?.size
         else { return }
 
         let touchScreenPoints: [CanvasTouchPoint] = touches.map {
@@ -139,7 +132,7 @@ extension CanvasViewModel {
                 location: scaleAndCenterAspectFill(
                     sourceTextureLocation: $0.location,
                     sourceTextureSize: view.frame.size,
-                    destinationTextureSize: canvasTexture.size
+                    destinationTextureSize: canvasTextureSize
                 ),
                 touch: $0
             )
@@ -153,35 +146,6 @@ extension CanvasViewModel {
                 )
             }
         )
-
-        if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
-            drawingTexture.drawPointsOnDrawingTexture(
-                grayscaleTexturePoints: curvePoints,
-                color: drawingToolStatus.brushColor,
-                with: commandBuffer
-            )
-        }
-
-        guard let currentTexture else { return }
-
-        mergeDrawingTexture(
-            withCurrentTexture: currentTexture,
-            withBackgroundColor: backgroundColor,
-            on: canvasTexture,
-            with: commandBuffer,
-            executeDrawingFinishProcess: drawing.isDrawingComplete
-        )
-
-        drawTextureWithAspectFit(
-            texture: canvasTexture,
-            on: renderTexture,
-            commandBuffer: commandBuffer
-        )
-
-        if drawing.isDrawingFinished {
-            drawing.reset()
-            startDisplayLinkToUpdateCanvasView(false)
-        }
     }
 
     func onPencilGestureDetected(
@@ -216,12 +180,7 @@ extension CanvasViewModel {
         actualTouches: Set<UITouch>,
         view: UIView
     ) {
-        guard
-            let canvasView,
-            let canvasTexture,
-            let commandBuffer = canvasView.commandBuffer,
-            let renderTexture = canvasView.renderTexture
-        else { return }
+        guard let canvasTextureSize = canvasTexture?.size else { return }
 
         // Combine `actualTouches` with the estimated values to create actual values, and append them to an array
         let actualTouchArray = Array(actualTouches).sorted { $0.timestamp < $1.timestamp }
@@ -232,25 +191,18 @@ extension CanvasViewModel {
             pencilDrawingManager.appendLastEstimatedTouchPointToActualTouchPointArray()
         }
 
-        guard
-            // Wait to ensure sufficient time has passed since the previous process
-            // as the operation may not work correctly if the time difference is too short.
-            pencilDrawingManager.hasSufficientTimeElapsedSincePreviousProcess(allowedDifferenceInSeconds: 0.01) ||
-            [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(pencilDrawingManager.actualTouchPointArray.currentTouchPhase)
-        else { return }
-
-        let latestScreenTouchArray = pencilDrawingManager.latestActualTouchPoints
+        let touchScreenPoints = pencilDrawingManager.latestActualTouchPoints
         pencilDrawingManager.updateLatestActualTouchPoint()
 
-        drawing.setCurrentTouchPhase(latestScreenTouchArray.currentTouchPhase)
+        drawing.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
 
-        let textureTouchPoints: [CanvasTouchPoint] = latestScreenTouchArray.map {
+        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
             // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
             .init(
                 location: scaleAndCenterAspectFill(
                     sourceTextureLocation: $0.location,
                     sourceTextureSize: view.frame.size,
-                    destinationTextureSize: canvasTexture.size
+                    destinationTextureSize: canvasTextureSize
                 ),
                 touch: $0
             )
@@ -264,6 +216,28 @@ extension CanvasViewModel {
                 )
             }
         )
+    }
+
+    func onTapClearTexture() {
+        guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
+
+        drawingTexture.clearTexture(with: commandBuffer)
+
+        MTLRenderer.clear(
+            texture: currentTexture,
+            with: commandBuffer
+        )
+        commandBuffer.commit()
+
+        clearCanvas()
+    }
+
+    @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
+        guard
+            let canvasTexture,
+            let renderTexture = canvasView?.renderTexture,
+            let commandBuffer = canvasView?.commandBuffer
+        else { return }
 
         if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
             drawingTexture.drawPointsOnDrawingTexture(
@@ -294,20 +268,8 @@ extension CanvasViewModel {
             pencilDrawingManager.reset()
             startDisplayLinkToUpdateCanvasView(false)
         }
-    }
 
-    func onTapClearTexture() {
-        guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
-
-        drawingTexture.clearTexture(with: commandBuffer)
-
-        MTLRenderer.clear(
-            texture: currentTexture,
-            with: commandBuffer
-        )
-        commandBuffer.commit()
-
-        clearCanvas()
+        canvasView?.updateCanvasView()
     }
 
 }
