@@ -316,7 +316,7 @@ extension CanvasViewModel {
             let currentTexture
         else { return }
 
-        canvasView.refreshCommandBuffer()
+        canvasView.resetCommandBuffer()
 
         // Clear `drawingTextures` during drawing
         drawingTexture.clearTexture(with: commandBuffer)

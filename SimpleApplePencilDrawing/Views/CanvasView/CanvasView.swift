@@ -13,7 +13,7 @@ protocol CanvasViewProtocol {
 
     var renderTexture: MTLTexture? { get }
 
-    func refreshCommandBuffer()
+    func resetCommandBuffer()
 
     func updateCanvasView()
 }
@@ -58,7 +58,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         guard let queue = device?.makeCommandQueue() else { return }
 
         commandQueue = queue
-        refreshCommandBuffer()
+        resetCommandBuffer()
 
         textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: textureNodes)
 
@@ -95,7 +95,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
 
-        refreshCommandBuffer()
+        resetCommandBuffer()
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -106,7 +106,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 }
 
 extension CanvasView {
-    func refreshCommandBuffer() {
+    func resetCommandBuffer() {
         commandBuffer = commandQueue.makeCommandBuffer()
     }
 
