@@ -64,9 +64,7 @@ extension CanvasViewController {
         canvasView.updateTexturePublisher
             .sink { [weak self] in
                 guard let `self` else { return }
-                self.canvasViewModel.onUpdateRenderTexture(
-                    canvasView: self.canvasView
-                )
+                self.canvasViewModel.onUpdateRenderTexture()
             }
             .store(in: &cancellables)
     }
@@ -78,8 +76,7 @@ extension CanvasViewController: CanvasFingerInputGestureSender {
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
             touches: touches,
-            view: self.view,
-            canvasView: canvasView
+            view: self.view
         )
     }
 
@@ -91,16 +88,14 @@ extension CanvasViewController: CanvasPencilInputGestureSender {
         canvasViewModel.onPencilGestureDetected(
             touches: touches,
             with: event,
-            view: view,
-            canvasView: canvasView
+            view: view
         )
     }
 
     func sendPencilActualTouches(_ touches: Set<UITouch>, on view: UIView) {
         canvasViewModel.onPencilGestureDetected(
             actualTouches: touches,
-            view: view,
-            canvasView: canvasView
+            view: view
         )
     }
 
@@ -109,7 +104,7 @@ extension CanvasViewController: CanvasPencilInputGestureSender {
 extension CanvasViewController {
 
     @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
-        canvasViewModel.onTapClearTexture(canvasView: canvasView)
+        canvasViewModel.onTapClearTexture()
     }
 
 }

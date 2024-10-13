@@ -76,8 +76,7 @@ extension CanvasViewModel {
             let textureSize = canvasView.renderTexture?.size,
             let commandBuffer = canvasView.commandBuffer {
             initCanvas(
-                textureSize: textureSize,
-                canvasView: canvasView
+                textureSize: textureSize
             )
 
             drawTextureWithAspectFit(
@@ -89,13 +88,15 @@ extension CanvasViewModel {
         }
     }
 
-    func onUpdateRenderTexture(canvasView: CanvasViewProtocol) {
-        guard let commandBuffer = canvasView.commandBuffer else { return }
+    func onUpdateRenderTexture() {
+        guard
+            let canvasView,
+            let commandBuffer = canvasView.commandBuffer
+        else { return }
 
         if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
             initCanvas(
-                textureSize: textureSize,
-                canvasView: canvasView
+                textureSize: textureSize
             )
         }
 
@@ -111,11 +112,11 @@ extension CanvasViewModel {
 
     func onFingerInputGesture(
         touches: Set<UITouch>,
-        view: UIView,
-        canvasView: CanvasViewProtocol
+        view: UIView
     ) {
         guard
             pencilDrawingManager.estimatedTouchPointArray.isEmpty,
+            let canvasView,
             let canvasTexture,
             let commandBuffer = canvasView.commandBuffer,
             let renderTexture = canvasView.renderTexture
@@ -128,7 +129,7 @@ extension CanvasViewModel {
         let touchPhase = touchScreenPoints.currentTouchPhase
 
         if touchPhase == .began {
-            pauseCommitCommandBufferInDisplayLink(false, canvasView: canvasView)
+            pauseCommitCommandBufferInDisplayLink(false)
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
         }
 
@@ -182,7 +183,7 @@ extension CanvasViewModel {
         )
 
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
-            pauseCommitCommandBufferInDisplayLink(true, canvasView: canvasView)
+            pauseCommitCommandBufferInDisplayLink(true)
             grayscaleTextureCurveIterator = nil
         }
     }
@@ -190,17 +191,16 @@ extension CanvasViewModel {
     func onPencilGestureDetected(
         touches: Set<UITouch>,
         with event: UIEvent?,
-        view: UIView,
-        canvasView: CanvasViewProtocol
+        view: UIView
     ) {
         // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
         if touches.contains(where: {$0.phase == .began}) {
             if grayscaleTextureCurveIterator != nil {
-                cancelFingerDrawing(canvasView)
+                cancelFingerDrawing()
             }
 
             grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
-            pauseCommitCommandBufferInDisplayLink(false, canvasView: canvasView)
+            pauseCommitCommandBufferInDisplayLink(false)
 
             pencilDrawingManager.reset()
         }
@@ -219,10 +219,10 @@ extension CanvasViewModel {
 
     func onPencilGestureDetected(
         actualTouches: Set<UITouch>,
-        view: UIView,
-        canvasView: CanvasViewProtocol
+        view: UIView
     ) {
         guard
+            let canvasView,
             let canvasTexture,
             let commandBuffer = canvasView.commandBuffer,
             let renderTexture = canvasView.renderTexture
@@ -299,16 +299,15 @@ extension CanvasViewModel {
         )
 
         if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
-            pauseCommitCommandBufferInDisplayLink(true, canvasView: canvasView)
+            pauseCommitCommandBufferInDisplayLink(true)
             grayscaleTextureCurveIterator = nil
 
             pencilDrawingManager.reset()
         }
     }
 
-    func onTapClearTexture(canvasView: CanvasViewProtocol) {
-
-        let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+    func onTapClearTexture() {
+        guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
 
         drawingTexture.clearTexture(with: commandBuffer)
 
@@ -318,7 +317,7 @@ extension CanvasViewModel {
         )
         commandBuffer.commit()
 
-        clearCanvas(canvasView)
+        clearCanvas()
     }
 
 }
@@ -326,26 +325,26 @@ extension CanvasViewModel {
 extension CanvasViewModel {
 
     /// Initialize the textures used for drawing with the same size
-    func initCanvas(
-        textureSize: CGSize,
-        canvasView: CanvasViewProtocol
-    ) {
+    func initCanvas(textureSize: CGSize) {
         guard let device = MTLCreateSystemDefaultDevice() else { return }
 
         drawingTexture.initTexture(textureSize: textureSize)
         currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
         canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
 
-        clearCanvas(canvasView)
+        clearCanvas()
     }
 
-    private func clearCanvas(_ canvasView: CanvasViewProtocol) {
-        guard let commandBuffer = canvasView.commandBuffer else { return }
+    private func clearCanvas() {
+        guard
+            let canvasView,
+            let commandBuffer = canvasView.commandBuffer
+        else { return }
 
         MTLRenderer.fill(
             color: backgroundColor.rgb,
             on: canvasTexture,
-            with: canvasView.commandBuffer
+            with: commandBuffer
         )
 
         drawTextureWithAspectFit(
@@ -357,13 +356,14 @@ extension CanvasViewModel {
         canvasView.updateCanvasView()
     }
 
-    private func cancelFingerDrawing(_ canvasView: CanvasViewProtocol) {
-        canvasView.refreshCommandBuffer()
-
-        guard 
+    private func cancelFingerDrawing() {
+        guard
+            let canvasView,
             let commandBuffer = canvasView.commandBuffer,
             let currentTexture
         else { return }
+
+        canvasView.refreshCommandBuffer()
 
         // Clear `drawingTextures` during drawing
         drawingTexture.clearTexture(with: commandBuffer)
@@ -384,7 +384,7 @@ extension CanvasViewModel {
         canvasView.updateCanvasView()
     }
 
-    private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
+    private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool) {
         requestingPauseDisplayLink.send(isPaused)
 
         // Call `requestingUpdateCanvasView` when stopping as the last line isn’t drawn
