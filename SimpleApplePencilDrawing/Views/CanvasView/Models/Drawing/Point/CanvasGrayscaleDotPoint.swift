@@ -46,4 +46,55 @@ extension CanvasGrayscaleDotPoint {
         )
     }
 
+    /// Interpolates the values to match the number of elements in `targetPoints` array with that of the other elements array
+    static func interpolateToMatchPointCount(
+        targetPoints: [CGPoint],
+        interpolationStart: Self,
+        interpolationEnd: Self,
+        shouldIncludeEndPoint: Bool
+    ) -> [Self] {
+        var curve: [Self] = []
+
+        var numberOfInterpolations = targetPoints.count
+
+        if shouldIncludeEndPoint {
+            // Subtract 1 from `numberOfInterpolations` because the last point will be added to the arrays
+            numberOfInterpolations = numberOfInterpolations - 1
+        }
+
+        let brightnessArray = Interpolator.getLinearInterpolationValues(
+            begin: interpolationStart.brightness,
+            change: interpolationEnd.brightness,
+            duration: numberOfInterpolations,
+            shouldIncludeEndPoint: shouldIncludeEndPoint
+        )
+
+        let diameterArray = Interpolator.getLinearInterpolationValues(
+            begin: interpolationStart.diameter,
+            change: interpolationEnd.diameter,
+            duration: numberOfInterpolations,
+            shouldIncludeEndPoint: shouldIncludeEndPoint
+        )
+
+        let blurArray = Interpolator.getLinearInterpolationValues(
+            begin: interpolationStart.blurSize,
+            change: interpolationEnd.blurSize,
+            duration: numberOfInterpolations,
+            shouldIncludeEndPoint: shouldIncludeEndPoint
+        )
+
+        for i in 0 ..< targetPoints.count {
+            curve.append(
+                .init(
+                    location: targetPoints[i],
+                    diameter: diameterArray[i],
+                    brightness: brightnessArray[i],
+                    blurSize: blurArray[i]
+                )
+            )
+        }
+
+        return curve
+    }
+
 }

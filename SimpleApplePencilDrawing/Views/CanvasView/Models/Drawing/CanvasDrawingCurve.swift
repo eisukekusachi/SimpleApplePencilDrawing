@@ -1,39 +1,92 @@
 //
-//  CanvasDrawingCurve.swift
+//  CanvasDrawing.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/10/06.
 //
 
-import Foundation
-/// An enum that defines methods used for curves drawn during drawing
-enum CanvasDrawingCurve {
+import UIKit
 
-    /// Makes curve points used during drawing from an iterator
-    static func makeCurvePoints(
-        from iterator: CanvasGrayscaleCurveIterator,
-        shouldIncludeLastCurve: Bool
-    ) -> [CanvasGrayscaleDotPoint] {
+/// A model for drawing smooth curves in real-time
+final class CanvasDrawing {
+
+    typealias T = CanvasGrayscaleDotPoint
+
+    private let iterator = Iterator<CanvasGrayscaleDotPoint>()
+
+    private var currentTouchPhase: UITouch.Phase?
+
+    private var isFirstCurveHasBeenCreated: Bool = false
+
+}
+
+extension CanvasDrawing {
+
+    func makeDrawingCurvePointsFromIterator() -> [CanvasGrayscaleDotPoint]? {
         var array: [CanvasGrayscaleDotPoint] = []
 
-        if iterator.hasArrayThreeElementsButNoFirstCurveDrawn {
-            iterator.setIsNoFirstCurveDrawnToFalse()
-            array.append(contentsOf: makeFirstCurvePoints(from: iterator))
+        if hasArrayThreeElementsButNoFirstCurveCreated {
+            array.append(contentsOf: makeFirstCurvePoints())
+            setFirstCurveHasBeenCreated()
         }
 
-        array.append(contentsOf: makeIntermediateCurvePoints(from: iterator, shouldIncludeEndPoint: false))
+        array.append(contentsOf: makeIntermediateCurvePoints(shouldIncludeEndPoint: false))
 
-        if shouldIncludeLastCurve {
-            array.append(contentsOf: makeLastCurvePoints(from: iterator))
+        if isDrawingComplete {
+            array.append(contentsOf: makeLastCurvePoints())
         }
 
-        return array
+        return array.count != 0 ? array : nil
     }
 
+    var isCurrentlyDrawing: Bool {
+        iterator.array.count != 0
+    }
+
+    /// Is the drawing finished successfully
+    var isDrawingComplete: Bool {
+        guard let currentTouchPhase else { return false }
+        return [UITouch.Phase.ended].contains(currentTouchPhase)
+    }
+
+    /// Is the drawing finished
+    var isDrawingFinished: Bool {
+        guard let currentTouchPhase else { return false }
+        return [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(currentTouchPhase)
+    }
+
+    /// Returns `true` if three elements are added to the array and `isFirstCurveHasBeenCreated` is `false`
+    var hasArrayThreeElementsButNoFirstCurveCreated: Bool {
+        iterator.array.count >= 3 && !isFirstCurveHasBeenCreated
+    }
+
+    func setFirstCurveHasBeenCreated() {
+        isFirstCurveHasBeenCreated = true
+    }
+
+    func setCurrentTouchPhase(_ touchPhase: UITouch.Phase) {
+        currentTouchPhase = touchPhase
+    }
+
+    func appendToIterator(_ point: CanvasGrayscaleDotPoint) {
+        iterator.append(point)
+    }
+    func appendToIterator(_ points: [CanvasGrayscaleDotPoint]) {
+        iterator.append(points)
+    }
+
+    func reset() {
+        isFirstCurveHasBeenCreated = false
+        currentTouchPhase = nil
+        iterator.clear()
+    }
+
+}
+
+extension CanvasDrawing {
+
     /// Makes an array of first curve points from an iterator
-    static func makeFirstCurvePoints(
-        from iterator: CanvasGrayscaleCurveIterator
-    ) -> [CanvasGrayscaleDotPoint] {
+    func makeFirstCurvePoints() -> [CanvasGrayscaleDotPoint] {
         var curve: [CanvasGrayscaleDotPoint] = []
 
         if iterator.array.count >= 3,
@@ -46,7 +99,7 @@ enum CanvasDrawingCurve {
                 shouldIncludeEndPoint: false
             )
             curve.append(
-                contentsOf: interpolateToMatchPointCount(
+                contentsOf: CanvasGrayscaleDotPoint.interpolateToMatchPointCount(
                     targetPoints: bezierCurvePoints,
                     interpolationStart: points.previousPoint,
                     interpolationEnd: points.startPoint,
@@ -58,8 +111,7 @@ enum CanvasDrawingCurve {
     }
 
     /// Makes an array of intermediate curve points from an iterator, setting the range to 4
-    static func makeIntermediateCurvePoints(
-        from iterator: CanvasGrayscaleCurveIterator,
+    func makeIntermediateCurvePoints(
         shouldIncludeEndPoint: Bool
     ) -> [CanvasGrayscaleDotPoint] {
         var curve: [CanvasGrayscaleDotPoint] = []
@@ -77,7 +129,7 @@ enum CanvasDrawingCurve {
                 shouldIncludeEndPoint: shouldIncludeEndPoint
             )
             curve.append(
-                contentsOf: interpolateToMatchPointCount(
+                contentsOf: CanvasGrayscaleDotPoint.interpolateToMatchPointCount(
                     targetPoints: bezierCurvePoints,
                     interpolationStart: points.startPoint,
                     interpolationEnd: points.endPoint,
@@ -89,9 +141,7 @@ enum CanvasDrawingCurve {
     }
 
     /// Makes an array of last curve points from an iterator
-    static func makeLastCurvePoints(
-        from iterator: CanvasGrayscaleCurveIterator
-    ) -> [CanvasGrayscaleDotPoint] {
+    func makeLastCurvePoints() -> [CanvasGrayscaleDotPoint] {
         var curve: [CanvasGrayscaleDotPoint] = []
 
         if iterator.array.count >= 3,
@@ -104,7 +154,7 @@ enum CanvasDrawingCurve {
                 shouldIncludeEndPoint: true
             )
             curve.append(
-                contentsOf: interpolateToMatchPointCount(
+                contentsOf: CanvasGrayscaleDotPoint.interpolateToMatchPointCount(
                     targetPoints: bezierCurvePoints,
                     interpolationStart: points.startPoint,
                     interpolationEnd: points.endPoint,
@@ -112,57 +162,6 @@ enum CanvasDrawingCurve {
                 )
             )
         }
-        return curve
-    }
-
-    /// Interpolates the values to match the number of elements in `targetPoints` array with that of the other elements array
-    static func interpolateToMatchPointCount(
-        targetPoints: [CGPoint],
-        interpolationStart: CanvasGrayscaleDotPoint,
-        interpolationEnd: CanvasGrayscaleDotPoint,
-        shouldIncludeEndPoint: Bool
-    ) -> [CanvasGrayscaleDotPoint] {
-        var curve: [CanvasGrayscaleDotPoint] = []
-
-        var numberOfInterpolations = targetPoints.count
-
-        if shouldIncludeEndPoint {
-            // Subtract 1 from `numberOfInterpolations` because the last point will be added to the arrays
-            numberOfInterpolations = numberOfInterpolations - 1
-        }
-
-        let brightnessArray = Interpolator.getLinearInterpolationValues(
-            begin: interpolationStart.brightness,
-            change: interpolationEnd.brightness,
-            duration: numberOfInterpolations,
-            shouldIncludeEndPoint: shouldIncludeEndPoint
-        )
-
-        let diameterArray = Interpolator.getLinearInterpolationValues(
-            begin: interpolationStart.diameter,
-            change: interpolationEnd.diameter,
-            duration: numberOfInterpolations,
-            shouldIncludeEndPoint: shouldIncludeEndPoint
-        )
-
-        let blurArray = Interpolator.getLinearInterpolationValues(
-            begin: interpolationStart.blurSize,
-            change: interpolationEnd.blurSize,
-            duration: numberOfInterpolations,
-            shouldIncludeEndPoint: shouldIncludeEndPoint
-        )
-
-        for i in 0 ..< targetPoints.count {
-            curve.append(
-                .init(
-                    location: targetPoints[i],
-                    diameter: diameterArray[i],
-                    brightness: brightnessArray[i],
-                    blurSize: blurArray[i]
-                )
-            )
-        }
-
         return curve
     }
 

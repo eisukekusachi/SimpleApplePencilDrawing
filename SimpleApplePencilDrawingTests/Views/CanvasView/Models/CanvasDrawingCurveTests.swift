@@ -10,6 +10,125 @@ import XCTest
 
 final class CanvasDrawingCurveTests: XCTestCase {
 
+    func testIsCurrentlyDrawing() {
+        let drawing = CanvasDrawing()
+        XCTAssertEqual(drawing.isCurrentlyDrawing, false)
+
+        drawing.appendToIterator(.generate())
+        XCTAssertEqual(drawing.isCurrentlyDrawing, true)
+
+        drawing.reset()
+        XCTAssertEqual(drawing.isCurrentlyDrawing, false)
+    }
+
+    /// Confirms that the drawing has finished
+    func testIsDrawingComplete() {
+        let drawing = CanvasDrawing()
+        XCTAssertEqual(drawing.isDrawingComplete, false)
+
+        drawing.setCurrentTouchPhase(.began)
+        XCTAssertEqual(drawing.isDrawingComplete, false)
+
+        drawing.setCurrentTouchPhase(.moved)
+        XCTAssertEqual(drawing.isDrawingComplete, false)
+
+        drawing.setCurrentTouchPhase(.ended)
+        XCTAssertEqual(drawing.isDrawingComplete, true)
+
+        drawing.setCurrentTouchPhase(.cancelled)
+        XCTAssertEqual(drawing.isDrawingComplete, false)
+    }
+
+    /// Confirms that the drawing has finished, regardless of success or failure
+    func testIsDrawingFinished() {
+        let drawing = CanvasDrawing()
+
+        XCTAssertEqual(drawing.isDrawingFinished, false)
+
+        drawing.setCurrentTouchPhase(.began)
+        XCTAssertEqual(drawing.isDrawingFinished, false)
+
+        drawing.setCurrentTouchPhase(.moved)
+        XCTAssertEqual(drawing.isDrawingFinished, false)
+
+        drawing.setCurrentTouchPhase(.ended)
+        XCTAssertEqual(drawing.isDrawingFinished, true)
+
+        drawing.setCurrentTouchPhase(.cancelled)
+        XCTAssertEqual(drawing.isDrawingFinished, true)
+    }
+
+    /// Confirms that the first curve has been drawn once
+    func testHasArrayThreeElementsButNoFirstCurveDrawn() {
+        let drawing = CanvasDrawing()
+
+        drawing.appendToIterator([.generate()])
+        XCTAssertEqual(drawing.hasArrayThreeElementsButNoFirstCurveCreated, false)
+
+        drawing.appendToIterator([.generate()])
+        XCTAssertEqual(drawing.hasArrayThreeElementsButNoFirstCurveCreated, false)
+
+        drawing.appendToIterator([.generate()])
+        XCTAssertEqual(drawing.hasArrayThreeElementsButNoFirstCurveCreated, true)
+
+        drawing.setFirstCurveHasBeenCreated()
+        XCTAssertEqual(drawing.hasArrayThreeElementsButNoFirstCurveCreated, false)
+    }
+
+    /// Confirm that the first curve array can be created
+    func testMakeFirstCurvePoints() {
+        struct Condition {
+            let points: [CanvasGrayscaleDotPoint]
+        }
+        struct Expectation {
+            let result: [CanvasGrayscaleDotPoint]
+        }
+
+        let testCases: [(condition: Condition, expectation: Expectation)] = [
+            (
+                /// The case with fewer than 3 points
+                condition: .init(
+                    points: [
+                        .generate(location: .init(x: 0.5, y: 0.5), diameter: 1.0, brightness: 1.0),
+                        .generate(location: .init(x: 2.0, y: 2.0), diameter: 2.0, brightness: 2.0)
+                    ]
+                ),
+                expectation: .init(
+                    result: []
+                )
+            ),
+            (
+                /// The start of the curve connects to the first point, and the end of the curve connects to the second point. The last point is used to create the Bezier curve handles.
+                /// The first curve does not include the last point to connect with the next curve.
+                condition: .init(
+                    points: [
+                        .generate(location: .init(x: 0.5, y: 0.5), diameter: 1.0, brightness: 1.0),
+                        .generate(location: .init(x: 2.0, y: 2.0), diameter: 2.0, brightness: 2.0),
+                        .generate(location: .init(x: 3.5, y: 3.5), diameter: 3.0, brightness: 3.0)
+                    ]
+                ),
+                expectation: .init(
+                    result: [
+                        .generate(location: .init(x: 0.5, y: 0.5), diameter: 1.0, brightness: 1.0),
+                        .generate(location: .init(x: 1.25, y: 1.25), diameter: 1.5, brightness: 1.5)
+                        /// `(x: 2.0, y: 2.0)` is not included
+                    ]
+                )
+            )
+        ]
+
+        for testCase in testCases {
+            let condition = testCase.condition
+            let expectation = testCase.expectation
+
+            let drawing = CanvasDrawing()
+            drawing.appendToIterator(condition.points)
+
+            let result = drawing.makeFirstCurvePoints()
+            XCTAssertEqual(result, expectation.result)
+        }
+    }
+
     /// Confirm that the curve array can be created
     func testMakeIntermediateCurvePoints() {
         struct Condition {
@@ -147,68 +266,11 @@ final class CanvasDrawingCurveTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let iterator = CanvasGrayscaleCurveIterator()
-            iterator.append(condition.points)
+            let drawing = CanvasDrawing()
+            drawing.appendToIterator(condition.points)
 
-            let result = CanvasDrawingCurve.makeIntermediateCurvePoints(
-                from: iterator,
+            let result = drawing.makeIntermediateCurvePoints(
                 shouldIncludeEndPoint: condition.shouldIncludeEndPoint
-            )
-            XCTAssertEqual(result, expectation.result)
-        }
-    }
-
-    /// Confirm that the first curve array can be created
-    func testMakeFirstCurvePoints() {
-        struct Condition {
-            let points: [CanvasGrayscaleDotPoint]
-        }
-        struct Expectation {
-            let result: [CanvasGrayscaleDotPoint]
-        }
-
-        let testCases: [(condition: Condition, expectation: Expectation)] = [
-            (
-                /// The case with fewer than 3 points
-                condition: .init(
-                    points: [
-                        .generate(location: .init(x: 0.5, y: 0.5), diameter: 1.0, brightness: 1.0),
-                        .generate(location: .init(x: 2.0, y: 2.0), diameter: 2.0, brightness: 2.0)
-                    ]
-                ),
-                expectation: .init(
-                    result: []
-                )
-            ),
-            (
-                /// The start of the curve connects to the first point, and the end of the curve connects to the second point. The last point is used to create the Bezier curve handles.
-                /// The first curve does not include the last point to connect with the next curve.
-                condition: .init(
-                    points: [
-                        .generate(location: .init(x: 0.5, y: 0.5), diameter: 1.0, brightness: 1.0),
-                        .generate(location: .init(x: 2.0, y: 2.0), diameter: 2.0, brightness: 2.0),
-                        .generate(location: .init(x: 3.5, y: 3.5), diameter: 3.0, brightness: 3.0)
-                    ]
-                ),
-                expectation: .init(
-                    result: [
-                        .generate(location: .init(x: 0.5, y: 0.5), diameter: 1.0, brightness: 1.0),
-                        .generate(location: .init(x: 1.25, y: 1.25), diameter: 1.5, brightness: 1.5)
-                        /// `(x: 2.0, y: 2.0)` is not included
-                    ]
-                )
-            )
-        ]
-
-        for testCase in testCases {
-            let condition = testCase.condition
-            let expectation = testCase.expectation
-
-            let iterator = CanvasGrayscaleCurveIterator()
-            iterator.append(condition.points)
-
-            let result = CanvasDrawingCurve.makeFirstCurvePoints(
-                from: iterator
             )
             XCTAssertEqual(result, expectation.result)
         }
@@ -260,87 +322,10 @@ final class CanvasDrawingCurveTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let iterator = CanvasGrayscaleCurveIterator()
-            iterator.append(condition.points)
+            let drawing = CanvasDrawing()
+            drawing.appendToIterator(condition.points)
 
-            let result = CanvasDrawingCurve.makeLastCurvePoints(
-                from: iterator
-            )
-            XCTAssertEqual(result, expectation.result)
-        }
-    }
-
-    func testInterpolateAndMatchArraySizes() {
-        struct Condition {
-            let shouldIncludeEndPoint: Bool
-            let targetPoints: [CGPoint]
-            let startPoint: CanvasGrayscaleDotPoint
-            let endPoint: CanvasGrayscaleDotPoint
-        }
-        struct Expectation {
-            let result: [CanvasGrayscaleDotPoint]
-        }
-
-        let testCases: [(condition: Condition, expectation: Expectation)] = [
-            (
-                /// Interpolate to match `targetPoints`, including `endPoint` values
-                condition: .init(
-                    shouldIncludeEndPoint: true,
-                    targetPoints: [
-                        .init(x: 0, y: 0),
-                        .init(x: 10, y: 10),
-                        .init(x: 20, y: 20),
-                        .init(x: 30, y: 30),
-                        .init(x: 40, y: 40)
-                    ],
-                    startPoint: .generate(location: .init(x: 9999, y: 9999), diameter: 0, brightness: 0),
-                    endPoint: .generate(location: .init(x: 9999, y: 9999), diameter: 1.0, brightness: 1.0)
-                ),
-                /// `location` of `startPoint` and `endPoint` are ignored,
-                /// and `location` of `targetPoints` is used instead.
-                expectation: .init(result: [
-                    .generate(location: .init(x: 0, y: 0), diameter: 0.0, brightness: 0.0),
-                    .generate(location: .init(x: 10, y: 10), diameter: 0.25, brightness: 0.25),
-                    .generate(location: .init(x: 20, y: 20), diameter: 0.5, brightness: 0.5),
-                    .generate(location: .init(x: 30, y: 30), diameter: 0.75, brightness: 0.75),
-                    .generate(location: .init(x: 40, y: 40), diameter: 1.0, brightness: 1.0)
-                ])
-            ),
-            (
-                /// Interpolate to match `targetPoints`, excluding `endPoint` values
-                condition: .init(
-                    shouldIncludeEndPoint: false,
-                    targetPoints: [
-                        .init(x: 0, y: 0),
-                        .init(x: 10, y: 10),
-                        .init(x: 20, y: 20),
-                        .init(x: 30, y: 30)
-                    ],
-                    startPoint: .generate( location: .init(x: 9999, y: 9999), diameter: 0, brightness: 0),
-                    endPoint: .generate( location: .init(x: 9999, y: 9999), diameter: 1.0, brightness: 1.0)
-                ),
-                /// `location` of `startPoint` and `endPoint` are ignored,
-                /// and `location` of `targetPoints` is used instead.
-                expectation: .init(result: [
-                    .generate(location: .init(x: 0, y: 0), diameter: 0.0, brightness: 0.0),
-                    .generate(location: .init(x: 10, y: 10), diameter: 0.25, brightness: 0.25),
-                    .generate(location: .init(x: 20, y: 20), diameter: 0.5, brightness: 0.5),
-                    .generate(location: .init(x: 30, y: 30), diameter: 0.75, brightness: 0.75
-                    )
-                ])
-            )
-        ]
-
-        for testCase in testCases {
-            let condition = testCase.condition
-            let expectation = testCase.expectation
-
-            let result = CanvasDrawingCurve.interpolateToMatchPointCount(
-                targetPoints: condition.targetPoints,
-                interpolationStart: condition.startPoint,
-                interpolationEnd: condition.endPoint,
-                shouldIncludeEndPoint: condition.shouldIncludeEndPoint
-            )
+            let result = drawing.makeLastCurvePoints()
             XCTAssertEqual(result, expectation.result)
         }
     }

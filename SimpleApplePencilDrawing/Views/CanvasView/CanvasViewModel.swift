@@ -11,7 +11,7 @@ import Combine
 final class CanvasViewModel {
 
     /// An iterator for managing a grayscale curve
-    private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
+    private var drawing: CanvasDrawing = .init()
 
     /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
@@ -126,16 +126,16 @@ extension CanvasViewModel {
             .init(touch: $0, view: view)
         }
 
-        let touchPhase = touchScreenPoints.currentTouchPhase
-
-        if touchPhase == .began {
+        if touchScreenPoints.currentTouchPhase == .began {
             startDisplayLinkToUpdateCanvasView(true)
-            grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
+            drawing.reset()
         }
+
+        drawing.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
             // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
-            CanvasTouchPoint.init(
+            .init(
                 location: scaleAndCenterAspectFill(
                     sourceTextureLocation: $0.location,
                     sourceTextureSize: view.frame.size,
@@ -145,7 +145,7 @@ extension CanvasViewModel {
             )
         }
 
-        grayscaleTextureCurveIterator?.append(
+        drawing.appendToIterator(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
@@ -154,26 +154,22 @@ extension CanvasViewModel {
             }
         )
 
-        guard 
-            let iterator = grayscaleTextureCurveIterator,
-            let currentTexture
-        else { return }
+        if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
+            drawingTexture.drawPointsOnDrawingTexture(
+                grayscaleTexturePoints: curvePoints,
+                color: drawingToolStatus.brushColor,
+                with: commandBuffer
+            )
+        }
 
-        drawingTexture.drawPointsOnDrawingTexture(
-            grayscaleTexturePoints: CanvasDrawingCurve.makeCurvePoints(
-                from: iterator,
-                shouldIncludeLastCurve: touchPhase == .ended
-            ),
-            color: drawingToolStatus.brushColor,
-            with: commandBuffer
-        )
+        guard let currentTexture else { return }
 
         mergeDrawingTexture(
             withCurrentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: commandBuffer,
-            executeDrawingFinishProcess: touchPhase == .ended
+            executeDrawingFinishProcess: drawing.isDrawingComplete
         )
 
         drawTextureWithAspectFit(
@@ -182,9 +178,9 @@ extension CanvasViewModel {
             commandBuffer: commandBuffer
         )
 
-        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
+        if drawing.isDrawingFinished {
+            drawing.reset()
             startDisplayLinkToUpdateCanvasView(false)
-            grayscaleTextureCurveIterator = nil
         }
     }
 
@@ -195,14 +191,13 @@ extension CanvasViewModel {
     ) {
         // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
         if touches.contains(where: {$0.phase == .began}) {
-            if grayscaleTextureCurveIterator != nil {
+            if drawing.isCurrentlyDrawing {
                 cancelFingerDrawing()
             }
-
-            grayscaleTextureCurveIterator = CanvasGrayscaleCurveIterator()
-            startDisplayLinkToUpdateCanvasView(true)
-
+            drawing.reset()
             pencilDrawingManager.reset()
+
+            startDisplayLinkToUpdateCanvasView(true)
         }
 
         event?.allTouches?
@@ -247,11 +242,11 @@ extension CanvasViewModel {
         let latestScreenTouchArray = pencilDrawingManager.latestActualTouchPoints
         pencilDrawingManager.updateLatestActualTouchPoint()
 
-        let touchPhase = latestScreenTouchArray.currentTouchPhase
+        drawing.setCurrentTouchPhase(latestScreenTouchArray.currentTouchPhase)
 
-        let latestTextureTouchArray = latestScreenTouchArray.map {
+        let textureTouchPoints: [CanvasTouchPoint] = latestScreenTouchArray.map {
             // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
-            CanvasTouchPoint.init(
+            .init(
                 location: scaleAndCenterAspectFill(
                     sourceTextureLocation: $0.location,
                     sourceTextureSize: view.frame.size,
@@ -261,8 +256,8 @@ extension CanvasViewModel {
             )
         }
 
-        grayscaleTextureCurveIterator?.append(
-            latestTextureTouchArray.map {
+        drawing.appendToIterator(
+            textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
                     diameter: CGFloat(drawingToolStatus.brushDiameter)
@@ -270,26 +265,22 @@ extension CanvasViewModel {
             }
         )
 
-        guard 
-            let iterator = grayscaleTextureCurveIterator,
-            let currentTexture
-        else { return }
+        if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
+            drawingTexture.drawPointsOnDrawingTexture(
+                grayscaleTexturePoints: curvePoints,
+                color: drawingToolStatus.brushColor,
+                with: commandBuffer
+            )
+        }
 
-        drawingTexture.drawPointsOnDrawingTexture(
-            grayscaleTexturePoints: CanvasDrawingCurve.makeCurvePoints(
-                from: iterator,
-                shouldIncludeLastCurve: touchPhase == .ended
-            ),
-            color: drawingToolStatus.brushColor,
-            with: commandBuffer
-        )
+        guard let currentTexture else { return }
 
         mergeDrawingTexture(
             withCurrentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: commandBuffer,
-            executeDrawingFinishProcess: touchPhase == .ended
+            executeDrawingFinishProcess: drawing.isDrawingComplete
         )
 
         drawTextureWithAspectFit(
@@ -298,11 +289,10 @@ extension CanvasViewModel {
             commandBuffer: commandBuffer
         )
 
-        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase) {
-            startDisplayLinkToUpdateCanvasView(false)
-            grayscaleTextureCurveIterator = nil
-
+        if drawing.isDrawingFinished {
+            drawing.reset()
             pencilDrawingManager.reset()
+            startDisplayLinkToUpdateCanvasView(false)
         }
     }
 
