@@ -221,6 +221,7 @@ extension CanvasViewModel {
     func onTapClearTexture() {
         guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
 
+        drawing.reset()
         drawingTexture.clearTexture(with: commandBuffer)
 
         MTLRenderer.clear(
