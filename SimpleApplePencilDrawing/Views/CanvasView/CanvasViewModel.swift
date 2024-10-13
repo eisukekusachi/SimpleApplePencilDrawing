@@ -33,11 +33,29 @@ final class CanvasViewModel {
 
     private var canvasView: CanvasViewProtocol?
 
+    private let requestingPauseDisplayLink = PassthroughSubject<Bool, Never>()
+
+    private let requestingUpdateCanvasView = PassthroughSubject<Void, Never>()
+
+    private var cancellables = Set<AnyCancellable>()
+
     init() {
         // Configure the display link for rendering.
         displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
         displayLink?.add(to: .current, forMode: .common)
         displayLink?.isPaused = true
+
+        requestingPauseDisplayLink
+            .sink { [weak self] isPause in
+                self?.displayLink?.isPaused = isPause
+            }
+            .store(in: &cancellables)
+
+        requestingUpdateCanvasView
+            .sink { [weak self] _ in
+                self?.canvasView?.commitAndRefreshCommandBufferToDisplayRenderTexture()
+            }
+            .store(in: &cancellables)
     }
 
     @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
@@ -367,11 +385,11 @@ extension CanvasViewModel {
     }
 
     private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
-        displayLink?.isPaused = isPaused
+        requestingPauseDisplayLink.send(isPaused)
 
-        // Call `canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture` when stopping as the last line isn’t drawn
+        // Call `requestingUpdateCanvasView` when stopping as the last line isn’t drawn
         if isPaused {
-            canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture()
+            requestingUpdateCanvasView.send(())
         }
     }
 
