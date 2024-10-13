@@ -42,8 +42,6 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
     private let updateTextureSubject = PassthroughSubject<Void, Never>()
 
-    private (set) var displayLink: CADisplayLink!
-
     override init(frame frameRect: CGRect, device: MTLDevice?) {
         super.init(frame: frameRect, device: device)
         commonInit()
@@ -63,11 +61,6 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         refreshCommandBuffer()
 
         textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: textureNodes)
-
-        // Configure the display link for rendering.
-        displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
-        displayLink?.add(to: .current, forMode: .common)
-        displayLink?.isPaused = true
 
         self.delegate = self
         self.enableSetNeedsDisplay = true
@@ -121,10 +114,6 @@ extension CanvasView {
     }
 
     func commitAndRefreshCommandBufferToDisplayRenderTexture() {
-        setNeedsDisplay()
-    }
-
-    @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
         setNeedsDisplay()
     }
 

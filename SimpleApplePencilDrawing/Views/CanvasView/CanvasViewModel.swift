@@ -10,10 +10,6 @@ import Combine
 
 final class CanvasViewModel {
 
-    var pauseDisplayLinkPublish: AnyPublisher<Bool, Never> {
-        pauseDisplayLinkSubject.eraseToAnyPublisher()
-    }
-
     /// An iterator for managing a grayscale curve
     private var grayscaleTextureCurveIterator: CanvasGrayscaleCurveIterator?
 
@@ -27,24 +23,40 @@ final class CanvasViewModel {
     /// A manager for handling Apple Pencil input values
     private let pencilDrawingManager = CanvasPencilDrawingManager()
 
-    private let pauseDisplayLinkSubject = CurrentValueSubject<Bool, Never>(true)
-
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
     private var backgroundColor: UIColor = .white
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
+    private var displayLink: CADisplayLink?
+
+    private var canvasView: CanvasViewProtocol?
+
+    init() {
+        // Configure the display link for rendering.
+        displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
+        displayLink?.add(to: .current, forMode: .common)
+        displayLink?.isPaused = true
+    }
+
+    @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
+        canvasView?.commitAndRefreshCommandBufferToDisplayRenderTexture()
+    }
+
 }
 
 extension CanvasViewModel {
 
     func onViewDidAppear(canvasView: CanvasViewProtocol) {
-        guard let commandBuffer = canvasView.commandBuffer else { return }
+
+        self.canvasView = canvasView
 
         // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
         // initialize the canvas here.
-        if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
+        if  canvasTexture == nil,
+            let textureSize = canvasView.renderTexture?.size,
+            let commandBuffer = canvasView.commandBuffer {
             initCanvas(
                 textureSize: textureSize,
                 canvasView: canvasView
@@ -355,7 +367,7 @@ extension CanvasViewModel {
     }
 
     private func pauseCommitCommandBufferInDisplayLink(_ isPaused: Bool, canvasView: CanvasViewProtocol) {
-        pauseDisplayLinkSubject.send(isPaused)
+        displayLink?.isPaused = isPaused
 
         // Call `canvasView.commitAndRefreshCommandBufferToDisplayRenderTexture` when stopping as the last line isn’t drawn
         if isPaused {

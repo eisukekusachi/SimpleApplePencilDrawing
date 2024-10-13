@@ -69,11 +69,6 @@ extension CanvasViewController {
                 )
             }
             .store(in: &cancellables)
-
-        canvasViewModel.pauseDisplayLinkPublish
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isPaused, on: canvasView.displayLink)
-            .store(in: &cancellables)
     }
 
 }
