@@ -123,9 +123,10 @@ extension CanvasViewModel {
             .init(touch: $0, view: view)
         }
 
+        // Reset `drawing` and start the display link when a touch begins
         if touchScreenPoints.currentTouchPhase == .began {
-            startDisplayLinkToUpdateCanvasView(true)
             drawing.reset()
+            startDisplayLinkToUpdateCanvasView(true)
         }
 
         drawing.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
