@@ -79,7 +79,7 @@ extension CanvasViewController: CanvasFingerInputGestureSender {
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
             touches: touches,
-            view: self.view
+            view: view
         )
     }
 
