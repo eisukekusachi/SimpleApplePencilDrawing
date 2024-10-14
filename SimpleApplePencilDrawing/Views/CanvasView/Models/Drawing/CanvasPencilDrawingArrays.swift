@@ -91,6 +91,12 @@ extension CanvasPencilDrawingArrays {
         }
     }
 
+    func appendLastEstimatedValueIfProcessCompleted() {
+        if hasActualValueReplacementCompleted {
+            appendLastEstimatedTouchPointToActualTouchPointArray()
+        }
+    }
+
     /// Add an element with `UITouch.Phase.ended` to the end of `actualTouchPointArray`
     func appendLastEstimatedTouchPointToActualTouchPointArray() {
         guard let point = estimatedTouchPointArray.last else { return }

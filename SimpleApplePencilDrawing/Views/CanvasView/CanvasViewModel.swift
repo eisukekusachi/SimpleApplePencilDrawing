@@ -189,9 +189,7 @@ extension CanvasViewModel {
         actualTouchArray.forEach { actualTouch in
             pencilDrawingArrays.appendActualValueWithEstimatedValue(actualTouch)
         }
-        if pencilDrawingArrays.hasActualValueReplacementCompleted {
-            pencilDrawingArrays.appendLastEstimatedTouchPointToActualTouchPointArray()
-        }
+        pencilDrawingArrays.appendLastEstimatedValueIfProcessCompleted()
 
         let touchScreenPoints = pencilDrawingArrays.latestActualTouchPoints
         pencilDrawingArrays.updateLatestActualTouchPoint()

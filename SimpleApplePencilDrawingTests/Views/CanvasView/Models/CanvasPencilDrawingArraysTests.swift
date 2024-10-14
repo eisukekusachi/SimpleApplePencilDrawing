@@ -58,6 +58,19 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
         XCTAssertTrue(subject.hasActualValueReplacementCompleted)
     }
 
+    func testAppendLastEstimatedTouchPointToActualTouchPointArray() {
+        let estimatedTouches: [CanvasTouchPoint] = [
+            .generate(phase: .ended, force: 0.0, estimationUpdateIndex: nil)
+        ]
+
+        let subject = CanvasPencilDrawingArrays(
+            estimatedTouchPointArray: estimatedTouches
+        )
+        subject.appendLastEstimatedTouchPointToActualTouchPointArray()
+
+        XCTAssertEqual(subject.actualTouchPointArray.last, subject.estimatedTouchPointArray.last)
+    }
+
     /// Confirms that elements created by combining actual and estimated values are added to `actualTouchPointArray`
     func testAppendActualValueWithEstimatedValue() {
         let estimatedTouches: [CanvasTouchPoint] = [
@@ -76,6 +89,8 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
         let subject = CanvasPencilDrawingArrays(
             estimatedTouchPointArray: estimatedTouches
         )
+        /// Since `.ended` event is not sent from the Apple Pencil,
+        /// the last element of `estimatedTouchPointArray` is added to the end of `actualTouchPointArray` to finalize the process
         subject.setLastEstimationUpdateIndexOfEstimatedTouchPointArray()
 
         actualTouches
@@ -83,13 +98,7 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
             .forEach { value in
             subject.appendActualValueWithEstimatedValue(value)
         }
-
-        /// Replacement is complete if the last `estimationUpdateIndex` in `actualTouchPointArray` matches `lastEstimationUpdateIndex`
-        if subject.hasActualValueReplacementCompleted {
-            /// Since `.ended` event is not sent from the Apple Pencil,
-            /// the last element of `estimatedTouchPointArray` is added to the end of `actualTouchPointArray` to finalize the process
-            subject.appendLastEstimatedTouchPointToActualTouchPointArray()
-        }
+        subject.appendLastEstimatedValueIfProcessCompleted()
 
         /// Verifie that the estimated value is used for `UITouch.Phase` and the actual value is used for `force`
         XCTAssertEqual(subject.actualTouchPointArray[0].phase, estimatedTouches[0].phase)
