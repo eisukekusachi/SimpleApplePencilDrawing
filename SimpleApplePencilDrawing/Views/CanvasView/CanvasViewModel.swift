@@ -270,8 +270,6 @@ extension CanvasViewModel {
 
     /// Initialize the textures used for drawing with the same size
     func initCanvas(textureSize: CGSize) {
-        guard let device = MTLCreateSystemDefaultDevice() else { return }
-
         drawingTexture.initTexture(textureSize: textureSize)
         currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
         canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
@@ -364,7 +362,6 @@ extension CanvasViewModel {
         guard
             let texture,
             let destinationTexture,
-            let device = MTLCreateSystemDefaultDevice(),
             let textureBuffers = MTLBuffers.makeTextureBuffers(
                 device: device,
                 sourceSize: .init(
