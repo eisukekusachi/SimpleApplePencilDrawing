@@ -52,11 +52,14 @@ final class CanvasViewModel {
                 guard 
                     let `self`,
                     let canvasView,
-                    let commandBuffer = canvasView.commandBuffer 
+                    let canvasTextureSize = canvasTexture?.size,
+                    let renderTextureSize = canvasView.renderTexture?.size,
+                    let commandBuffer = canvasView.commandBuffer
                 else { return }
 
-                self.drawTextureWithAspectFit(
+                self.drawTextureWithScaling(
                     texture: canvasTexture,
+                    textureScaleFactor: ViewSize.getScaleToFit(canvasTextureSize, to: renderTextureSize),
                     on: canvasView.renderTexture,
                     commandBuffer: commandBuffer
                 )
@@ -365,26 +368,22 @@ extension CanvasViewModel {
         }
     }
 
-    /// Draw `texture` onto `destinationTexture` with aspect fit
-    private func drawTextureWithAspectFit(
+    /// Draw `texture` onto `destinationTexture` with a scaled size
+    private func drawTextureWithScaling(
         texture: MTLTexture?,
+        textureScaleFactor: CGFloat,
         on destinationTexture: MTLTexture?,
         commandBuffer: MTLCommandBuffer
     ) {
         guard
             let texture,
-            let destinationTexture
-        else { return }
-
-        let ratio = ViewSize.getScaleToFit(texture.size, to: destinationTexture.size)
-
-        guard
+            let destinationTexture,
             let device = MTLCreateSystemDefaultDevice(),
             let textureBuffers = MTLBuffers.makeTextureBuffers(
                 device: device,
                 sourceSize: .init(
-                    width: texture.size.width * ratio,
-                    height: texture.size.height * ratio
+                    width: texture.size.width * textureScaleFactor,
+                    height: texture.size.height * textureScaleFactor
                 ),
                 destinationSize: destinationTexture.size,
                 nodes: textureNodes
