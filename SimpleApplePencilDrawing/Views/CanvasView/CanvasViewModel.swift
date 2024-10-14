@@ -88,8 +88,6 @@ extension CanvasViewModel {
 
         self.canvasView = canvasView
 
-        guard let commandBuffer = canvasView.commandBuffer else { return }
-
         // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
         // initialize the canvas here.
         if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
@@ -101,8 +99,6 @@ extension CanvasViewModel {
     }
 
     func onUpdateRenderTexture() {
-        guard let commandBuffer = canvasView?.commandBuffer else { return }
-
         if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
             initCanvas(
                 textureSize: textureSize
@@ -241,8 +237,8 @@ extension CanvasViewModel {
 
     @objc private func updateCanvasView(_ displayLink: CADisplayLink) {
         guard
+            let currentTexture,
             let canvasTexture,
-            let renderTexture = canvasView?.renderTexture,
             let commandBuffer = canvasView?.commandBuffer
         else { return }
 
@@ -253,8 +249,6 @@ extension CanvasViewModel {
                 with: commandBuffer
             )
         }
-
-        guard let currentTexture else { return }
 
         mergeDrawingTexture(
             withCurrentTexture: currentTexture,
@@ -289,10 +283,7 @@ extension CanvasViewModel {
     }
 
     private func clearCanvas() {
-        guard
-            let canvasView,
-            let commandBuffer = canvasView.commandBuffer
-        else { return }
+        guard let commandBuffer = canvasView?.commandBuffer else { return }
 
         MTLRenderer.fill(
             color: backgroundColor.rgb,
@@ -305,8 +296,8 @@ extension CanvasViewModel {
 
     private func clearDrawingTexture() {
         guard
-            let commandBuffer = canvasView?.commandBuffer,
-            let currentTexture
+            let currentTexture,
+            let commandBuffer = canvasView?.commandBuffer
         else { return }
 
         // Clear `drawingTextures` during drawing
@@ -338,9 +329,7 @@ extension CanvasViewModel {
         with commandBuffer: MTLCommandBuffer,
         executeDrawingFinishProcess: Bool = false
     ) {
-        guard
-            let destinationTexture
-        else { return }
+        guard let destinationTexture else { return }
 
         // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
         MTLRenderer.draw(
