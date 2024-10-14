@@ -66,31 +66,28 @@ extension CanvasViewModel {
 
         self.canvasView = canvasView
 
+        guard let commandBuffer = canvasView.commandBuffer else { return }
+
         // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
         // initialize the canvas here.
-        if  canvasTexture == nil,
-            let textureSize = canvasView.renderTexture?.size,
-            let commandBuffer = canvasView.commandBuffer {
+        if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
             initCanvas(
                 textureSize: textureSize
             )
-
-            drawTextureWithAspectFit(
-                texture: canvasTexture,
-                on: canvasView.renderTexture,
-                commandBuffer: commandBuffer
-            )
-            canvasView.updateCanvasView()
         }
+
+        drawTextureWithAspectFit(
+            texture: canvasTexture,
+            on: canvasView.renderTexture,
+            commandBuffer: commandBuffer
+        )
+        canvasView.updateCanvasView()
     }
 
     func onUpdateRenderTexture() {
-        guard
-            let canvasView,
-            let commandBuffer = canvasView.commandBuffer
-        else { return }
+        guard let commandBuffer = canvasView?.commandBuffer else { return }
 
-        if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
+        if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
             initCanvas(
                 textureSize: textureSize
             )
@@ -100,10 +97,10 @@ extension CanvasViewModel {
         // Therefore, this code is placed outside the block.
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            on: canvasView.renderTexture,
+            on: canvasView?.renderTexture,
             commandBuffer: commandBuffer
         )
-        canvasView.updateCanvasView()
+        canvasView?.updateCanvasView()
     }
 
     func onFingerInputGesture(
