@@ -43,7 +43,7 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
         )
 
         /// Confirms that `lastEstimationUpdateIndex` contains `estimationUpdateIndex` of the second-to-last element of `estimatedTouchPointArray`
-        subject.setLastEstimationUpdateIndexOfEstimatedTouchPointArray()
+        subject.setSecondLastEstimationUpdateIndex()
         XCTAssertEqual(subject.lastEstimationUpdateIndex, 1)
 
         subject.appendActualValueWithEstimatedValue(actualTouches[0])
@@ -91,7 +91,7 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
         )
         /// Since `.ended` event is not sent from the Apple Pencil,
         /// the last element of `estimatedTouchPointArray` is added to the end of `actualTouchPointArray` to finalize the process
-        subject.setLastEstimationUpdateIndexOfEstimatedTouchPointArray()
+        subject.setSecondLastEstimationUpdateIndex()
 
         actualTouches
             .sorted(by: { $0.timestamp < $1.timestamp })

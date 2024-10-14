@@ -62,7 +62,7 @@ extension CanvasPencilDrawingArrays {
         estimatedTouchPointArray.append(touchPoint)
 
         if isEstimateValueRetrievalComplete {
-            setLastEstimationUpdateIndexOfEstimatedTouchPointArray()
+            setSecondLastEstimationUpdateIndex()
         }
     }
 
@@ -110,7 +110,7 @@ extension CanvasPencilDrawingArrays {
 
     // When drawing ends with Apple Pencil, the `estimationUpdateIndex` of `UITouch` becomes nil,
     // so the `estimationUpdateIndex` from the previous `UITouch` is retained.
-    func setLastEstimationUpdateIndexOfEstimatedTouchPointArray() {
+    func setSecondLastEstimationUpdateIndex() {
         lastEstimationUpdateIndex = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
     }
 
