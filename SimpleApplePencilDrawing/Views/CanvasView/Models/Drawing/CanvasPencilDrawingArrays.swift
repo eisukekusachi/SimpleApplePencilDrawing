@@ -1,5 +1,5 @@
 //
-//  CanvasPencilDrawingManager.swift
+//  CanvasPencilDrawingArrays.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/08/31.
@@ -12,7 +12,7 @@ import UIKit
 ///  This class is a model that combines estimated and actual values to create an array of `CanvasTouchPoint`.
 ///  It stores the estimated values in `estimatedTouchPointArray` and then combines them with the actual values received later
 ///  to create the values for `actualTouchPointArray`.
-final class CanvasPencilDrawingManager {
+final class CanvasPencilDrawingArrays {
 
     /// An array that holds elements combining actualTouches, where the force values are accurate, and estimatedTouchPointArray.
     private (set) var actualTouchPointArray: [CanvasTouchPoint] = []
@@ -20,13 +20,14 @@ final class CanvasPencilDrawingManager {
     /// An array that holds estimated values where the TouchPhase values are accurate.
     private (set) var estimatedTouchPointArray: [CanvasTouchPoint] = []
 
-    /// An index of the processed elements in `estimatedTouchPointArray`
-    private (set) var latestEstimatedTouchArrayIndex = 0
+    /// An `estimationUpdateIndex` to determine whether the drawing has completed
+    private (set) var lastEstimationUpdateIndex: NSNumber? = nil
 
     /// An element processed in `actualTouchPointArray`
-    private (set) var latestActualTouchPoint: CanvasTouchPoint? = nil
+    private var latestActualTouchPoint: CanvasTouchPoint? = nil
 
-    private (set) var lastEstimationUpdateIndexAtCompletion: NSNumber? = nil
+    /// An index of the processed elements in `estimatedTouchPointArray`
+    private var latestEstimatedTouchArrayIndex = 0
 
     init(
         actualTouchPointArray: [CanvasTouchPoint] = [],
@@ -42,33 +43,32 @@ final class CanvasPencilDrawingManager {
 
 }
 
-extension CanvasPencilDrawingManager {
+extension CanvasPencilDrawingArrays {
+
+    var isEstimatedTouchPointArrayCreationComplete: Bool {
+        [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase)
+    }
+
+    var isActualTouchPointArrayCreationComplete: Bool {
+        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndex
+    }
 
     /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing
     var latestActualTouchPoints: [CanvasTouchPoint] {
-        actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
-    }
+        let array = actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
 
-    var hasActualValueReplacementCompleted: Bool {
-        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndexAtCompletion
-    }
+        /// `latestActualTouchPoint` is used for creating the next array
+        latestActualTouchPoint = array.last
 
-    /// Check if the time difference between the creation of the last element in `actualTouchPointArray` and `latestActualTouchPoint` is within the allowed difference in seconds
-    func hasSufficientTimeElapsedSincePreviousProcess(allowedDifferenceInSeconds seconds: TimeInterval) -> Bool {
-        guard
-            let latestActualTouchPointTimestamp = actualTouchPointArray.last?.timestamp
-        else { return false }
-
-        if let endLineTimestamp = latestActualTouchPoint?.timestamp {
-            return endLineTimestamp.isTimeDifferenceExceeding(latestActualTouchPointTimestamp, allowedDifferenceInSeconds: seconds)
-        } else {
-            return true
-        }
+        return array
     }
 
     func appendEstimatedValue(_ touchPoint: CanvasTouchPoint) {
         estimatedTouchPointArray.append(touchPoint)
-        updateLastEstimationUpdateIndexAtCompletionForTouchCompletion()
+
+        if isEstimatedTouchPointArrayCreationComplete {
+            setSecondLastEstimationUpdateIndex()
+        }
     }
 
     /// Combine `actualTouches` with the estimated values to create elements and append them to `actualTouchPointArray`
@@ -96,23 +96,22 @@ extension CanvasPencilDrawingManager {
         }
     }
 
+    func appendLastEstimatedValueToActualTouchPointArrayIfProcessCompleted() {
+        if isActualTouchPointArrayCreationComplete {
+            appendLastEstimatedTouchPointToActualTouchPointArray()
+        }
+    }
+
     /// Add an element with `UITouch.Phase.ended` to the end of `actualTouchPointArray`
     func appendLastEstimatedTouchPointToActualTouchPointArray() {
         guard let point = estimatedTouchPointArray.last else { return }
         actualTouchPointArray.append(point)
     }
 
-    /// After using the array, update `latestActualTouchPoint` with the last element of `actualTouchPointArray` and use it for the next drawing.
-    func updateLatestActualTouchPoint() {
-        latestActualTouchPoint = actualTouchPointArray.last
-    }
-
-    func updateLastEstimationUpdateIndexAtCompletionForTouchCompletion() {
-        // When the touch ends, `estimationUpdateIndex` of `UITouch` becomes nil,
-        // so the `estimationUpdateIndex` of the previous `UITouch` is retained.
-        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase) {
-            lastEstimationUpdateIndexAtCompletion = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
-        }
+    // When drawing ends with Apple Pencil, the `estimationUpdateIndex` of `UITouch` becomes nil,
+    // so the `estimationUpdateIndex` from the previous `UITouch` is retained.
+    func setSecondLastEstimationUpdateIndex() {
+        lastEstimationUpdateIndex = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
     }
 
     func reset() {
@@ -120,7 +119,7 @@ extension CanvasPencilDrawingManager {
         estimatedTouchPointArray = []
         latestEstimatedTouchArrayIndex = 0
         latestActualTouchPoint = nil
-        lastEstimationUpdateIndexAtCompletion = nil
+        lastEstimationUpdateIndex = nil
     }
 
 }

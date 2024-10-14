@@ -1,32 +1,13 @@
 //
-//  CanvasGrayscaleCurveIterator.swift
+//  IteratorExtensions.swift
 //  SimpleApplePencilDrawing
 //
-//  Created by Eisuke Kusachi on 2024/06/02.
+//  Created by Eisuke Kusachi on 2024/10/13.
 //
 
 import Foundation
 
-final class CanvasGrayscaleCurveIterator: Iterator<CanvasGrayscaleDotPoint> {
-    typealias T = CanvasGrayscaleDotPoint
-
-    private var isNoFirstCurveDrawn: Bool = true
-
-}
-
-extension CanvasGrayscaleCurveIterator {
-    /// Set to true when three elements are added to the array while `isNoFirstCurveDrawn` is true
-    var hasArrayThreeElementsButNoFirstCurveDrawn: Bool {
-        array.count >= 3 && isNoFirstCurveDrawn
-    }
-
-    func setIsNoFirstCurveDrawnToFalse() {
-        isNoFirstCurveDrawn = false
-    }
-
-}
-
-extension CanvasGrayscaleCurveIterator {
+extension Iterator<CanvasGrayscaleDotPoint> {
 
     func getFirstBezierCurvePoints() -> CanvasFirstBezierCurvePoints? {
         guard array.count >= 3 else { return nil }

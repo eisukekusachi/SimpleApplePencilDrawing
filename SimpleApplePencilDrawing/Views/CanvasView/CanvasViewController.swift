@@ -21,12 +21,13 @@ class CanvasViewController: UIViewController {
 
         subscribeEvents()
         bindViewModel()
+
         setupCanvasViewModel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        canvasViewModel.onViewDidAppear(canvasView: canvasView)
+        canvasViewModel.onViewDidAppear()
     }
 
 }
@@ -34,11 +35,13 @@ class CanvasViewController: UIViewController {
 extension CanvasViewController {
 
     private func setupCanvasViewModel() {
+
+        canvasViewModel.setCanvasView(canvasView)
+
         // Initialize the texture with any size
         /*
         canvasViewModel.initCanvas(
-            textureSize: .init(width: 768, height: 1024),
-            canvasView: canvasView
+            textureSize: .init(width: 768, height: 1024)
         )
         */
     }
@@ -64,15 +67,8 @@ extension CanvasViewController {
         canvasView.updateTexturePublisher
             .sink { [weak self] in
                 guard let `self` else { return }
-                self.canvasViewModel.onUpdateRenderTexture(
-                    canvasView: self.canvasView
-                )
+                self.canvasViewModel.onUpdateRenderTexture()
             }
-            .store(in: &cancellables)
-
-        canvasViewModel.pauseDisplayLinkPublish
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isPaused, on: canvasView.displayLink)
             .store(in: &cancellables)
     }
 
@@ -83,8 +79,7 @@ extension CanvasViewController: CanvasFingerInputGestureSender {
     func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onFingerInputGesture(
             touches: touches,
-            view: self.view,
-            canvasView: canvasView
+            view: view
         )
     }
 
@@ -96,16 +91,14 @@ extension CanvasViewController: CanvasPencilInputGestureSender {
         canvasViewModel.onPencilGestureDetected(
             touches: touches,
             with: event,
-            view: view,
-            canvasView: canvasView
+            view: view
         )
     }
 
     func sendPencilActualTouches(_ touches: Set<UITouch>, on view: UIView) {
         canvasViewModel.onPencilGestureDetected(
             actualTouches: touches,
-            view: view,
-            canvasView: canvasView
+            view: view
         )
     }
 
@@ -114,7 +107,7 @@ extension CanvasViewController: CanvasPencilInputGestureSender {
 extension CanvasViewController {
 
     @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
-        canvasViewModel.onTapClearTexture(canvasView: canvasView)
+        canvasViewModel.onTapClearTexture()
     }
 
 }

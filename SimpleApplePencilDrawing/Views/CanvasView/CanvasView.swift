@@ -13,9 +13,9 @@ protocol CanvasViewProtocol {
 
     var renderTexture: MTLTexture? { get }
 
-    func refreshCommandBuffer()
+    func resetCommandBuffer()
 
-    func commitAndRefreshCommandBufferToDisplayRenderTexture()
+    func updateCanvasView()
 }
 
 /// A custom view for displaying textures with Metal support.
@@ -42,8 +42,6 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
     private let updateTextureSubject = PassthroughSubject<Void, Never>()
 
-    private (set) var displayLink: CADisplayLink!
-
     override init(frame frameRect: CGRect, device: MTLDevice?) {
         super.init(frame: frameRect, device: device)
         commonInit()
@@ -60,14 +58,9 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         guard let queue = device?.makeCommandQueue() else { return }
 
         commandQueue = queue
-        refreshCommandBuffer()
+        resetCommandBuffer()
 
         textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: textureNodes)
-
-        // Configure the display link for rendering.
-        displayLink = CADisplayLink(target: self, selector: #selector(updateDisplayLink(_:)))
-        displayLink?.add(to: .current, forMode: .common)
-        displayLink?.isPaused = true
 
         self.delegate = self
         self.enableSetNeedsDisplay = true
@@ -101,7 +94,8 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         commandBuffer.present(drawable)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
-        onCommandBufferComplete()
+
+        resetCommandBuffer()
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -112,19 +106,11 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 }
 
 extension CanvasView {
-    private func onCommandBufferComplete() {
-        refreshCommandBuffer()
-    }
-
-    func refreshCommandBuffer() {
+    func resetCommandBuffer() {
         commandBuffer = commandQueue.makeCommandBuffer()
     }
 
-    func commitAndRefreshCommandBufferToDisplayRenderTexture() {
-        setNeedsDisplay()
-    }
-
-    @objc private func updateDisplayLink(_ displayLink: CADisplayLink) {
+    func updateCanvasView() {
         setNeedsDisplay()
     }
 
