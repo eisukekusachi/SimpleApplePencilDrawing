@@ -153,7 +153,8 @@ extension CanvasViewModel {
         // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
         if touches.contains(where: {$0.phase == .began}) {
             if drawing.isCurrentlyDrawing {
-                cancelFingerDrawing()
+                canvasView?.resetCommandBuffer()
+                clearDrawingTexture()
             }
             drawing.reset()
             pencilDrawingManager.reset()
@@ -306,14 +307,11 @@ extension CanvasViewModel {
         canvasView.updateCanvasView()
     }
 
-    private func cancelFingerDrawing() {
+    private func clearDrawingTexture() {
         guard
-            let canvasView,
-            let commandBuffer = canvasView.commandBuffer,
+            let commandBuffer = canvasView?.commandBuffer,
             let currentTexture
         else { return }
-
-        canvasView.resetCommandBuffer()
 
         // Clear `drawingTextures` during drawing
         drawingTexture.clearTexture(with: commandBuffer)
@@ -327,11 +325,11 @@ extension CanvasViewModel {
 
         drawTextureWithAspectFit(
             texture: canvasTexture,
-            on: canvasView.renderTexture,
+            on: canvasView?.renderTexture,
             commandBuffer: commandBuffer
         )
 
-        canvasView.updateCanvasView()
+        canvasView?.updateCanvasView()
     }
 
     private func startDisplayLinkToUpdateCanvasView(_ isStarted: Bool) {
