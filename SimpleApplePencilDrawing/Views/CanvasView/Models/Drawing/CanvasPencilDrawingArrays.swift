@@ -1,5 +1,5 @@
 //
-//  CanvasPencilDrawingManager.swift
+//  CanvasPencilDrawingArrays.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/08/31.
@@ -12,7 +12,7 @@ import UIKit
 ///  This class is a model that combines estimated and actual values to create an array of `CanvasTouchPoint`.
 ///  It stores the estimated values in `estimatedTouchPointArray` and then combines them with the actual values received later
 ///  to create the values for `actualTouchPointArray`.
-final class CanvasPencilDrawingManager {
+final class CanvasPencilDrawingArrays {
 
     /// An array that holds elements combining actualTouches, where the force values are accurate, and estimatedTouchPointArray.
     private (set) var actualTouchPointArray: [CanvasTouchPoint] = []
@@ -20,13 +20,14 @@ final class CanvasPencilDrawingManager {
     /// An array that holds estimated values where the TouchPhase values are accurate.
     private (set) var estimatedTouchPointArray: [CanvasTouchPoint] = []
 
-    /// An index of the processed elements in `estimatedTouchPointArray`
-    private (set) var latestEstimatedTouchArrayIndex = 0
+    /// An `estimationUpdateIndex` to determine whether the drawing has completed
+    private (set) var lastEstimationUpdateIndex: NSNumber? = nil
 
     /// An element processed in `actualTouchPointArray`
-    private (set) var latestActualTouchPoint: CanvasTouchPoint? = nil
+    private var latestActualTouchPoint: CanvasTouchPoint? = nil
 
-    private (set) var lastEstimationUpdateIndexAtCompletion: NSNumber? = nil
+    /// An index of the processed elements in `estimatedTouchPointArray`
+    private var latestEstimatedTouchArrayIndex = 0
 
     init(
         actualTouchPointArray: [CanvasTouchPoint] = [],
@@ -42,7 +43,11 @@ final class CanvasPencilDrawingManager {
 
 }
 
-extension CanvasPencilDrawingManager {
+extension CanvasPencilDrawingArrays {
+
+    var isEstimateValueRetrievalComplete: Bool {
+        [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase)
+    }
 
     /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing
     var latestActualTouchPoints: [CanvasTouchPoint] {
@@ -50,12 +55,15 @@ extension CanvasPencilDrawingManager {
     }
 
     var hasActualValueReplacementCompleted: Bool {
-        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndexAtCompletion
+        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndex
     }
 
     func appendEstimatedValue(_ touchPoint: CanvasTouchPoint) {
         estimatedTouchPointArray.append(touchPoint)
-        updateLastEstimationUpdateIndexAtCompletionForTouchCompletion()
+
+        if isEstimateValueRetrievalComplete {
+            setLastEstimationUpdateIndexOfEstimatedTouchPointArray()
+        }
     }
 
     /// Combine `actualTouches` with the estimated values to create elements and append them to `actualTouchPointArray`
@@ -94,12 +102,10 @@ extension CanvasPencilDrawingManager {
         latestActualTouchPoint = actualTouchPointArray.last
     }
 
-    func updateLastEstimationUpdateIndexAtCompletionForTouchCompletion() {
-        // When the touch ends, `estimationUpdateIndex` of `UITouch` becomes nil,
-        // so the `estimationUpdateIndex` of the previous `UITouch` is retained.
-        if [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase) {
-            lastEstimationUpdateIndexAtCompletion = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
-        }
+    // When drawing ends with Apple Pencil, the `estimationUpdateIndex` of `UITouch` becomes nil,
+    // so the `estimationUpdateIndex` from the previous `UITouch` is retained.
+    func setLastEstimationUpdateIndexOfEstimatedTouchPointArray() {
+        lastEstimationUpdateIndex = estimatedTouchPointArray.dropLast().last?.estimationUpdateIndex
     }
 
     func reset() {
@@ -107,7 +113,7 @@ extension CanvasPencilDrawingManager {
         estimatedTouchPointArray = []
         latestEstimatedTouchArrayIndex = 0
         latestActualTouchPoint = nil
-        lastEstimationUpdateIndexAtCompletion = nil
+        lastEstimationUpdateIndex = nil
     }
 
 }

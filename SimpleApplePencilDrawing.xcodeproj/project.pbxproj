@@ -55,9 +55,9 @@
 		D4C3C7B32CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7B22CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift */; };
 		D4D0FDD52C82D4B900E91B4B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */; };
 		D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */; };
-		D4D0FDDD2C82D6C500E91B4B /* CanvasPencilDrawingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDDC2C82D6C500E91B4B /* CanvasPencilDrawingManager.swift */; };
+		D4D0FDDD2C82D6C500E91B4B /* CanvasPencilDrawingArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDDC2C82D6C500E91B4B /* CanvasPencilDrawingArrays.swift */; };
 		D4D0FDEA2C8349EB00E91B4B /* CanvasTouchPointDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDE92C8349EB00E91B4B /* CanvasTouchPointDummy.swift */; };
-		D4D0FDEF2C834A2200E91B4B /* CanvasPencilDrawingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingManagerTests.swift */; };
+		D4D0FDEF2C834A2200E91B4B /* CanvasPencilDrawingArraysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingArraysTests.swift */; };
 		D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDF02C834A3C00E91B4B /* UITouchDummy.swift */; };
 /* End PBXBuildFile section */
 
@@ -131,9 +131,9 @@
 		D4C3C7B22CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleDotPointDummy.swift; sourceTree = "<group>"; };
 		D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtensions.swift; sourceTree = "<group>"; };
-		D4D0FDDC2C82D6C500E91B4B /* CanvasPencilDrawingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilDrawingManager.swift; sourceTree = "<group>"; };
+		D4D0FDDC2C82D6C500E91B4B /* CanvasPencilDrawingArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilDrawingArrays.swift; sourceTree = "<group>"; };
 		D4D0FDE92C8349EB00E91B4B /* CanvasTouchPointDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasTouchPointDummy.swift; sourceTree = "<group>"; };
-		D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilDrawingManagerTests.swift; sourceTree = "<group>"; };
+		D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingArraysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasPencilDrawingArraysTests.swift; sourceTree = "<group>"; };
 		D4D0FDF02C834A3C00E91B4B /* UITouchDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchDummy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -365,7 +365,7 @@
 			children = (
 				D47123942CB282A8001F16C6 /* Point */,
 				D462E19F2C0C67C000E0503E /* CanvasDrawingCurve.swift */,
-				D4D0FDDC2C82D6C500E91B4B /* CanvasPencilDrawingManager.swift */,
+				D4D0FDDC2C82D6C500E91B4B /* CanvasPencilDrawingArrays.swift */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -410,7 +410,7 @@
 			children = (
 				D47123992CB285D7001F16C6 /* Point */,
 				D47123972CB284E3001F16C6 /* CanvasDrawingCurveTests.swift */,
-				D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingManagerTests.swift */,
+				D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingArraysTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -588,7 +588,7 @@
 				D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */,
 				D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */,
 				D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */,
-				D4D0FDDD2C82D6C500E91B4B /* CanvasPencilDrawingManager.swift in Sources */,
+				D4D0FDDD2C82D6C500E91B4B /* CanvasPencilDrawingArrays.swift in Sources */,
 				D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -606,7 +606,7 @@
 				D43D06662CBC042F0029CAB4 /* IteratorExtensionsTests.swift in Sources */,
 				D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */,
 				D47123982CB284E3001F16C6 /* CanvasDrawingCurveTests.swift in Sources */,
-				D4D0FDEF2C834A2200E91B4B /* CanvasPencilDrawingManagerTests.swift in Sources */,
+				D4D0FDEF2C834A2200E91B4B /* CanvasPencilDrawingArraysTests.swift in Sources */,
 				D46ECA2D2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift in Sources */,
 				D4C3C7B32CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift in Sources */,
 			);

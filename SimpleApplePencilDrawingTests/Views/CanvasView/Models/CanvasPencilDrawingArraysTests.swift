@@ -1,5 +1,5 @@
 //
-//  CanvasPencilDrawingManagerTests.swift
+//  CanvasPencilDrawingArraysTests.swift
 //  SimpleApplePencilDrawingTests
 //
 //  Created by Eisuke Kusachi on 2024/08/31.
@@ -8,7 +8,23 @@
 import XCTest
 @testable import SimpleApplePencilDrawing
 
-final class CanvasPencilDrawingManagerTests: XCTestCase {
+final class CanvasPencilDrawingArraysTests: XCTestCase {
+
+    func testIsEstimateValueRetrievalComplete() {
+        let subject = CanvasPencilDrawingArrays()
+
+        subject.appendEstimatedValue(.generate(phase: .began))
+        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, false)
+
+        subject.appendEstimatedValue(.generate(phase: .moved))
+        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, false)
+
+        subject.appendEstimatedValue(.generate(phase: .ended))
+        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, true)
+
+        subject.appendEstimatedValue(.generate(phase: .cancelled))
+        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, true)
+    }
 
     /// Confirms that the replacement with the actual values is complete
     func testHasActualValueReplacementCompleted() {
@@ -22,13 +38,13 @@ final class CanvasPencilDrawingManagerTests: XCTestCase {
             UITouchDummy.init(phase: .moved, estimationUpdateIndex: 1)
         ]
 
-        let subject = CanvasPencilDrawingManager(
+        let subject = CanvasPencilDrawingArrays(
             estimatedTouchPointArray: estimatedTouchPointArray
         )
-        subject.updateLastEstimationUpdateIndexAtCompletionForTouchCompletion()
 
-        /// Confirms that `lastEstimationUpdateIndexAtCompletion` contains `estimationUpdateIndex` of the second-to-last element of `estimatedTouchPointArray`
-        XCTAssertEqual(subject.lastEstimationUpdateIndexAtCompletion, 1)
+        /// Confirms that `lastEstimationUpdateIndex` contains `estimationUpdateIndex` of the second-to-last element of `estimatedTouchPointArray`
+        subject.setLastEstimationUpdateIndexOfEstimatedTouchPointArray()
+        XCTAssertEqual(subject.lastEstimationUpdateIndex, 1)
 
         subject.appendActualValueWithEstimatedValue(actualTouches[0])
         XCTAssertEqual(subject.actualTouchPointArray.last?.estimationUpdateIndex, 0)
@@ -38,7 +54,7 @@ final class CanvasPencilDrawingManagerTests: XCTestCase {
         subject.appendActualValueWithEstimatedValue(actualTouches[1])
         XCTAssertEqual(subject.actualTouchPointArray.last?.estimationUpdateIndex, 1)
 
-        /// Completion is determined when `lastEstimationUpdateIndexAtCompletion` matches `estimationUpdateIndex` of the last element in `actualTouchPointArray`
+        /// Completion is determined when `lastEstimationUpdateIndex` matches `estimationUpdateIndex` of the last element in `actualTouchPointArray`
         XCTAssertTrue(subject.hasActualValueReplacementCompleted)
     }
 
@@ -57,10 +73,10 @@ final class CanvasPencilDrawingManagerTests: XCTestCase {
             UITouchDummy.init(phase: .moved, force: 0.1, estimationUpdateIndex: 2)
         ]
 
-        let subject = CanvasPencilDrawingManager(
+        let subject = CanvasPencilDrawingArrays(
             estimatedTouchPointArray: estimatedTouches
         )
-        subject.updateLastEstimationUpdateIndexAtCompletionForTouchCompletion()
+        subject.setLastEstimationUpdateIndexOfEstimatedTouchPointArray()
 
         actualTouches
             .sorted(by: { $0.timestamp < $1.timestamp })
@@ -68,14 +84,14 @@ final class CanvasPencilDrawingManagerTests: XCTestCase {
             subject.appendActualValueWithEstimatedValue(value)
         }
 
-        /// Replacement is complete if the last `estimationUpdateIndex` in `actualTouchPointArray` matches `lastEstimationUpdateIndexAtCompletion`
+        /// Replacement is complete if the last `estimationUpdateIndex` in `actualTouchPointArray` matches `lastEstimationUpdateIndex`
         if subject.hasActualValueReplacementCompleted {
             /// Since `.ended` event is not sent from the Apple Pencil,
             /// the last element of `estimatedTouchPointArray` is added to the end of `actualTouchPointArray` to finalize the process
             subject.appendLastEstimatedTouchPointToActualTouchPointArray()
         }
 
-        /// Verifies that the estimated value is used for `UITouch.Phase` and the actual value is used for `force`
+        /// Verifie that the estimated value is used for `UITouch.Phase` and the actual value is used for `force`
         XCTAssertEqual(subject.actualTouchPointArray[0].phase, estimatedTouches[0].phase)
         XCTAssertEqual(subject.actualTouchPointArray[0].force, actualTouches[0].force)
 
@@ -85,47 +101,47 @@ final class CanvasPencilDrawingManagerTests: XCTestCase {
         XCTAssertEqual(subject.actualTouchPointArray[2].phase, estimatedTouches[2].phase)
         XCTAssertEqual(subject.actualTouchPointArray[2].force, actualTouches[2].force)
 
-        /// Confirms that the last element of `estimatedTouchPointArray` is added to the end of `actualTouchPointArray` at `.ended`
+        /// Confirm that the last value used is an estimated value
         XCTAssertEqual(subject.actualTouchPointArray[3].phase, estimatedTouches[3].phase)
         XCTAssertEqual(subject.actualTouchPointArray[3].force, estimatedTouches[3].force)
     }
 
-    /// Confirms that on `.ended`, `lastEstimationUpdateIndexAtCompletion` contains the `estimationUpdateIndex` from the second-to-last element of `estimatedTouchPointArray`
+    /// Confirms that on `.ended`, `lastEstimationUpdateIndex` contains the `estimationUpdateIndex` from the second-to-last element of `estimatedTouchPointArray`
     func testUpdateLastEstimationUpdateIndexAtTouchEnded() {
-        let subject = CanvasPencilDrawingManager()
+        let subject = CanvasPencilDrawingArrays()
 
-        /// When the phase is not `.ended`, `lastEstimationUpdateIndexAtCompletion` will be `nil`
+        /// When the phase is not `.ended`, `lastEstimationUpdateIndex` will be `nil`
         subject.appendEstimatedValue(.generate(phase: .began, estimationUpdateIndex: 0))
-        XCTAssertNil(subject.lastEstimationUpdateIndexAtCompletion)
+        XCTAssertNil(subject.lastEstimationUpdateIndex)
 
         subject.appendEstimatedValue(.generate(phase: .moved, estimationUpdateIndex: 1))
-        XCTAssertNil(subject.lastEstimationUpdateIndexAtCompletion)
+        XCTAssertNil(subject.lastEstimationUpdateIndex)
 
         subject.appendEstimatedValue(.generate(phase: .moved, estimationUpdateIndex: 2))
-        XCTAssertNil(subject.lastEstimationUpdateIndexAtCompletion)
+        XCTAssertNil(subject.lastEstimationUpdateIndex)
 
-        /// When the `phase` is `.ended`, `lastEstimationUpdateIndexAtCompletion` will be `estimationUpdateIndex` of the element before the last element in `estimatedTouchPointArray`
+        /// When the `phase` is `.ended`, `lastEstimationUpdateIndex` will be `estimationUpdateIndex` of the element before the last element in `estimatedTouchPointArray`
         subject.appendEstimatedValue(.generate(phase: .ended, estimationUpdateIndex: nil))
-        XCTAssertEqual(subject.lastEstimationUpdateIndexAtCompletion, 2)
+        XCTAssertEqual(subject.lastEstimationUpdateIndex, 2)
     }
 
-    /// Confirms that on `.cancelled`, `lastEstimationUpdateIndexAtCompletion` contains the `estimationUpdateIndex` from the second-to-last element of `estimatedTouchPointArray`
+    /// Confirms that on `.cancelled`, `lastEstimationUpdateIndex` contains the `estimationUpdateIndex` from the second-to-last element of `estimatedTouchPointArray`
     func testUpdateLastEstimationUpdateIndexAtTouchCancelled() {
-        let subject = CanvasPencilDrawingManager()
+        let subject = CanvasPencilDrawingArrays()
 
-        /// When the phase is not `.ended`, `lastEstimationUpdateIndexAtCompletion` will be `nil`
+        /// When the phase is not `.ended`, `lastEstimationUpdateIndex` will be `nil`
         subject.appendEstimatedValue(.generate(phase: .began, estimationUpdateIndex: 0))
-        XCTAssertNil(subject.lastEstimationUpdateIndexAtCompletion)
+        XCTAssertNil(subject.lastEstimationUpdateIndex)
 
         subject.appendEstimatedValue(.generate(phase: .moved, estimationUpdateIndex: 1))
-        XCTAssertNil(subject.lastEstimationUpdateIndexAtCompletion)
+        XCTAssertNil(subject.lastEstimationUpdateIndex)
 
         subject.appendEstimatedValue(.generate(phase: .moved, estimationUpdateIndex: 2))
-        XCTAssertNil(subject.lastEstimationUpdateIndexAtCompletion)
+        XCTAssertNil(subject.lastEstimationUpdateIndex)
 
-        /// When the `phase` is `.cancelled`, `lastEstimationUpdateIndexAtCompletion` will be `estimationUpdateIndex` of the element before the last element in `estimatedTouchPointArray`
+        /// When the `phase` is `.cancelled`, `lastEstimationUpdateIndex` will be `estimationUpdateIndex` of the element before the last element in `estimatedTouchPointArray`
         subject.appendEstimatedValue(.generate(phase: .cancelled, estimationUpdateIndex: nil))
-        XCTAssertEqual(subject.lastEstimationUpdateIndexAtCompletion, 2)
+        XCTAssertEqual(subject.lastEstimationUpdateIndex, 2)
     }
 
 }
