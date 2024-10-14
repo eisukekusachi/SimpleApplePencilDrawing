@@ -21,12 +21,13 @@ class CanvasViewController: UIViewController {
 
         subscribeEvents()
         bindViewModel()
+
         setupCanvasViewModel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        canvasViewModel.onViewDidAppear(canvasView: canvasView)
+        canvasViewModel.onViewDidAppear()
     }
 
 }
@@ -34,11 +35,13 @@ class CanvasViewController: UIViewController {
 extension CanvasViewController {
 
     private func setupCanvasViewModel() {
+
+        canvasViewModel.setCanvasView(canvasView)
+
         // Initialize the texture with any size
         /*
         canvasViewModel.initCanvas(
-            textureSize: .init(width: 768, height: 1024),
-            canvasView: canvasView
+            textureSize: .init(width: 768, height: 1024)
         )
         */
     }

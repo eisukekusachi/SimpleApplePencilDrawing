@@ -77,6 +77,10 @@ final class CanvasViewModel {
         configureDisplayLink()
     }
 
+    func setCanvasView(_ canvasView: CanvasViewProtocol) {
+        self.canvasView = canvasView
+    }
+
     private func configureDisplayLink() {
         displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasView(_:)))
         displayLinkForRendering?.add(to: .current, forMode: .common)
@@ -87,16 +91,12 @@ final class CanvasViewModel {
 
 extension CanvasViewModel {
 
-    func onViewDidAppear(canvasView: CanvasViewProtocol) {
-
-        self.canvasView = canvasView
+    func onViewDidAppear() {
 
         // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
         // initialize the canvas here.
-        if canvasTexture == nil, let textureSize = canvasView.renderTexture?.size {
-            initCanvas(
-                textureSize: textureSize
-            )
+        if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
+            initCanvas(textureSize: textureSize)
         }
         requestingCanvasTextureDrawToRenderTexture.send()
     }
