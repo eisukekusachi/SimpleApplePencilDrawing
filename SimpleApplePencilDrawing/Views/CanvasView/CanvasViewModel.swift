@@ -42,11 +42,6 @@ final class CanvasViewModel {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        // Configure the display link for rendering.
-        displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasView(_:)))
-        displayLinkForRendering?.add(to: .current, forMode: .common)
-        displayLinkForRendering?.isPaused = true
-
         requestingCanvasTextureDrawToRenderTexture
             .sink { [weak self] _ in
                 guard 
@@ -78,6 +73,14 @@ final class CanvasViewModel {
                 self?.canvasView?.updateCanvasView()
             }
             .store(in: &cancellables)
+
+        configureDisplayLink()
+    }
+
+    private func configureDisplayLink() {
+        displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasView(_:)))
+        displayLinkForRendering?.add(to: .current, forMode: .common)
+        displayLinkForRendering?.isPaused = true
     }
 
 }
