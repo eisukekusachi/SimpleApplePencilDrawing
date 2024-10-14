@@ -150,7 +150,7 @@ extension CanvasViewModel {
         with event: UIEvent?,
         view: UIView
     ) {
-        // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
+        // Reset `drawing` and start the display link when a touch begins
         if touches.contains(where: { $0.phase == .began }) {
             if drawing.isCurrentlyDrawing {
                 canvasView?.resetCommandBuffer()
@@ -363,8 +363,9 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        // At touch end, render `drawingTexture` on `currentTexture`
-        // Then, clear `drawingTexture` for the next drawing.
+        // When the drawing process completes,
+        // render `drawingTexture` onto `currentTexture`,
+        // then clear `drawingTexture` for the next drawing.
         if executeDrawingFinishProcess {
             MTLRenderer.merge(
                 texture: drawingTexture.texture,
