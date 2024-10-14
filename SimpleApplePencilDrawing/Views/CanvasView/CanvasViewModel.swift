@@ -217,16 +217,16 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture() {
-        guard let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
+        guard let newCommandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
 
         drawing.reset()
-        drawingTexture.clearTexture(with: commandBuffer)
+        drawingTexture.clearTexture(with: newCommandBuffer)
 
         MTLRenderer.clear(
             texture: currentTexture,
-            with: commandBuffer
+            with: newCommandBuffer
         )
-        commandBuffer.commit()
+        newCommandBuffer.commit()
 
         clearCanvas()
     }
