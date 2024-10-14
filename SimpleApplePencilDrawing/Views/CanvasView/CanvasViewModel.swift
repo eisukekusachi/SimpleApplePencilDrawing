@@ -151,7 +151,7 @@ extension CanvasViewModel {
         view: UIView
     ) {
         // Make `grayscaleTextureCurveIterator` and start the display link when a touch begins
-        if touches.contains(where: {$0.phase == .began}) {
+        if touches.contains(where: { $0.phase == .began }) {
             if drawing.isCurrentlyDrawing {
                 canvasView?.resetCommandBuffer()
                 clearDrawingTexture()
