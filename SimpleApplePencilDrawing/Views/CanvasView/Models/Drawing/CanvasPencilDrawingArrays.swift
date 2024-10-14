@@ -55,7 +55,12 @@ extension CanvasPencilDrawingArrays {
 
     /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing
     var latestActualTouchPoints: [CanvasTouchPoint] {
-        actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
+        let array = actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
+
+        /// `latestActualTouchPoint` is used for creating the next array
+        latestActualTouchPoint = array.last
+
+        return array
     }
 
     func appendEstimatedValue(_ touchPoint: CanvasTouchPoint) {
@@ -101,11 +106,6 @@ extension CanvasPencilDrawingArrays {
     func appendLastEstimatedTouchPointToActualTouchPointArray() {
         guard let point = estimatedTouchPointArray.last else { return }
         actualTouchPointArray.append(point)
-    }
-
-    /// After using the array, update `latestActualTouchPoint` with the last element of `actualTouchPointArray` and use it for the next drawing.
-    func updateLatestActualTouchPoint() {
-        latestActualTouchPoint = actualTouchPointArray.last
     }
 
     // When drawing ends with Apple Pencil, the `estimationUpdateIndex` of `UITouch` becomes nil,

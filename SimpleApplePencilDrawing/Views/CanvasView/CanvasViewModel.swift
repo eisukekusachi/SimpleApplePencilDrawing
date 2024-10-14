@@ -192,7 +192,6 @@ extension CanvasViewModel {
         pencilDrawingArrays.appendLastEstimatedValueToActualTouchPointArrayIfProcessCompleted()
 
         let touchScreenPoints = pencilDrawingArrays.latestActualTouchPoints
-        pencilDrawingArrays.updateLatestActualTouchPoint()
 
         drawing.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
 
