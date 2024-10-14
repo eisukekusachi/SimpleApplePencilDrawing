@@ -33,6 +33,8 @@ final class CanvasViewModel {
 
     private var canvasView: CanvasViewProtocol?
 
+    private let requestingCanvasTextureDrawToRenderTexture = PassthroughSubject<Void, Never>()
+
     private let requestingPauseDisplayLink = PassthroughSubject<Bool, Never>()
 
     private let requestingUpdateCanvasView = PassthroughSubject<Void, Never>()
@@ -44,6 +46,23 @@ final class CanvasViewModel {
         displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasView(_:)))
         displayLinkForRendering?.add(to: .current, forMode: .common)
         displayLinkForRendering?.isPaused = true
+
+        requestingCanvasTextureDrawToRenderTexture
+            .sink { [weak self] _ in
+                guard 
+                    let `self`,
+                    let canvasView,
+                    let commandBuffer = canvasView.commandBuffer 
+                else { return }
+
+                self.drawTextureWithAspectFit(
+                    texture: canvasTexture,
+                    on: canvasView.renderTexture,
+                    commandBuffer: commandBuffer
+                )
+                canvasView.updateCanvasView()
+            }
+            .store(in: &cancellables)
 
         requestingPauseDisplayLink
             .sink { [weak self] isPause in
@@ -75,13 +94,7 @@ extension CanvasViewModel {
                 textureSize: textureSize
             )
         }
-
-        drawTextureWithAspectFit(
-            texture: canvasTexture,
-            on: canvasView.renderTexture,
-            commandBuffer: commandBuffer
-        )
-        canvasView.updateCanvasView()
+        requestingCanvasTextureDrawToRenderTexture.send()
     }
 
     func onUpdateRenderTexture() {
@@ -92,15 +105,7 @@ extension CanvasViewModel {
                 textureSize: textureSize
             )
         }
-
-        // Redraws the canvas when the screen rotates and the canvas size changes.
-        // Therefore, this code is placed outside the block.
-        drawTextureWithAspectFit(
-            texture: canvasTexture,
-            on: canvasView?.renderTexture,
-            commandBuffer: commandBuffer
-        )
-        canvasView?.updateCanvasView()
+        requestingCanvasTextureDrawToRenderTexture.send()
     }
 
     func onFingerInputGesture(
@@ -256,19 +261,13 @@ extension CanvasViewModel {
             executeDrawingFinishProcess: drawing.isDrawingComplete
         )
 
-        drawTextureWithAspectFit(
-            texture: canvasTexture,
-            on: renderTexture,
-            commandBuffer: commandBuffer
-        )
+        requestingCanvasTextureDrawToRenderTexture.send()
 
         if drawing.isDrawingFinished {
             drawing.reset()
             pencilDrawingManager.reset()
             startDisplayLinkToUpdateCanvasView(false)
         }
-
-        canvasView?.updateCanvasView()
     }
 
 }
@@ -298,13 +297,7 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        drawTextureWithAspectFit(
-            texture: canvasTexture,
-            on: canvasView.renderTexture,
-            commandBuffer: commandBuffer
-        )
-
-        canvasView.updateCanvasView()
+        requestingCanvasTextureDrawToRenderTexture.send()
     }
 
     private func clearDrawingTexture() {
@@ -323,13 +316,7 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        drawTextureWithAspectFit(
-            texture: canvasTexture,
-            on: canvasView?.renderTexture,
-            commandBuffer: commandBuffer
-        )
-
-        canvasView?.updateCanvasView()
+        requestingCanvasTextureDrawToRenderTexture.send()
     }
 
     private func startDisplayLinkToUpdateCanvasView(_ isStarted: Bool) {
