@@ -49,13 +49,13 @@ extension CanvasPencilDrawingArrays {
         [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase)
     }
 
+    var isActualTouchPointArrayCreationComplete: Bool {
+        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndex
+    }
+
     /// Use the elements of `actualTouchPointArray` after `latestActualTouchPoint` for line drawing
     var latestActualTouchPoints: [CanvasTouchPoint] {
         actualTouchPointArray.elements(after: latestActualTouchPoint) ?? actualTouchPointArray
-    }
-
-    var hasActualValueReplacementCompleted: Bool {
-        actualTouchPointArray.last?.estimationUpdateIndex == lastEstimationUpdateIndex
     }
 
     func appendEstimatedValue(_ touchPoint: CanvasTouchPoint) {
@@ -92,7 +92,7 @@ extension CanvasPencilDrawingArrays {
     }
 
     func appendLastEstimatedValueIfProcessCompleted() {
-        if hasActualValueReplacementCompleted {
+        if isActualTouchPointArrayCreationComplete {
             appendLastEstimatedTouchPointToActualTouchPointArray()
         }
     }

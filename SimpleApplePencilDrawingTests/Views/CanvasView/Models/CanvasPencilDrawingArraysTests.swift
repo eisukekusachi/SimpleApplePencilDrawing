@@ -26,8 +26,8 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
         XCTAssertEqual(subject.isEstimateValueRetrievalComplete, true)
     }
 
-    /// Confirms that the replacement with the actual values is complete
-    func testHasActualValueReplacementCompleted() {
+    /// Confirms that the creation of `actualTouchPointArray` is complete
+    func testIsActualTouchPointArrayCreationComplete() {
         let estimatedTouchPointArray: [CanvasTouchPoint] = [
             .generate(phase: .began, estimationUpdateIndex: 0),
             .generate(phase: .moved, estimationUpdateIndex: 1),
@@ -42,20 +42,20 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
             estimatedTouchPointArray: estimatedTouchPointArray
         )
 
-        /// Confirms that `lastEstimationUpdateIndex` contains `estimationUpdateIndex` of the second-to-last element of `estimatedTouchPointArray`
+        /// Confirm that `lastEstimationUpdateIndex` contains `estimationUpdateIndex` of the second-to-last element of `estimatedTouchPointArray`
         subject.setSecondLastEstimationUpdateIndex()
         XCTAssertEqual(subject.lastEstimationUpdateIndex, 1)
 
         subject.appendActualValueWithEstimatedValue(actualTouches[0])
         XCTAssertEqual(subject.actualTouchPointArray.last?.estimationUpdateIndex, 0)
 
-        XCTAssertFalse(subject.hasActualValueReplacementCompleted)
+        XCTAssertFalse(subject.isActualTouchPointArrayCreationComplete)
 
         subject.appendActualValueWithEstimatedValue(actualTouches[1])
         XCTAssertEqual(subject.actualTouchPointArray.last?.estimationUpdateIndex, 1)
 
         /// Completion is determined when `lastEstimationUpdateIndex` matches `estimationUpdateIndex` of the last element in `actualTouchPointArray`
-        XCTAssertTrue(subject.hasActualValueReplacementCompleted)
+        XCTAssertTrue(subject.isActualTouchPointArrayCreationComplete)
     }
 
     func testAppendLastEstimatedTouchPointToActualTouchPointArray() {
