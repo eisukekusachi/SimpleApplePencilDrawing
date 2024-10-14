@@ -10,20 +10,20 @@ import XCTest
 
 final class CanvasPencilDrawingArraysTests: XCTestCase {
 
-    func testIsEstimateValueRetrievalComplete() {
+    func testIsEstimatedTouchPointArrayCreationComplete() {
         let subject = CanvasPencilDrawingArrays()
 
         subject.appendEstimatedValue(.generate(phase: .began))
-        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, false)
+        XCTAssertEqual(subject.isEstimatedTouchPointArrayCreationComplete, false)
 
         subject.appendEstimatedValue(.generate(phase: .moved))
-        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, false)
+        XCTAssertEqual(subject.isEstimatedTouchPointArrayCreationComplete, false)
 
         subject.appendEstimatedValue(.generate(phase: .ended))
-        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, true)
+        XCTAssertEqual(subject.isEstimatedTouchPointArrayCreationComplete, true)
 
         subject.appendEstimatedValue(.generate(phase: .cancelled))
-        XCTAssertEqual(subject.isEstimateValueRetrievalComplete, true)
+        XCTAssertEqual(subject.isEstimatedTouchPointArrayCreationComplete, true)
     }
 
     /// Confirms that the creation of `actualTouchPointArray` is complete

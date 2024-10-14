@@ -45,7 +45,7 @@ final class CanvasPencilDrawingArrays {
 
 extension CanvasPencilDrawingArrays {
 
-    var isEstimateValueRetrievalComplete: Bool {
+    var isEstimatedTouchPointArrayCreationComplete: Bool {
         [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(estimatedTouchPointArray.last?.phase)
     }
 
@@ -61,7 +61,7 @@ extension CanvasPencilDrawingArrays {
     func appendEstimatedValue(_ touchPoint: CanvasTouchPoint) {
         estimatedTouchPointArray.append(touchPoint)
 
-        if isEstimateValueRetrievalComplete {
+        if isEstimatedTouchPointArrayCreationComplete {
             setSecondLastEstimationUpdateIndex()
         }
     }
