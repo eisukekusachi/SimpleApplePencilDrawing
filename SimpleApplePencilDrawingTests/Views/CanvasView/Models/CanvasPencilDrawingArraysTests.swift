@@ -98,9 +98,9 @@ final class CanvasPencilDrawingArraysTests: XCTestCase {
             .forEach { value in
             subject.appendActualValueWithEstimatedValue(value)
         }
-        subject.appendLastEstimatedValueIfProcessCompleted()
+        subject.appendLastEstimatedValueToActualTouchPointArrayIfProcessCompleted()
 
-        /// Verifie that the estimated value is used for `UITouch.Phase` and the actual value is used for `force`
+        /// Verify that the estimated value is used for `UITouch.Phase` and the actual value is used for `force`
         XCTAssertEqual(subject.actualTouchPointArray[0].phase, estimatedTouches[0].phase)
         XCTAssertEqual(subject.actualTouchPointArray[0].force, actualTouches[0].force)
 

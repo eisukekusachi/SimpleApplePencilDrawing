@@ -91,7 +91,7 @@ extension CanvasPencilDrawingArrays {
         }
     }
 
-    func appendLastEstimatedValueIfProcessCompleted() {
+    func appendLastEstimatedValueToActualTouchPointArrayIfProcessCompleted() {
         if isActualTouchPointArrayCreationComplete {
             appendLastEstimatedTouchPointToActualTouchPointArray()
         }
