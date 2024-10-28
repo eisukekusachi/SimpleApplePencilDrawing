@@ -55,12 +55,15 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         self.device = MTLCreateSystemDefaultDevice()
         assert(device != nil, "Device is nil.")
 
-        guard let queue = device?.makeCommandQueue() else { return }
+        guard
+            let device,
+            let queue = device.makeCommandQueue()
+        else { return }
 
         commandQueue = queue
         resetCommandBuffer()
 
-        textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: textureNodes)
+        textureBuffers = MTLBuffers.makeTextureBuffers(with: device)
 
         self.delegate = self
         self.enableSetNeedsDisplay = true
@@ -70,7 +73,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         self.backgroundColor = .white
 
         if let textureSize: CGSize = currentDrawable?.texture.size {
-            _renderTexture = MTKTextureUtils.makeBlankTexture(with: device!, textureSize)
+            _renderTexture = MTKTextureUtils.makeBlankTexture(size: textureSize, with: device)
          }
     }
 
@@ -84,7 +87,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         else { return }
 
         // Draw `renderTexture` directly onto `drawable.texture`
-        MTLRenderer.draw(
+        MTLRenderer.drawTexture(
             texture: renderTexture,
             buffers: textureBuffers,
             on: drawable.texture,
@@ -99,8 +102,10 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        guard let device else { return }
+
         // Align the size of `_renderTexture` with `drawableSize`
-        _renderTexture = MTKTextureUtils.makeBlankTexture(with: device!, size)
+        _renderTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
     }
 
 }

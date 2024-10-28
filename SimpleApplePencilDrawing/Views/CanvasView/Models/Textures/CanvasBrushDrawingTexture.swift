@@ -21,12 +21,12 @@ extension CanvasBrushDrawingTexture {
 
     func initTexture(textureSize: CGSize) {
         grayscaleDrawingTexture = MTKTextureUtils.makeBlankTexture(
-            with: device,
-            textureSize
+            size: textureSize,
+            with: device
         )
         texture = MTKTextureUtils.makeBlankTexture(
-            with: device,
-            textureSize
+            size: textureSize,
+            with: device
         )
     }
 
@@ -44,10 +44,10 @@ extension CanvasBrushDrawingTexture {
         else { return }
 
         if let buffer = MTLBuffers.makeGrayscalePointBuffers(
-            device: device,
             grayscaleTexturePoints: grayscaleTexturePoints,
             pointsAlpha: color.alpha,
-            textureSize: grayscaleDrawingTexture.size
+            textureSize: grayscaleDrawingTexture.size,
+            with: device
         ) {
             MTLRenderer.drawPointsWithMaxBlendMode(
                 grayscalePointBuffers: buffer,

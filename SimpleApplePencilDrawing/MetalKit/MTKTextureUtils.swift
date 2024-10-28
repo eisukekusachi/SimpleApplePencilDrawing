@@ -10,37 +10,20 @@ import Accelerate
 
 enum MTKTextureUtils {
 
+    static let pixelFormat: MTLPixelFormat = .bgra8Unorm
+
     static func makeBlankTexture(
-        with device: MTLDevice,
-        _ textureSize: CGSize
+        size: CGSize,
+        with device: MTLDevice
     ) -> MTLTexture? {
         guard
-            let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer(),
-            let texture = Self.makeTexture(with: device, textureSize)
+            let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer()
         else { return nil }
 
-        MTLRenderer.clear(
-            texture: texture,
-            with: commandBuffer
-        )
-        commandBuffer.commit()
-
-        return texture
-    }
-
-}
-
-extension MTKTextureUtils {
-
-    private static func makeTexture(
-        with device: MTLDevice,
-        _ textureSize: CGSize,
-        _ pixelFormat: MTLPixelFormat = .bgra8Unorm
-    ) -> MTLTexture? {
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: pixelFormat,
-            width: Int(textureSize.width),
-            height: Int(textureSize.height),
+            width: Int(size.width),
+            height: Int(size.height),
             mipmapped: false
         )
         textureDescriptor.usage = [
@@ -49,7 +32,15 @@ extension MTKTextureUtils {
             .shaderWrite
         ]
 
-        return device.makeTexture(descriptor: textureDescriptor)
+        let newTexture: MTLTexture? = device.makeTexture(descriptor: textureDescriptor)
+
+        MTLRenderer.clear(
+            texture: newTexture,
+            with: commandBuffer
+        )
+        commandBuffer.commit()
+
+        return newTexture
     }
 
 }

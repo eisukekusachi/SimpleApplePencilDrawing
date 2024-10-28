@@ -27,8 +27,6 @@ final class CanvasViewModel {
 
     private var backgroundColor: UIColor = .white
 
-    private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
-
     private var displayLinkForRendering: CADisplayLink?
 
     private var canvasView: CanvasViewProtocol?
@@ -38,6 +36,8 @@ final class CanvasViewModel {
     private let requestingPauseDisplayLink = PassthroughSubject<Bool, Never>()
 
     private let requestingUpdateCanvasView = PassthroughSubject<Void, Never>()
+
+    private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -251,8 +251,9 @@ extension CanvasViewModel {
             )
         }
 
-        mergeDrawingTexture(
-            withCurrentTexture: currentTexture,
+        mergeTextures(
+            drawingTexture: drawingTexture,
+            currentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: commandBuffer,
@@ -275,8 +276,15 @@ extension CanvasViewModel {
     /// Initialize the textures used for drawing with the same size
     func initCanvas(textureSize: CGSize) {
         drawingTexture.initTexture(textureSize: textureSize)
-        currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
-        canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
+
+        currentTexture = MTKTextureUtils.makeBlankTexture(
+            size: textureSize,
+            with: device
+        )
+        canvasTexture = MTKTextureUtils.makeBlankTexture(
+            size: textureSize,
+            with: device
+        )
 
         clearCanvas()
     }
@@ -302,8 +310,8 @@ extension CanvasViewModel {
         // Clear `drawingTextures` during drawing
         drawingTexture.clearTexture(with: commandBuffer)
 
-        mergeDrawingTexture(
-            withCurrentTexture: currentTexture,
+        mergeTextures(
+            currentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: commandBuffer
@@ -321,8 +329,9 @@ extension CanvasViewModel {
         }
     }
 
-    private func mergeDrawingTexture(
-        withCurrentTexture currentTexture: MTLTexture,
+    private func mergeTextures(
+        drawingTexture: CanvasDrawingTexture? = nil,
+        currentTexture: MTLTexture,
         withBackgroundColor backgroundColor: UIColor,
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer,
@@ -334,7 +343,7 @@ extension CanvasViewModel {
         MTLRenderer.draw(
             textures: [
                 currentTexture,
-                drawingTexture.texture
+                drawingTexture?.texture
             ],
             withBackgroundColor: backgroundColor.rgba,
             on: destinationTexture,
@@ -346,11 +355,11 @@ extension CanvasViewModel {
         // then clear `drawingTexture` for the next drawing.
         if executeDrawingFinishProcess {
             MTLRenderer.merge(
-                texture: drawingTexture.texture,
+                texture: drawingTexture?.texture,
                 into: currentTexture,
                 with: commandBuffer
             )
-            drawingTexture.clearTexture(
+            drawingTexture?.clearTexture(
                 with: commandBuffer
             )
         }
@@ -367,20 +376,19 @@ extension CanvasViewModel {
             let texture,
             let destinationTexture,
             let textureBuffers = MTLBuffers.makeTextureBuffers(
-                device: device,
                 sourceSize: .init(
                     width: texture.size.width * textureScaleFactor,
                     height: texture.size.height * textureScaleFactor
                 ),
                 destinationSize: destinationTexture.size,
-                nodes: textureNodes
+                with: device
             )
         else { return }
 
-        MTLRenderer.draw(
+        MTLRenderer.drawTexture(
             texture: texture,
             buffers: textureBuffers,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
+            withBackgroundColor: .init(rgb: Constants.blankAreaBackgroundColor),
             on: destinationTexture,
             with: commandBuffer
         )
