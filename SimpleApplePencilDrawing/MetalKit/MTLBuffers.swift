@@ -28,45 +28,29 @@ typealias TextureNodes = (
     indices: [UInt16]
 )
 
-let textureNodes: TextureNodes = (
-    vertices: [
+enum MTLBuffers {
+    static let defaultTextureNodes: TextureNodes = (
+        vertices: MTLBuffers.defaultVertices,
+        texCoords: MTLBuffers.defaultTexCoords,
+        indices: MTLBuffers.defaultIndices
+    )
+
+    static let defaultVertices: [Float] = [
         Float(-1.0), Float( 1.0), // LB
         Float( 1.0), Float( 1.0), // RB
         Float( 1.0), Float(-1.0), // RT
         Float(-1.0), Float(-1.0)  // LT
-    ],
-    texCoords: [
-        0.0, 1.0, // LB *
-        1.0, 1.0, // RB *
+    ]
+    static let defaultTexCoords: [Float] = [
+        0.0, 1.0, // LB
+        1.0, 1.0, // RB
         1.0, 0.0, // RT
         0.0, 0.0  // LT
-    ],
-    indices: [
-        0, 1, 2,
-        0, 2, 3
     ]
-)
-
-let flippedTextureNodes: TextureNodes = (
-    vertices: [
-        Float(-1.0), Float( 1.0), // LB
-        Float( 1.0), Float( 1.0), // RB
-        Float( 1.0), Float(-1.0), // RT
-        Float(-1.0), Float(-1.0)  // LT
-    ],
-    texCoords: [
-        0.0, 0.0, // LB *
-        1.0, 0.0, // RB *
-        1.0, 1.0, // RT
-        0.0, 1.0  // LT
-    ],
-    indices: [
-        0, 1, 2,
-        0, 2, 3
+    static let defaultIndices: [UInt16] = [
+        0, 1, 2, // LB, RB, RT
+        0, 2, 3  // LB, RT, LT
     ]
-)
-
-enum MTLBuffers {
 
     static func makeGrayscalePointBuffers(
         device: MTLDevice?,

@@ -382,7 +382,7 @@ extension CanvasViewModel {
                     height: texture.size.height * textureScaleFactor
                 ),
                 destinationSize: destinationTexture.size,
-                nodes: textureNodes
+                nodes: MTLBuffers.defaultTextureNodes
             )
         else { return }
 

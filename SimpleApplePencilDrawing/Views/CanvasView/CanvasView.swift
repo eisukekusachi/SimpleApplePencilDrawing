@@ -63,7 +63,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         commandQueue = queue
         resetCommandBuffer()
 
-        textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: textureNodes)
+        textureBuffers = MTLBuffers.makeTextureBuffers(device: device, nodes: MTLBuffers.defaultTextureNodes)
 
         self.delegate = self
         self.enableSetNeedsDisplay = true
