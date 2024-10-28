@@ -111,9 +111,18 @@ enum MTLBuffers {
         let indices = defaultIndices
 
         guard
-            let vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size),
-            let texCoordsBuffer = device.makeBuffer(bytes: texCoords, length: texCoords.count * MemoryLayout<Float>.size),
-            let indexBuffer = device.makeBuffer(bytes: indices, length: indices.count * MemoryLayout<UInt16>.size)
+            let vertexBuffer = device.makeBuffer(
+                bytes: vertices,
+                length: vertices.count * MemoryLayout<Float>.size
+            ),
+            let texCoordsBuffer = device.makeBuffer(
+                bytes: texCoords,
+                length: texCoords.count * MemoryLayout<Float>.size
+            ),
+            let indexBuffer = device.makeBuffer(
+                bytes: indices,
+                length: indices.count * MemoryLayout<UInt16>.size
+            )
         else { return nil }
 
         return (
@@ -149,18 +158,15 @@ enum MTLBuffers {
         guard
             let vertexBuffer = device.makeBuffer(
                 bytes: vertices,
-                length: vertices.count * MemoryLayout<Float>.size,
-                options: []
+                length: vertices.count * MemoryLayout<Float>.size
             ),
             let texCoordsBuffer = device.makeBuffer(
                 bytes: defaultTexCoords,
-                length: defaultTexCoords.count * MemoryLayout<Float>.size,
-                options: []
+                length: defaultTexCoords.count * MemoryLayout<Float>.size
             ),
             let indexBuffer = device.makeBuffer(
                 bytes: defaultIndices,
-                length: defaultIndices.count * MemoryLayout<UInt16>.size,
-                options: []
+                length: defaultIndices.count * MemoryLayout<UInt16>.size
             )
         else {
             return nil
