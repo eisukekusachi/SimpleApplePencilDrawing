@@ -27,8 +27,6 @@ final class CanvasViewModel {
 
     private var backgroundColor: UIColor = .white
 
-    private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
-
     private var displayLinkForRendering: CADisplayLink?
 
     private var canvasView: CanvasViewProtocol?
@@ -38,6 +36,8 @@ final class CanvasViewModel {
     private let requestingPauseDisplayLink = PassthroughSubject<Bool, Never>()
 
     private let requestingUpdateCanvasView = PassthroughSubject<Void, Never>()
+
+    private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -275,8 +275,15 @@ extension CanvasViewModel {
     /// Initialize the textures used for drawing with the same size
     func initCanvas(textureSize: CGSize) {
         drawingTexture.initTexture(textureSize: textureSize)
-        currentTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
-        canvasTexture = MTKTextureUtils.makeBlankTexture(with: device, textureSize)
+
+        currentTexture = MTKTextureUtils.makeBlankTexture(
+            size: textureSize,
+            with: device
+        )
+        canvasTexture = MTKTextureUtils.makeBlankTexture(
+            size: textureSize,
+            with: device
+        )
 
         clearCanvas()
     }
