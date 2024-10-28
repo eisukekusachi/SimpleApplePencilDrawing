@@ -143,11 +143,13 @@ extension CanvasViewModel {
             )
         }
 
+        let diameter = CGFloat(arc4random() % 100)
+
         drawing.appendToIterator(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
-                    diameter: CGFloat(drawingToolStatus.brushDiameter)
+                    diameter: diameter
                 )
             }
         )
@@ -211,11 +213,13 @@ extension CanvasViewModel {
             )
         }
 
+        let diameter = CGFloat(arc4random() % 100)
+
         drawing.appendToIterator(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
-                    diameter: CGFloat(drawingToolStatus.brushDiameter)
+                    diameter: diameter
                 )
             }
         )
