@@ -30,9 +30,9 @@ typealias TextureNodes = (
 
 enum MTLBuffers {
     static let defaultTextureNodes: TextureNodes = (
-        vertices: MTLBuffers.defaultVertices,
-        texCoords: MTLBuffers.defaultTexCoords,
-        indices: MTLBuffers.defaultIndices
+        vertices: defaultVertices,
+        texCoords: defaultTexCoords,
+        indices: defaultIndices
     )
 
     static let defaultVertices: [Float] = [
