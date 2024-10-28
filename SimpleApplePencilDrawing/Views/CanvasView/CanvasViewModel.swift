@@ -384,10 +384,10 @@ extension CanvasViewModel {
             )
         else { return }
 
-        MTLRenderer.draw(
+        MTLRenderer.drawTexture(
             texture: texture,
             buffers: textureBuffers,
-            withBackgroundColor: Constants.blankAreaBackgroundColor,
+            withBackgroundColor: .init(rgb: Constants.blankAreaBackgroundColor),
             on: destinationTexture,
             with: commandBuffer
         )
