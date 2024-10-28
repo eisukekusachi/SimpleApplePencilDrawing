@@ -251,8 +251,9 @@ extension CanvasViewModel {
             )
         }
 
-        mergeDrawingTexture(
-            withCurrentTexture: currentTexture,
+        mergeTextures(
+            drawingTexture: drawingTexture,
+            currentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: commandBuffer,
@@ -309,8 +310,8 @@ extension CanvasViewModel {
         // Clear `drawingTextures` during drawing
         drawingTexture.clearTexture(with: commandBuffer)
 
-        mergeDrawingTexture(
-            withCurrentTexture: currentTexture,
+        mergeTextures(
+            currentTexture: currentTexture,
             withBackgroundColor: backgroundColor,
             on: canvasTexture,
             with: commandBuffer
@@ -328,8 +329,9 @@ extension CanvasViewModel {
         }
     }
 
-    private func mergeDrawingTexture(
-        withCurrentTexture currentTexture: MTLTexture,
+    private func mergeTextures(
+        drawingTexture: CanvasDrawingTexture? = nil,
+        currentTexture: MTLTexture,
         withBackgroundColor backgroundColor: UIColor,
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer,
@@ -341,7 +343,7 @@ extension CanvasViewModel {
         MTLRenderer.draw(
             textures: [
                 currentTexture,
-                drawingTexture.texture
+                drawingTexture?.texture
             ],
             withBackgroundColor: backgroundColor.rgba,
             on: destinationTexture,
@@ -353,11 +355,11 @@ extension CanvasViewModel {
         // then clear `drawingTexture` for the next drawing.
         if executeDrawingFinishProcess {
             MTLRenderer.merge(
-                texture: drawingTexture.texture,
+                texture: drawingTexture?.texture,
                 into: currentTexture,
                 with: commandBuffer
             )
-            drawingTexture.clearTexture(
+            drawingTexture?.clearTexture(
                 with: commandBuffer
             )
         }
