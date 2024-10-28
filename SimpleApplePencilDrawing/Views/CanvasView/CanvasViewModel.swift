@@ -376,13 +376,12 @@ extension CanvasViewModel {
             let texture,
             let destinationTexture,
             let textureBuffers = MTLBuffers.makeTextureBuffers(
-                device: device,
                 sourceSize: .init(
                     width: texture.size.width * textureScaleFactor,
                     height: texture.size.height * textureScaleFactor
                 ),
                 destinationSize: destinationTexture.size,
-                nodes: MTLBuffers.defaultTextureNodes
+                with: device
             )
         else { return }
 
