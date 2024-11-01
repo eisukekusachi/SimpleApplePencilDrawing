@@ -18,6 +18,7 @@ final class CanvasDrawing {
 
     private var isFirstCurveHasBeenCreated: Bool = false
 
+    var latestDotPoint: CanvasGrayscaleDotPoint?
 }
 
 extension CanvasDrawing {
@@ -79,6 +80,8 @@ extension CanvasDrawing {
         isFirstCurveHasBeenCreated = false
         currentTouchPhase = nil
         iterator.clear()
+
+        latestDotPoint = nil
     }
 
 }

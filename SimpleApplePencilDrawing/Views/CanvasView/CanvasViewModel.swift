@@ -143,16 +143,24 @@ extension CanvasViewModel {
             )
         }
 
-        let diameter = CGFloat(arc4random() % 100)
+        let dotPoints: [CanvasGrayscaleDotPoint] = textureTouchPoints.map {
 
-        drawing.appendToIterator(
-            textureTouchPoints.map {
-                .init(
-                    touchPoint: $0,
-                    diameter: diameter
-                )
+            var diameterMagnification: CGFloat = 1.0
+
+            if let oldPoint = drawing.latestDotPoint {
+                let length = Calculator.getLength(oldPoint.location, to: $0.location)
+                diameterMagnification = (length / 100.0 + 1.0)
             }
-        )
+
+            let point: CanvasGrayscaleDotPoint = .init(
+                touchPoint: $0,
+                diameter: CGFloat(drawingToolStatus.brushDiameter) * diameterMagnification
+            )
+            drawing.latestDotPoint = point
+
+            return point
+        }
+        drawing.appendToIterator(dotPoints)
     }
 
     func onPencilGestureDetected(
@@ -213,16 +221,24 @@ extension CanvasViewModel {
             )
         }
 
-        let diameter = CGFloat(arc4random() % 100)
+        let dotPoints: [CanvasGrayscaleDotPoint] = textureTouchPoints.map {
 
-        drawing.appendToIterator(
-            textureTouchPoints.map {
-                .init(
-                    touchPoint: $0,
-                    diameter: diameter
-                )
+            var diameterMagnification: CGFloat = 1.0
+
+            if let oldPoint = drawing.latestDotPoint {
+                let length = Calculator.getLength(oldPoint.location, to: $0.location)
+                diameterMagnification = (length / 100.0 + 1.0)
             }
-        )
+
+            let point: CanvasGrayscaleDotPoint = .init(
+                touchPoint: $0,
+                diameter: CGFloat(drawingToolStatus.brushDiameter) * diameterMagnification
+            )
+            drawing.latestDotPoint = point
+
+            return point
+        }
+        drawing.appendToIterator(dotPoints)
     }
 
     func onTapClearTexture() {

@@ -48,11 +48,11 @@ extension CanvasViewController {
 
     private func subscribeEvents() {
         // Remove `/* */` to enable finger drawing
-        /*
+
         canvasView.addGestureRecognizer(
             CanvasFingerInputGestureRecognizer(self)
         )
-        */
+        
         canvasView.addGestureRecognizer(
             CanvasPencilInputGestureRecognizer(self)
         )
