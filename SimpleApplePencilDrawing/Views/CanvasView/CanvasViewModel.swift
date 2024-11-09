@@ -31,8 +31,6 @@ final class CanvasViewModel {
 
     private var canvasView: CanvasViewProtocol?
 
-    private let requestingCanvasTextureDrawToRenderTexture = PassthroughSubject<Void, Never>()
-
     private let requestingPauseDisplayLink = PassthroughSubject<Bool, Never>()
 
     private let requestingUpdateCanvasView = PassthroughSubject<Void, Never>()
@@ -42,26 +40,6 @@ final class CanvasViewModel {
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        requestingCanvasTextureDrawToRenderTexture
-            .sink { [weak self] _ in
-                guard 
-                    let `self`,
-                    let canvasView,
-                    let canvasTextureSize = canvasTexture?.size,
-                    let renderTextureSize = canvasView.renderTexture?.size,
-                    let commandBuffer = canvasView.commandBuffer
-                else { return }
-
-                self.drawTextureWithScaling(
-                    texture: canvasTexture,
-                    textureScaleFactor: ViewSize.getScaleToFit(canvasTextureSize, to: renderTextureSize),
-                    on: canvasView.renderTexture,
-                    commandBuffer: commandBuffer
-                )
-                canvasView.setNeedsDisplay()
-            }
-            .store(in: &cancellables)
-
         requestingPauseDisplayLink
             .sink { [weak self] isPause in
                 self?.displayLinkForRendering?.isPaused = isPause
@@ -98,7 +76,8 @@ extension CanvasViewModel {
         if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
             initCanvas(textureSize: textureSize)
         }
-        requestingCanvasTextureDrawToRenderTexture.send()
+
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
     func onUpdateRenderTexture() {
@@ -107,7 +86,8 @@ extension CanvasViewModel {
                 textureSize: textureSize
             )
         }
-        requestingCanvasTextureDrawToRenderTexture.send()
+
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
     func onFingerInputGesture(
@@ -260,7 +240,7 @@ extension CanvasViewModel {
             executeDrawingFinishProcess: drawing.isDrawingComplete
         )
 
-        requestingCanvasTextureDrawToRenderTexture.send()
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
 
         if drawing.isDrawingFinished {
             drawing.reset()
@@ -298,7 +278,7 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        requestingCanvasTextureDrawToRenderTexture.send()
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
     private func clearDrawingTexture() {
@@ -317,7 +297,7 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        requestingCanvasTextureDrawToRenderTexture.send()
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
     private func startDisplayLinkToUpdateCanvasView(_ isStarted: Bool) {
@@ -365,33 +345,33 @@ extension CanvasViewModel {
         }
     }
 
-    /// Draw `texture` onto `destinationTexture` with a scaled size
-    private func drawTextureWithScaling(
-        texture: MTLTexture?,
-        textureScaleFactor: CGFloat,
-        on destinationTexture: MTLTexture?,
-        commandBuffer: MTLCommandBuffer
+    private func updateCanvasWithTexture(
+        _ texture: MTLTexture?,
+        on canvasView: CanvasViewProtocol?
     ) {
         guard
-            let texture,
-            let destinationTexture,
-            let textureBuffers = MTLBuffers.makeTextureBuffers(
+            let sourceTexture = texture,
+            let destinationTexture = canvasView?.renderTexture,
+            let sourceTextureBuffers = MTLBuffers.makeTextureBuffers(
                 sourceSize: .init(
-                    width: texture.size.width * textureScaleFactor,
-                    height: texture.size.height * textureScaleFactor
+                    width: sourceTexture.size.width * ViewSize.getScaleToFit(sourceTexture.size, to: destinationTexture.size),
+                    height: sourceTexture.size.height * ViewSize.getScaleToFit(sourceTexture.size, to: destinationTexture.size)
                 ),
                 destinationSize: destinationTexture.size,
                 with: device
-            )
+            ),
+            let commandBuffer = canvasView?.commandBuffer
         else { return }
 
         MTLRenderer.drawTexture(
-            texture: texture,
-            buffers: textureBuffers,
+            texture: sourceTexture,
+            buffers: sourceTextureBuffers,
             withBackgroundColor: .init(rgb: Constants.blankAreaBackgroundColor),
             on: destinationTexture,
             with: commandBuffer
         )
+
+        canvasView?.setNeedsDisplay()
     }
 
 }
