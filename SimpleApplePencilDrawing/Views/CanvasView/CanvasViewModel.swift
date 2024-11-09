@@ -58,7 +58,7 @@ final class CanvasViewModel {
                     on: canvasView.renderTexture,
                     commandBuffer: commandBuffer
                 )
-                canvasView.updateCanvasView()
+                canvasView.setNeedsDisplay()
             }
             .store(in: &cancellables)
 
@@ -70,7 +70,7 @@ final class CanvasViewModel {
 
         requestingUpdateCanvasView
             .sink { [weak self] _ in
-                self?.canvasView?.updateCanvasView()
+                self?.canvasView?.setNeedsDisplay()
             }
             .store(in: &cancellables)
 

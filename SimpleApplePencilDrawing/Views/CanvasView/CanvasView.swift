@@ -15,7 +15,7 @@ protocol CanvasViewProtocol {
 
     func resetCommandBuffer()
 
-    func updateCanvasView()
+    func setNeedsDisplay()
 }
 
 /// A custom view for displaying textures with Metal support.
@@ -114,12 +114,9 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 }
 
 extension CanvasView {
+
     func resetCommandBuffer() {
         commandBuffer = commandQueue.makeCommandBuffer()
-    }
-
-    func updateCanvasView() {
-        setNeedsDisplay()
     }
 
 }
