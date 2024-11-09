@@ -216,39 +216,6 @@ extension CanvasViewModel {
         clearCanvas()
     }
 
-    @objc private func updateCanvasViewWhileDrawing(_ displayLink: CADisplayLink) {
-        guard
-            let currentTexture,
-            let canvasTexture,
-            let commandBuffer = canvasView?.commandBuffer
-        else { return }
-
-        if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
-            drawingTexture.drawPointsOnDrawingTexture(
-                grayscaleTexturePoints: curvePoints,
-                color: drawingToolStatus.brushColor,
-                with: commandBuffer
-            )
-        }
-
-        mergeTextures(
-            drawingTexture: drawingTexture,
-            currentTexture: currentTexture,
-            withBackgroundColor: backgroundColor,
-            on: canvasTexture,
-            with: commandBuffer,
-            executeDrawingFinishProcess: drawing.isDrawingComplete
-        )
-
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
-
-        if drawing.isDrawingFinished {
-            drawing.reset()
-            pencilDrawingArrays.reset()
-            startDisplayLinkToUpdateCanvasView(false)
-        }
-    }
-
 }
 
 extension CanvasViewModel {
@@ -342,6 +309,39 @@ extension CanvasViewModel {
             drawingTexture?.clearTexture(
                 with: commandBuffer
             )
+        }
+    }
+
+    @objc private func updateCanvasViewWhileDrawing(_ displayLink: CADisplayLink) {
+        guard
+            let currentTexture,
+            let canvasTexture,
+            let commandBuffer = canvasView?.commandBuffer
+        else { return }
+
+        if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
+            drawingTexture.drawPointsOnDrawingTexture(
+                grayscaleTexturePoints: curvePoints,
+                color: drawingToolStatus.brushColor,
+                with: commandBuffer
+            )
+        }
+
+        mergeTextures(
+            drawingTexture: drawingTexture,
+            currentTexture: currentTexture,
+            withBackgroundColor: backgroundColor,
+            on: canvasTexture,
+            with: commandBuffer,
+            executeDrawingFinishProcess: drawing.isDrawingComplete
+        )
+
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
+
+        if drawing.isDrawingFinished {
+            drawing.reset()
+            pencilDrawingArrays.reset()
+            startDisplayLinkToUpdateCanvasView(false)
         }
     }
 
