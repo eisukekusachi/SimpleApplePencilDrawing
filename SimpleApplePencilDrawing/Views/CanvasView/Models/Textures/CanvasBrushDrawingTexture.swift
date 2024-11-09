@@ -49,9 +49,9 @@ extension CanvasBrushDrawingTexture {
             textureSize: grayscaleDrawingTexture.size,
             with: device
         ) {
-            MTLRenderer.drawPointsWithMaxBlendMode(
-                grayscalePointBuffers: buffer,
-                on: grayscaleDrawingTexture,
+            MTLRenderer.drawCurve(
+                buffers: buffer,
+                onGrayscaleTexture: grayscaleDrawingTexture,
                 with: commandBuffer
             )
 

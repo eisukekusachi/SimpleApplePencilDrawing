@@ -74,13 +74,15 @@ final class MTLRenderer {
         encoder?.endEncoding()
     }
 
-    static func drawPointsWithMaxBlendMode(
-        grayscalePointBuffers buffers: MTLGrayscalePointBuffers,
-        on destinationTexture: MTLTexture?,
+    static func drawCurve(
+        buffers: MTLGrayscalePointBuffers?,
+        onGrayscaleTexture texture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer?
     ) {
+        guard let buffers = buffers else { return }
+
         let descriptor = MTLRenderPassDescriptor()
-        descriptor.colorAttachments[0].texture = destinationTexture
+        descriptor.colorAttachments[0].texture = texture
         descriptor.colorAttachments[0].loadAction = .load
 
         let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)
