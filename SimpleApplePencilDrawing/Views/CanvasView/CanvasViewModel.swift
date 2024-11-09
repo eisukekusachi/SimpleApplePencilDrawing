@@ -60,7 +60,7 @@ final class CanvasViewModel {
     }
 
     private func configureDisplayLink() {
-        displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasView(_:)))
+        displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasViewWhileDrawing(_:)))
         displayLinkForRendering?.add(to: .current, forMode: .common)
         displayLinkForRendering?.isPaused = true
     }
@@ -216,7 +216,7 @@ extension CanvasViewModel {
         clearCanvas()
     }
 
-    @objc private func updateCanvasView(_ displayLink: CADisplayLink) {
+    @objc private func updateCanvasViewWhileDrawing(_ displayLink: CADisplayLink) {
         guard
             let currentTexture,
             let canvasTexture,
