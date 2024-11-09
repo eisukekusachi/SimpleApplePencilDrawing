@@ -287,15 +287,21 @@ extension CanvasViewModel {
         guard let destinationTexture else { return }
 
         // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
-        MTLRenderer.draw(
-            textures: [
-                currentTexture,
-                drawingTexture?.texture
-            ],
-            withBackgroundColor: backgroundColor.rgba,
+        MTLRenderer.fill(
+            color: backgroundColor.rgba,
             on: destinationTexture,
             with: commandBuffer
         )
+
+        [currentTexture, drawingTexture?.texture].forEach { texture in
+            if let texture {
+                MTLRenderer.merge(
+                    texture: texture,
+                    into: destinationTexture,
+                    with: commandBuffer
+                )
+            }
+        }
 
         // When the drawing process completes,
         // render `drawingTexture` onto `currentTexture`,

@@ -11,31 +11,6 @@ final class MTLRenderer {
 
     static let threadGroupLength: Int = 16
 
-    static func draw(
-        textures: [MTLTexture?],
-        withBackgroundColor color: (Int, Int, Int, Int),
-        on destinationTexture: MTLTexture?,
-        with commandBuffer: MTLCommandBuffer
-    ) {
-        guard let destinationTexture else { return }
-
-        MTLRenderer.fill(
-            color: color,
-            on: destinationTexture,
-            with: commandBuffer
-        )
-
-        textures.forEach { texture in
-            if let texture {
-                MTLRenderer.merge(
-                    texture: texture,
-                    into: destinationTexture,
-                    with: commandBuffer
-                )
-            }
-        }
-    }
-
     static func drawTexture(
         texture: MTLTexture,
         buffers: MTLTextureBuffers,
