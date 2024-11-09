@@ -7,20 +7,20 @@
 
 import MetalKit
 
-typealias GrayscalePointBuffers = (
-    vertexBuffer: MTLBuffer,
-    diameterIncludingBlurBuffer: MTLBuffer,
-    brightnessBuffer: MTLBuffer,
-    blurSizeBuffer: MTLBuffer,
-    numberOfPoints: Int
-)
+struct MTLGrayscalePointBuffers {
+    let vertexBuffer: MTLBuffer
+    let diameterIncludingBlurBuffer: MTLBuffer
+    let brightnessBuffer: MTLBuffer
+    let blurSizeBuffer: MTLBuffer
+    let numberOfPoints: Int
+}
 
-typealias TextureBuffers = (
-    vertexBuffer: MTLBuffer,
-    texCoordsBuffer: MTLBuffer,
-    indexBuffer: MTLBuffer,
-    indicesCount: Int
-)
+struct MTLTextureBuffers {
+    let vertexBuffer: MTLBuffer
+    let texCoordsBuffer: MTLBuffer
+    let indexBuffer: MTLBuffer
+    let indicesCount: Int
+}
 
 typealias TextureNodes = (
     vertices: [Float],
@@ -57,7 +57,7 @@ enum MTLBuffers {
         pointsAlpha: Int = 255,
         textureSize: CGSize,
         with device: MTLDevice
-    ) -> GrayscalePointBuffers? {
+    ) -> MTLGrayscalePointBuffers? {
         guard grayscaleTexturePoints.count != .zero else { return nil }
 
         var vertexArray: [Float] = []
@@ -96,7 +96,7 @@ enum MTLBuffers {
             )
         else { return nil }
 
-        return GrayscalePointBuffers(
+        return .init(
             vertexBuffer: vertexBuffer,
             diameterIncludingBlurBuffer: diameterPlusBlurSizeBuffer,
             brightnessBuffer: brightnessBuffer,
@@ -105,7 +105,7 @@ enum MTLBuffers {
         )
     }
 
-    static func makeTextureBuffers(with device: MTLDevice) -> TextureBuffers? {
+    static func makeTextureBuffers(with device: MTLDevice) -> MTLTextureBuffers? {
         let vertices = defaultVertices
         let texCoords = defaultTexCoords
         let indices = defaultIndices
@@ -125,7 +125,7 @@ enum MTLBuffers {
             )
         else { return nil }
 
-        return (
+        return .init(
             vertexBuffer: vertexBuffer,
             texCoordsBuffer: texCoordsBuffer,
             indexBuffer: indexBuffer,
@@ -137,7 +137,7 @@ enum MTLBuffers {
         sourceSize: CGSize,
         destinationSize: CGSize,
         with device: MTLDevice
-    ) -> TextureBuffers? {
+    ) -> MTLTextureBuffers? {
         // Normalize vertex positions
         let vertices: [Float] = [
             // bottomLeft
@@ -172,7 +172,7 @@ enum MTLBuffers {
             return nil
         }
 
-        return TextureBuffers(
+        return .init(
             vertexBuffer: vertexBuffer,
             texCoordsBuffer: texCoordsBuffer,
             indexBuffer: indexBuffer,

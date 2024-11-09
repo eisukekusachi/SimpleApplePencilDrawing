@@ -38,7 +38,7 @@ final class MTLRenderer {
 
     static func drawTexture(
         texture: MTLTexture,
-        buffers: TextureBuffers,
+        buffers: MTLTextureBuffers,
         withBackgroundColor color: UIColor = .clear,
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
@@ -73,7 +73,7 @@ final class MTLRenderer {
     }
 
     static func drawPointsWithMaxBlendMode(
-        grayscalePointBuffers buffers: GrayscalePointBuffers,
+        grayscalePointBuffers buffers: MTLGrayscalePointBuffers,
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer?
     ) {
