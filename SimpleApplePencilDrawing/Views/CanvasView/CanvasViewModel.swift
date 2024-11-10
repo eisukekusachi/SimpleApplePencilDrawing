@@ -11,7 +11,7 @@ import Combine
 final class CanvasViewModel {
 
     /// An iterator for managing a grayscale curve
-    private var drawing: CanvasDrawing = .init()
+    private var drawingCurvePoints: CanvasDrawingCurvePoints = .init()
 
     /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
@@ -82,9 +82,7 @@ extension CanvasViewModel {
 
     func onUpdateRenderTexture() {
         if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
-            initCanvas(
-                textureSize: textureSize
-            )
+            initCanvas(textureSize: textureSize)
         }
 
         updateCanvasWithTexture(canvasTexture, on: canvasView)
@@ -105,11 +103,11 @@ extension CanvasViewModel {
 
         // Reset `drawing` and start the display link when a touch begins
         if touchScreenPoints.currentTouchPhase == .began {
-            drawing.reset()
+            drawingCurvePoints.reset()
             startDisplayLinkToUpdateCanvasView(true)
         }
 
-        drawing.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
+        drawingCurvePoints.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
             // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
@@ -123,7 +121,7 @@ extension CanvasViewModel {
             )
         }
 
-        drawing.appendToIterator(
+        drawingCurvePoints.appendToIterator(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
@@ -140,11 +138,11 @@ extension CanvasViewModel {
     ) {
         // Reset `drawing` and start the display link when a touch begins
         if touches.contains(where: { $0.phase == .began }) {
-            if drawing.isCurrentlyDrawing {
+            if drawingCurvePoints.isCurrentlyDrawing {
                 canvasView?.resetCommandBuffer()
                 clearDrawingTexture()
             }
-            drawing.reset()
+            drawingCurvePoints.reset()
             pencilDrawingArrays.reset()
 
             startDisplayLinkToUpdateCanvasView(true)
@@ -177,7 +175,7 @@ extension CanvasViewModel {
 
         let touchScreenPoints = pencilDrawingArrays.latestActualTouchPoints
 
-        drawing.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
+        drawingCurvePoints.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
 
         let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
             // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
@@ -191,7 +189,7 @@ extension CanvasViewModel {
             )
         }
 
-        drawing.appendToIterator(
+        drawingCurvePoints.appendToIterator(
             textureTouchPoints.map {
                 .init(
                     touchPoint: $0,
@@ -202,19 +200,24 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture() {
-        guard let newCommandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
+        guard let commandBuffer = canvasView?.commandBuffer else { return }
 
-        drawing.reset()
+        drawingCurvePoints.reset()
 
-        drawingTexture.clearAllTextures(with: newCommandBuffer)
+        drawingTexture.clearAllTextures(with: commandBuffer)
 
         MTLRenderer.clear(
             texture: currentTexture,
-            with: newCommandBuffer
+            with: commandBuffer
         )
-        newCommandBuffer.commit()
 
-        clearCanvas()
+        MTLRenderer.fill(
+            color: backgroundColor.rgb,
+            on: canvasTexture,
+            with: commandBuffer
+        )
+
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
 }
@@ -223,22 +226,12 @@ extension CanvasViewModel {
 
     /// Initialize the textures used for drawing with the same size
     func initCanvas(textureSize: CGSize) {
+        guard let commandBuffer = canvasView?.commandBuffer else { return }
+
         drawingTexture.initTexture(size: textureSize)
 
-        currentTexture = MTKTextureUtils.makeBlankTexture(
-            size: textureSize,
-            with: device
-        )
-        canvasTexture = MTKTextureUtils.makeBlankTexture(
-            size: textureSize,
-            with: device
-        )
-
-        clearCanvas()
-    }
-
-    private func clearCanvas() {
-        guard let commandBuffer = canvasView?.commandBuffer else { return }
+        currentTexture = MTKTextureUtils.makeBlankTexture(size: textureSize, with: device)
+        canvasTexture = MTKTextureUtils.makeBlankTexture(size: textureSize, with: device)
 
         MTLRenderer.fill(
             color: backgroundColor.rgb,
@@ -274,7 +267,8 @@ extension CanvasViewModel {
             let commandBuffer = canvasView?.commandBuffer
         else { return }
 
-        if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
+        // Draw curve points on `drawingTexture`
+        if let curvePoints = drawingCurvePoints.makeDrawingCurvePointsFromIterator() {
             (drawingTexture as? CanvasBrushDrawingTexture)?.drawPointsOnBrushDrawingTexture(
                 points: curvePoints,
                 color: drawingToolStatus.brushColor,
@@ -282,7 +276,7 @@ extension CanvasViewModel {
             )
         }
 
-        // Render `selectedLayer.texture` and `drawingTexture` onto currentTexture
+        // Draw `currentTexture` and `drawingTexture` onto `canvasTexture`
         drawingTexture.renderDrawingTexture(
             withSelectedTexture: currentTexture,
             backgroundColor: .white,
@@ -290,8 +284,8 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        if drawing.isDrawingFinished {
-            drawing.reset()
+        if drawingCurvePoints.isDrawingFinished {
+            drawingCurvePoints.reset()
             pencilDrawingArrays.reset()
             startDisplayLinkToUpdateCanvasView(false)
 
@@ -302,6 +296,7 @@ extension CanvasViewModel {
             )
         }
 
+        // Update `canvasView` with `canvasTexture`
         updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
