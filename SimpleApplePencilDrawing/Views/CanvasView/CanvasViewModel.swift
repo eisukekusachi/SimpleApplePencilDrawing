@@ -27,9 +27,9 @@ final class CanvasViewModel {
 
     private var backgroundColor: UIColor = .white
 
-    private var drawingDisplayLink: CADisplayLink?
-
     private var canvasView: CanvasViewProtocol?
+
+    private var drawingDisplayLink: CADisplayLink?
 
     private let runDisplayLinkSubject = PassthroughSubject<Bool, Never>()
 
@@ -218,7 +218,7 @@ extension CanvasViewModel {
 
 extension CanvasViewModel {
 
-    /// Initialize the textures used for drawing with the same size
+    /// Initializes the textures used for drawing with the same size
     func initCanvas(textureSize: CGSize) {
         guard let commandBuffer = canvasView?.commandBuffer else { return }
 
@@ -245,6 +245,11 @@ extension CanvasViewModel {
         updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
+    private func resetAllInputParameters() {
+        pencilDrawingArrays.reset()
+        drawingCurvePoints.reset()
+    }
+
     /// Starts or stops the display link loop
     private func runDrawingDisplayLinkToUpdateCanvasView(_ isRunning: Bool) {
         runDisplayLinkSubject.send(isRunning)
@@ -255,10 +260,9 @@ extension CanvasViewModel {
         }
     }
 
-    private func resetAllInputParameters() {
-        pencilDrawingArrays.reset()
-        drawingCurvePoints.reset()
-    }
+}
+
+extension CanvasViewModel {
 
     @objc private func updateCanvasViewWhileDrawing() {
         guard
