@@ -288,13 +288,13 @@ extension CanvasViewModel {
         )
 
         if drawingCurvePoints.isDrawingFinished {
-            resetAllInputParameters()
-
             // Draw `drawingTexture` onto `currentTexture`
             drawingTexture.mergeDrawingTexture(
                 into: currentTexture,
                 with: commandBuffer
             )
+
+            resetAllInputParameters()
         }
 
         // Update `canvasView` with `canvasTexture`
