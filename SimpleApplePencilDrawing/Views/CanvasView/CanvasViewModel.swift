@@ -134,8 +134,7 @@ extension CanvasViewModel {
         // Reset the current drawing
         if touches.contains(where: { $0.phase == .began }) {
             if drawingCurvePoints.isCurrentlyDrawing {
-                canvasView?.resetCommandBuffer()
-                clearDrawingTexture()
+                resetCurrentDrawing()
             }
             drawingCurvePoints.reset()
             pencilDrawingArrays.reset()
@@ -235,8 +234,7 @@ extension CanvasViewModel {
         )
     }
 
-    private func clearDrawingTexture() {
-        // Clear `drawingTextures` during drawing
+    private func resetCurrentDrawing() {
         drawingTexture.clearAllTextures()
 
         canvasView?.resetCommandBuffer()
