@@ -78,7 +78,7 @@ extension CanvasDrawingCurvePoints {
     func reset() {
         isFirstCurveHasBeenCreated = false
         currentTouchPhase = nil
-        iterator.clear()
+        iterator.reset()
     }
 
 }
