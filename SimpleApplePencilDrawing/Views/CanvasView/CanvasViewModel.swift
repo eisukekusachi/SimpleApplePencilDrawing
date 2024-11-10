@@ -9,11 +9,10 @@ import MetalKit
 import Combine
 
 final class CanvasViewModel {
-
     /// Arrays for handling Apple Pencil input values
     private let pencilDrawingArrays = CanvasPencilDrawingArrays()
 
-    /// An iterator for managing a grayscale curve
+    /// Curve points for drawing
     private var drawingCurvePoints: CanvasDrawingCurvePoints = .init()
 
     /// A texture currently being drawn
@@ -25,6 +24,7 @@ final class CanvasViewModel {
     /// A texture with a background color, composed of `drawingTexture` and `currentTexture`
     private var canvasTexture: MTLTexture?
 
+    /// Output destination for `canvasTexture`
     private var canvasView: CanvasViewProtocol?
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
@@ -95,7 +95,7 @@ extension CanvasViewModel {
             .init(touch: $0, view: view)
         }
 
-        // Reset the current drawing
+        // Reset the current drawing at the start of drawing
         if touchScreenPoints.currentTouchPhase == .began {
             resetAllInputParameters()
         }
@@ -233,6 +233,7 @@ extension CanvasViewModel {
         )
     }
 
+    /// Clears the line being drawn on the canvas
     private func resetCurrentDrawing() {
         drawingTexture.clearAllTextures()
 
