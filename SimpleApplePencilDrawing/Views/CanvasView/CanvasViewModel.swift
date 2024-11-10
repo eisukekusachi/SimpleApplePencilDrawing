@@ -255,6 +255,11 @@ extension CanvasViewModel {
         }
     }
 
+    private func resetAllInputParameters() {
+        pencilDrawingArrays.reset()
+        drawingCurvePoints.reset()
+    }
+
     @objc private func updateCanvasViewWhileDrawing() {
         guard
             let currentTexture,
@@ -280,8 +285,7 @@ extension CanvasViewModel {
         )
 
         if drawingCurvePoints.isDrawingFinished {
-            drawingCurvePoints.reset()
-            pencilDrawingArrays.reset()
+            resetAllInputParameters()
 
             // Draw `drawingTexture` onto `currentTexture`
             drawingTexture.mergeDrawingTexture(
