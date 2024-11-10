@@ -44,19 +44,19 @@ struct MTLTextureVertices {
         sourceSize: CGSize,
         destinationSize: CGSize
     ) -> Self {
-        var leftTop: CGPoint = .init(
+        let leftTop: CGPoint = .init(
             x: destinationSize.width * 0.5 + sourceSize.width * 0.5 * -1,
             y: destinationSize.height * 0.5 + sourceSize.height * 0.5 * -1
         )
-        var rightTop: CGPoint = .init(
+        let rightTop: CGPoint = .init(
             x: destinationSize.width * 0.5 + sourceSize.width * 0.5 * 1,
             y: destinationSize.height * 0.5 + sourceSize.height * 0.5 * -1
         )
-        var rightBottom: CGPoint = .init(
+        let rightBottom: CGPoint = .init(
             x: destinationSize.width * 0.5 + sourceSize.width * 0.5 * 1,
             y: destinationSize.height * 0.5 + sourceSize.height * 0.5 * 1
         )
-        var leftBottom: CGPoint = .init(
+        let leftBottom: CGPoint = .init(
             x: destinationSize.width * 0.5 + sourceSize.width * 0.5 * -1,
             y: destinationSize.height * 0.5 + sourceSize.height * 0.5 * 1
         )
