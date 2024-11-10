@@ -225,8 +225,8 @@ extension CanvasViewModel {
 
         drawingTexture.initTexture(size: size)
 
-        currentTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
-        canvasTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
+        currentTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
+        canvasTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
 
         MTLRenderer.fill(
             color: backgroundColor.rgb,

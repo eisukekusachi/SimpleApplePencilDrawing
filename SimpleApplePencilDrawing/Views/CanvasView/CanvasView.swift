@@ -76,7 +76,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         self.backgroundColor = .white
 
         if let textureSize: CGSize = currentDrawable?.texture.size {
-            _renderTexture = MTKTextureUtils.makeBlankTexture(size: textureSize, with: device)
+            _renderTexture = MTLTextureCreator.makeBlankTexture(size: textureSize, with: device)
          }
     }
 
@@ -108,7 +108,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         guard let device else { return }
 
         // Align the size of `_renderTexture` with `drawableSize`
-        _renderTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
+        _renderTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
     }
 
 }
