@@ -11,51 +11,28 @@ final class MTLRenderer {
 
     static let threadGroupLength: Int = 16
 
-    static func draw(
-        textures: [MTLTexture?],
-        withBackgroundColor color: (Int, Int, Int, Int),
-        on destinationTexture: MTLTexture?,
-        with commandBuffer: MTLCommandBuffer
-    ) {
-        guard let destinationTexture else { return }
-
-        MTLRenderer.fill(
-            color: color,
-            on: destinationTexture,
-            with: commandBuffer
-        )
-
-        textures.forEach { texture in
-            if let texture {
-                MTLRenderer.merge(
-                    texture: texture,
-                    into: destinationTexture,
-                    with: commandBuffer
-                )
-            }
-        }
-    }
-
     static func drawTexture(
         texture: MTLTexture,
-        buffers: TextureBuffers,
-        withBackgroundColor color: UIColor = .clear,
+        buffers: MTLTextureBuffers,
+        withBackgroundColor color: UIColor? = nil,
         on destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
         guard let destinationTexture else { return }
-
-        let rgba = color.rgba
 
         let descriptor = MTLRenderPassDescriptor()
         descriptor.colorAttachments[0].texture = destinationTexture
-        descriptor.colorAttachments[0].loadAction = .clear
-        descriptor.colorAttachments[0].clearColor = MTLClearColorMake(
-            min(CGFloat(rgba.0) / 255.0, 1.0),
-            min(CGFloat(rgba.1) / 255.0, 1.0),
-            min(CGFloat(rgba.2) / 255.0, 1.0),
-            min(CGFloat(rgba.3) / 255.0, 1.0)
-        )
+        descriptor.colorAttachments[0].loadAction = .load
+
+        if let rgba = color?.rgba {
+            descriptor.colorAttachments[0].loadAction = .clear
+            descriptor.colorAttachments[0].clearColor = MTLClearColorMake(
+                min(CGFloat(rgba.0) / 255.0, 1.0),
+                min(CGFloat(rgba.1) / 255.0, 1.0),
+                min(CGFloat(rgba.2) / 255.0, 1.0),
+                min(CGFloat(rgba.3) / 255.0, 1.0)
+            )
+        }
 
         let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)
         encoder?.setRenderPipelineState(MTLPipelineManager.shared.drawTexture)
@@ -72,13 +49,15 @@ final class MTLRenderer {
         encoder?.endEncoding()
     }
 
-    static func drawPointsWithMaxBlendMode(
-        grayscalePointBuffers buffers: GrayscalePointBuffers,
-        on destinationTexture: MTLTexture?,
+    static func drawCurve(
+        buffers: MTLGrayscalePointBuffers?,
+        onGrayscaleTexture texture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer?
     ) {
+        guard let buffers = buffers else { return }
+
         let descriptor = MTLRenderPassDescriptor()
-        descriptor.colorAttachments[0].texture = destinationTexture
+        descriptor.colorAttachments[0].texture = texture
         descriptor.colorAttachments[0].loadAction = .load
 
         let encoder = commandBuffer?.makeRenderCommandEncoder(descriptor: descriptor)

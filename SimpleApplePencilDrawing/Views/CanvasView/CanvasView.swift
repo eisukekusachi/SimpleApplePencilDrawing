@@ -15,7 +15,7 @@ protocol CanvasViewProtocol {
 
     func resetCommandBuffer()
 
-    func updateCanvasView()
+    func setNeedsDisplay()
 }
 
 /// A custom view for displaying textures with Metal support.
@@ -38,7 +38,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         }
     }
 
-    private var textureBuffers: TextureBuffers?
+    private var flippedTextureBuffers: MTLTextureBuffers?
 
     private let updateTextureSubject = PassthroughSubject<Void, Never>()
 
@@ -63,7 +63,10 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         commandQueue = queue
         resetCommandBuffer()
 
-        textureBuffers = MTLBuffers.makeTextureBuffers(with: device)
+        flippedTextureBuffers = MTLBuffers.makeTextureBuffers(
+            nodes: .flippedTextureNodes,
+            with: device
+        )
 
         self.delegate = self
         self.enableSetNeedsDisplay = true
@@ -73,7 +76,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         self.backgroundColor = .white
 
         if let textureSize: CGSize = currentDrawable?.texture.size {
-            _renderTexture = MTKTextureUtils.makeBlankTexture(size: textureSize, with: device)
+            _renderTexture = MTLTextureCreator.makeBlankTexture(size: textureSize, with: device)
          }
     }
 
@@ -81,7 +84,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
     func draw(in view: MTKView) {
         guard
             let commandBuffer,
-            let textureBuffers,
+            let flippedTextureBuffers,
             let renderTexture,
             let drawable = view.currentDrawable
         else { return }
@@ -89,7 +92,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         // Draw `renderTexture` directly onto `drawable.texture`
         MTLRenderer.drawTexture(
             texture: renderTexture,
-            buffers: textureBuffers,
+            buffers: flippedTextureBuffers,
             on: drawable.texture,
             with: commandBuffer
         )
@@ -105,18 +108,15 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         guard let device else { return }
 
         // Align the size of `_renderTexture` with `drawableSize`
-        _renderTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
+        _renderTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
     }
 
 }
 
 extension CanvasView {
+
     func resetCommandBuffer() {
         commandBuffer = commandQueue.makeCommandBuffer()
-    }
-
-    func updateCanvasView() {
-        setNeedsDisplay()
     }
 
 }

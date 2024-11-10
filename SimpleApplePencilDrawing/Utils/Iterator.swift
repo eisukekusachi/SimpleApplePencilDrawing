@@ -51,7 +51,7 @@ class Iterator<T: Equatable>: IteratorProtocol {
         array[index] = element
     }
 
-    func clear() {
+    func reset() {
         index = 0
         array = []
     }

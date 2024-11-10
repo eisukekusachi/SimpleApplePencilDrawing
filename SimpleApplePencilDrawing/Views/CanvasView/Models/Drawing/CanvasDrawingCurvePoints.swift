@@ -1,14 +1,16 @@
 //
-//  CanvasDrawing.swift
+//  CanvasDrawingCurvePoints.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/10/06.
 //
 
 import UIKit
-
-/// A model for drawing smooth curves in real-time
-final class CanvasDrawing {
+/// A class that saves points in real-time to an iterator, then generates a curve based on those points.
+/// - Parameters:
+///   - iterator: An iterator that stores points
+///   - currentTouchPhase: Manages the touch phases from the beginning to the end of drawing a single line
+final class CanvasDrawingCurvePoints {
 
     typealias T = CanvasGrayscaleDotPoint
 
@@ -20,7 +22,7 @@ final class CanvasDrawing {
 
 }
 
-extension CanvasDrawing {
+extension CanvasDrawingCurvePoints {
 
     func makeDrawingCurvePointsFromIterator() -> [CanvasGrayscaleDotPoint]? {
         var array: [CanvasGrayscaleDotPoint] = []
@@ -78,12 +80,12 @@ extension CanvasDrawing {
     func reset() {
         isFirstCurveHasBeenCreated = false
         currentTouchPhase = nil
-        iterator.clear()
+        iterator.reset()
     }
 
 }
 
-extension CanvasDrawing {
+extension CanvasDrawingCurvePoints {
 
     /// Makes an array of first curve points from an iterator
     func makeFirstCurvePoints() -> [CanvasGrayscaleDotPoint] {

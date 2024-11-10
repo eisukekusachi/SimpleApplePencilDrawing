@@ -1,5 +1,5 @@
 //
-//  MTKTextureUtils.swift
+//  MTLTextureCreator.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -8,7 +8,7 @@
 import MetalKit
 import Accelerate
 
-enum MTKTextureUtils {
+enum MTLTextureCreator {
 
     static let pixelFormat: MTLPixelFormat = .bgra8Unorm
 
