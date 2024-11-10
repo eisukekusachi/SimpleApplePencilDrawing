@@ -65,11 +65,10 @@ final class CanvasViewModel {
 extension CanvasViewModel {
 
     func onViewDidAppear() {
-
         // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
         // initialize the canvas here.
         if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
-            initCanvas(textureSize: textureSize)
+            initCanvas(size: textureSize)
         }
 
         updateCanvasWithTexture(canvasTexture, on: canvasView)
@@ -77,7 +76,7 @@ extension CanvasViewModel {
 
     func onUpdateRenderTexture() {
         if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
-            initCanvas(textureSize: textureSize)
+            initCanvas(size: textureSize)
         }
 
         updateCanvasWithTexture(canvasTexture, on: canvasView)
@@ -221,13 +220,13 @@ extension CanvasViewModel {
 extension CanvasViewModel {
 
     /// Initializes the textures used for drawing with the same size
-    func initCanvas(textureSize: CGSize) {
+    func initCanvas(size: CGSize) {
         guard let commandBuffer = canvasView?.commandBuffer else { return }
 
-        drawingTexture.initTexture(size: textureSize)
+        drawingTexture.initTexture(size: size)
 
-        currentTexture = MTKTextureUtils.makeBlankTexture(size: textureSize, with: device)
-        canvasTexture = MTKTextureUtils.makeBlankTexture(size: textureSize, with: device)
+        currentTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
+        canvasTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
 
         MTLRenderer.fill(
             color: backgroundColor.rgb,
