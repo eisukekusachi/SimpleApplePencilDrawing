@@ -97,7 +97,7 @@ extension CanvasViewModel {
 
         // Reset the current drawing
         if touchScreenPoints.currentTouchPhase == .began {
-            drawingCurvePoints.reset()
+            resetAllInputParameters()
         }
 
         drawingCurvePoints.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
@@ -136,8 +136,7 @@ extension CanvasViewModel {
             if drawingCurvePoints.isCurrentlyDrawing {
                 resetCurrentDrawing()
             }
-            drawingCurvePoints.reset()
-            pencilDrawingArrays.reset()
+            resetAllInputParameters()
         }
 
         event?.allTouches?
@@ -196,7 +195,7 @@ extension CanvasViewModel {
     func onTapClearTexture() {
         guard let commandBuffer = canvasView?.commandBuffer else { return }
 
-        drawingCurvePoints.reset()
+        resetAllInputParameters()
 
         drawingTexture.clearAllTextures(with: commandBuffer)
 
