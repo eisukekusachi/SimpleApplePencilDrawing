@@ -15,8 +15,10 @@ final class CanvasViewModel {
 
     /// A texture currently being drawn
     private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
+
     /// A texture with lines
     private var currentTexture: MTLTexture?
+
     /// A texture with a background color, composed of `drawingTexture` and `currentTexture`
     private var canvasTexture: MTLTexture?
 
@@ -94,7 +96,7 @@ extension CanvasViewModel {
             .init(touch: $0, view: view)
         }
 
-        // Reset `drawing` and start the display link when a touch begins
+        // Reset the current drawing
         if touchScreenPoints.currentTouchPhase == .began {
             drawingCurvePoints.reset()
         }
@@ -130,7 +132,7 @@ extension CanvasViewModel {
         with event: UIEvent?,
         view: UIView
     ) {
-        // Reset `drawing` and start the display link when a touch begins
+        // Reset the current drawing
         if touches.contains(where: { $0.phase == .began }) {
             if drawingCurvePoints.isCurrentlyDrawing {
                 canvasView?.resetCommandBuffer()
@@ -158,7 +160,7 @@ extension CanvasViewModel {
     ) {
         guard let canvasTextureSize = canvasTexture?.size else { return }
 
-        // Combine `actualTouches` with the estimated values to create actual values, and append them to an array
+        // Combine `actualTouches` with the estimated values to create actual values, and append them to the array
         let actualTouchArray = Array(actualTouches).sorted { $0.timestamp < $1.timestamp }
         actualTouchArray.forEach { actualTouch in
             pencilDrawingArrays.appendActualValueWithEstimatedValue(actualTouch)
