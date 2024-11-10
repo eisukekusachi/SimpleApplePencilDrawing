@@ -9,7 +9,7 @@ import MetalKit
 /// This class encapsulates a series of actions for drawing a single line on a texture using a brush
 final class CanvasBrushDrawingTexture: CanvasDrawingTexture {
     
-    var drawingTexture: MTLTexture?
+    var texture: MTLTexture?
 
     private var grayscaleTexture: MTLTexture!
 
@@ -31,7 +31,7 @@ final class CanvasBrushDrawingTexture: CanvasDrawingTexture {
 extension CanvasBrushDrawingTexture {
 
     func initTexture(size: CGSize) {
-        drawingTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
+        texture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
         grayscaleTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
 
         clearAllTextures()
@@ -59,7 +59,7 @@ extension CanvasBrushDrawingTexture {
         )
 
         MTLRenderer.merge(
-            texture: drawingTexture,
+            texture: texture,
             into: targetTexture,
             with: commandBuffer
         )
@@ -72,7 +72,7 @@ extension CanvasBrushDrawingTexture {
         guard let destinationTexture else { return }
 
         MTLRenderer.merge(
-            texture: drawingTexture,
+            texture: texture,
             into: destinationTexture,
             with: commandBuffer
         )
@@ -89,7 +89,7 @@ extension CanvasBrushDrawingTexture {
     func clearAllTextures(with commandBuffer: MTLCommandBuffer) {
         MTLRenderer.clear(
             textures: [
-                drawingTexture,
+                texture,
                 grayscaleTexture
             ],
             with: commandBuffer
@@ -108,7 +108,7 @@ extension CanvasBrushDrawingTexture {
         with commandBuffer: MTLCommandBuffer
     ) {
         guard
-            let drawingTexture,
+            let texture,
             let grayscaleTexture,
             let buffers = MTLBuffers.makeGrayscalePointBuffers(
                 grayscaleTexturePoints: points,
@@ -127,7 +127,7 @@ extension CanvasBrushDrawingTexture {
         MTLRenderer.colorize(
             grayscaleTexture: grayscaleTexture,
             color: color.rgb,
-            on: drawingTexture,
+            on: texture,
             with: commandBuffer
         )
     }
