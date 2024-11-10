@@ -290,8 +290,6 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
-
         if drawing.isDrawingFinished {
             drawing.reset()
             pencilDrawingArrays.reset()
@@ -303,6 +301,8 @@ extension CanvasViewModel {
                 with: commandBuffer
             )
         }
+
+        updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
     private func updateCanvasWithTexture(
