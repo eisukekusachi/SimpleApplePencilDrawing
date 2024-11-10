@@ -167,6 +167,7 @@
 		D41E216E2C78C35B005CE868 /* CanvasView */ = {
 			isa = PBXGroup;
 			children = (
+				D462E1A72C0C684300E0503E /* CanvasDrawingToolStatus.swift */,
 				D462E16D2C0C555900E0503E /* CanvasView.swift */,
 				D4B17E192C0ABCB30056C270 /* CanvasViewController.swift */,
 				D462E1862C0C5A7500E0503E /* CanvasViewModel.swift */,
@@ -264,7 +265,6 @@
 			children = (
 				D4D0FDCE2C82B17500E91B4B /* Drawing */,
 				D4D0FDCD2C82B15A00E91B4B /* Textures */,
-				D4D0FDCF2C82B24B00E91B4B /* Status */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -371,14 +371,6 @@
 				D4D0FDDC2C82D6C500E91B4B /* CanvasPencilDrawingArrays.swift */,
 			);
 			path = Drawing;
-			sourceTree = "<group>";
-		};
-		D4D0FDCF2C82B24B00E91B4B /* Status */ = {
-			isa = PBXGroup;
-			children = (
-				D462E1A72C0C684300E0503E /* CanvasDrawingToolStatus.swift */,
-			);
-			path = Status;
 			sourceTree = "<group>";
 		};
 		D4D0FDE82C8349DA00E91B4B /* Dummies */ = {
