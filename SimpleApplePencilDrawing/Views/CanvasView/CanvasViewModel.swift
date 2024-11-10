@@ -60,7 +60,7 @@ final class CanvasViewModel {
     }
 
     private func configureDisplayLink() {
-        displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasViewWhileDrawing(_:)))
+        displayLinkForRendering = CADisplayLink(target: self, selector: #selector(updateCanvasViewWhileDrawing))
         displayLinkForRendering?.add(to: .current, forMode: .common)
         displayLinkForRendering?.isPaused = true
     }
@@ -104,7 +104,6 @@ extension CanvasViewModel {
         // Reset `drawing` and start the display link when a touch begins
         if touchScreenPoints.currentTouchPhase == .began {
             drawingCurvePoints.reset()
-            startDisplayLinkToUpdateCanvasView(true)
         }
 
         drawingCurvePoints.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
@@ -129,6 +128,8 @@ extension CanvasViewModel {
                 )
             }
         )
+
+        startDisplayLinkToUpdateCanvasView(!drawingCurvePoints.isDrawingFinished)
     }
 
     func onPencilGestureDetected(
@@ -144,8 +145,6 @@ extension CanvasViewModel {
             }
             drawingCurvePoints.reset()
             pencilDrawingArrays.reset()
-
-            startDisplayLinkToUpdateCanvasView(true)
         }
 
         event?.allTouches?
@@ -197,6 +196,8 @@ extension CanvasViewModel {
                 )
             }
         )
+
+        startDisplayLinkToUpdateCanvasView(!drawingCurvePoints.isDrawingFinished)
     }
 
     func onTapClearTexture() {
@@ -256,11 +257,11 @@ extension CanvasViewModel {
 
         // Call `requestingUpdateCanvasView` when stopping as the last line isn’t drawn
         if !isStarted {
-            requestingUpdateCanvasView.send(())
+            updateCanvasViewWhileDrawing()
         }
     }
 
-    @objc private func updateCanvasViewWhileDrawing(_ displayLink: CADisplayLink) {
+    @objc private func updateCanvasViewWhileDrawing() {
         guard
             let currentTexture,
             let canvasTexture,
@@ -287,7 +288,6 @@ extension CanvasViewModel {
         if drawingCurvePoints.isDrawingFinished {
             drawingCurvePoints.reset()
             pencilDrawingArrays.reset()
-            startDisplayLinkToUpdateCanvasView(false)
 
             // Draw `drawingTexture` onto `currentTexture`
             drawingTexture.mergeDrawingTexture(
