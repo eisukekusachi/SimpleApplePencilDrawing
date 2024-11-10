@@ -10,6 +10,9 @@ import Combine
 
 final class CanvasViewModel {
 
+    /// Arrays for handling Apple Pencil input values
+    private let pencilDrawingArrays = CanvasPencilDrawingArrays()
+
     /// An iterator for managing a grayscale curve
     private var drawingCurvePoints: CanvasDrawingCurvePoints = .init()
 
@@ -22,14 +25,11 @@ final class CanvasViewModel {
     /// A texture with a background color, composed of `drawingTexture` and `currentTexture`
     private var canvasTexture: MTLTexture?
 
-    /// Arrays for handling Apple Pencil input values
-    private let pencilDrawingArrays = CanvasPencilDrawingArrays()
+    private var canvasView: CanvasViewProtocol?
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
     private var backgroundColor: UIColor = .white
-
-    private var canvasView: CanvasViewProtocol?
 
     private var drawingDisplayLink: CADisplayLink?
 
