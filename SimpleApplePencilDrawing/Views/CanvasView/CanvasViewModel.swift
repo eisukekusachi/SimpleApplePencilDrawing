@@ -205,7 +205,8 @@ extension CanvasViewModel {
         guard let newCommandBuffer = device.makeCommandQueue()?.makeCommandBuffer() else { return }
 
         drawing.reset()
-        drawingTexture.clearTexture(with: newCommandBuffer)
+
+        drawingTexture.clearAllTextures(with: newCommandBuffer)
 
         MTLRenderer.clear(
             texture: currentTexture,
@@ -222,7 +223,7 @@ extension CanvasViewModel {
 
     /// Initialize the textures used for drawing with the same size
     func initCanvas(textureSize: CGSize) {
-        drawingTexture.initTexture(textureSize: textureSize)
+        drawingTexture.initTexture(size: textureSize)
 
         currentTexture = MTKTextureUtils.makeBlankTexture(
             size: textureSize,
@@ -249,20 +250,10 @@ extension CanvasViewModel {
     }
 
     private func clearDrawingTexture() {
-        guard
-            let currentTexture,
-            let commandBuffer = canvasView?.commandBuffer
-        else { return }
-
         // Clear `drawingTextures` during drawing
-        drawingTexture.clearTexture(with: commandBuffer)
+        drawingTexture.clearAllTextures()
 
-        mergeTextures(
-            currentTexture: currentTexture,
-            withBackgroundColor: backgroundColor,
-            on: canvasTexture,
-            with: commandBuffer
-        )
+        canvasView?.resetCommandBuffer()
 
         updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
@@ -276,48 +267,6 @@ extension CanvasViewModel {
         }
     }
 
-    private func mergeTextures(
-        drawingTexture: CanvasDrawingTexture? = nil,
-        currentTexture: MTLTexture,
-        withBackgroundColor backgroundColor: UIColor,
-        on destinationTexture: MTLTexture?,
-        with commandBuffer: MTLCommandBuffer,
-        executeDrawingFinishProcess: Bool = false
-    ) {
-        guard let destinationTexture else { return }
-
-        // Render `currentTexture` and `drawingTexture` onto the `renderTexture`
-        MTLRenderer.fill(
-            color: backgroundColor.rgba,
-            on: destinationTexture,
-            with: commandBuffer
-        )
-
-        [currentTexture, drawingTexture?.texture].forEach { texture in
-            if let texture {
-                MTLRenderer.merge(
-                    texture: texture,
-                    into: destinationTexture,
-                    with: commandBuffer
-                )
-            }
-        }
-
-        // When the drawing process completes,
-        // render `drawingTexture` onto `currentTexture`,
-        // then clear `drawingTexture` for the next drawing.
-        if executeDrawingFinishProcess {
-            MTLRenderer.merge(
-                texture: drawingTexture?.texture,
-                into: currentTexture,
-                with: commandBuffer
-            )
-            drawingTexture?.clearTexture(
-                with: commandBuffer
-            )
-        }
-    }
-
     @objc private func updateCanvasViewWhileDrawing(_ displayLink: CADisplayLink) {
         guard
             let currentTexture,
@@ -326,20 +275,19 @@ extension CanvasViewModel {
         else { return }
 
         if let curvePoints = drawing.makeDrawingCurvePointsFromIterator() {
-            drawingTexture.drawPointsOnDrawingTexture(
-                grayscaleTexturePoints: curvePoints,
+            (drawingTexture as? CanvasBrushDrawingTexture)?.drawPointsOnBrushDrawingTexture(
+                points: curvePoints,
                 color: drawingToolStatus.brushColor,
                 with: commandBuffer
             )
         }
 
-        mergeTextures(
-            drawingTexture: drawingTexture,
-            currentTexture: currentTexture,
-            withBackgroundColor: backgroundColor,
-            on: canvasTexture,
-            with: commandBuffer,
-            executeDrawingFinishProcess: drawing.isDrawingComplete
+        // Render `selectedLayer.texture` and `drawingTexture` onto currentTexture
+        drawingTexture.renderDrawingTexture(
+            withSelectedTexture: currentTexture,
+            backgroundColor: .white,
+            onto: canvasTexture,
+            with: commandBuffer
         )
 
         updateCanvasWithTexture(canvasTexture, on: canvasView)
@@ -348,6 +296,12 @@ extension CanvasViewModel {
             drawing.reset()
             pencilDrawingArrays.reset()
             startDisplayLinkToUpdateCanvasView(false)
+
+            // Draw `drawingTexture` onto `currentTexture`
+            drawingTexture.mergeDrawingTexture(
+                into: currentTexture,
+                with: commandBuffer
+            )
         }
     }
 

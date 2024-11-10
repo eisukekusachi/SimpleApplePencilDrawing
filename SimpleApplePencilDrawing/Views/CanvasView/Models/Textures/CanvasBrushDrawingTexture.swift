@@ -6,70 +6,128 @@
 //
 
 import MetalKit
-/// A class for drawing with a brush
+/// This class encapsulates a series of actions for drawing a single line on a texture using a brush
 final class CanvasBrushDrawingTexture: CanvasDrawingTexture {
-    /// A texture being drawn
-    private (set) var texture: MTLTexture?
-    /// A texture drawn in grayscale, with the grayscale converted to brightness later
-    private var grayscaleDrawingTexture: MTLTexture?
+    
+    var drawingTexture: MTLTexture?
+
+    private var grayscaleTexture: MTLTexture!
+
+    private var temporaryTexture: MTLTexture!
+
+    private var flippedTextureBuffers: MTLTextureBuffers?
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
+
+    required init() {
+        self.flippedTextureBuffers = MTLBuffers.makeTextureBuffers(
+            nodes: .flippedTextureNodes,
+            with: device
+        )
+    }
 
 }
 
 extension CanvasBrushDrawingTexture {
 
-    func initTexture(textureSize: CGSize) {
-        grayscaleDrawingTexture = MTKTextureUtils.makeBlankTexture(
-            size: textureSize,
-            with: device
+    func initTexture(size: CGSize) {
+        drawingTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
+        grayscaleTexture = MTKTextureUtils.makeBlankTexture(size: size, with: device)
+
+        clearAllTextures()
+    }
+
+    /// Renders `selectedTexture` and `drawingTexture`, then render them onto targetTexture
+    func renderDrawingTexture(
+        withSelectedTexture selectedTexture: MTLTexture?,
+        backgroundColor: UIColor,
+        onto targetTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        guard
+            let selectedTexture,
+            let flippedTextureBuffers,
+            let targetTexture
+        else { return }
+
+        MTLRenderer.drawTexture(
+            texture: selectedTexture,
+            buffers: flippedTextureBuffers,
+            withBackgroundColor: backgroundColor,
+            on: targetTexture,
+            with: commandBuffer
         )
-        texture = MTKTextureUtils.makeBlankTexture(
-            size: textureSize,
-            with: device
+
+        MTLRenderer.merge(
+            texture: drawingTexture,
+            into: targetTexture,
+            with: commandBuffer
         )
     }
 
-    /// Draws the points in grayscale on `grayscaleDrawingTexture` with Max blend mode.
-    /// Converts the grayscale to brightness, adds color, and creates `texture`.
-    /// This way, overlapping lines won’t darken within a single stroke.
-    func drawPointsOnDrawingTexture(
-        grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
+    func mergeDrawingTexture(
+        into destinationTexture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        guard let destinationTexture else { return }
+
+        MTLRenderer.merge(
+            texture: drawingTexture,
+            into: destinationTexture,
+            with: commandBuffer
+        )
+
+        clearAllTextures(with: commandBuffer)
+    }
+
+    func clearAllTextures() {
+        let commandBuffer = device.makeCommandQueue()!.makeCommandBuffer()!
+        clearAllTextures(with: commandBuffer)
+        commandBuffer.commit()
+    }
+
+    func clearAllTextures(with commandBuffer: MTLCommandBuffer) {
+        MTLRenderer.clear(
+            textures: [
+                drawingTexture,
+                grayscaleTexture
+            ],
+            with: commandBuffer
+        )
+    }
+
+}
+
+extension CanvasBrushDrawingTexture {
+    /// First, draw lines in grayscale on the grayscale texture,
+    /// then apply the intensity as transparency to colorize the grayscale texture,
+    /// and render the colored grayscale texture onto the drawing texture.
+    func drawPointsOnBrushDrawingTexture(
+        points: [CanvasGrayscaleDotPoint],
         color: UIColor,
         with commandBuffer: MTLCommandBuffer
     ) {
         guard
-            let grayscaleDrawingTexture,
-            let texture
+            let drawingTexture,
+            let grayscaleTexture,
+            let buffers = MTLBuffers.makeGrayscalePointBuffers(
+                grayscaleTexturePoints: points,
+                pointsAlpha: color.alpha,
+                textureSize: grayscaleTexture.size,
+                with: device
+            )
         else { return }
 
-        if let buffer = MTLBuffers.makeGrayscalePointBuffers(
-            grayscaleTexturePoints: grayscaleTexturePoints,
-            pointsAlpha: color.alpha,
-            textureSize: grayscaleDrawingTexture.size,
-            with: device
-        ) {
-            MTLRenderer.drawCurve(
-                buffers: buffer,
-                onGrayscaleTexture: grayscaleDrawingTexture,
-                with: commandBuffer
-            )
+        MTLRenderer.drawCurve(
+            buffers: buffers,
+            onGrayscaleTexture: grayscaleTexture,
+            with: commandBuffer
+        )
 
-            MTLRenderer.colorize(
-                grayscaleTexture: grayscaleDrawingTexture,
-                color: color.rgb,
-                on: texture,
-                with: commandBuffer
-            )
-        }
-    }
-
-    func clearTexture(with commandBuffer: MTLCommandBuffer) {
-        MTLRenderer.clear(
-            textures: [
-                grayscaleDrawingTexture,
-                texture
-            ],
+        MTLRenderer.colorize(
+            grayscaleTexture: grayscaleTexture,
+            color: color.rgb,
+            on: drawingTexture,
             with: commandBuffer
         )
     }
