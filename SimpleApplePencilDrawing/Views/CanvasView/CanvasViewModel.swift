@@ -33,8 +33,6 @@ final class CanvasViewModel {
 
     private let requestingPauseDisplayLink = PassthroughSubject<Bool, Never>()
 
-    private let requestingUpdateCanvasView = PassthroughSubject<Void, Never>()
-
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
     private var cancellables = Set<AnyCancellable>()
@@ -43,12 +41,6 @@ final class CanvasViewModel {
         requestingPauseDisplayLink
             .sink { [weak self] isPause in
                 self?.displayLinkForRendering?.isPaused = isPause
-            }
-            .store(in: &cancellables)
-
-        requestingUpdateCanvasView
-            .sink { [weak self] _ in
-                self?.canvasView?.setNeedsDisplay()
             }
             .store(in: &cancellables)
 
