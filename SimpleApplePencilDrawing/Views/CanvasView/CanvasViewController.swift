@@ -41,7 +41,7 @@ extension CanvasViewController {
         // Initialize the texture with any size
         /*
         canvasViewModel.initCanvas(
-            textureSize: .init(width: 768, height: 1024)
+            size: .init(width: 768, height: 1024)
         )
         */
     }
