@@ -233,8 +233,6 @@ extension CanvasViewModel {
             on: canvasTexture,
             with: commandBuffer
         )
-
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
     }
 
     private func clearDrawingTexture() {
