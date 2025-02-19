@@ -90,7 +90,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
         else { return }
 
         // Draw `renderTexture` directly onto `drawable.texture`
-        MTLRenderer.drawTexture(
+        MTLRenderer.shared.drawTexture(
             texture: renderTexture,
             buffers: flippedTextureBuffers,
             on: drawable.texture,
