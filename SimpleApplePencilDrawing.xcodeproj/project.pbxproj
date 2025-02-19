@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D41EE0AB2D66081B00E417D5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41EE0AA2D66081B00E417D5 /* Logger.swift */; };
 		D42930422CA5926B00983863 /* BezierCurveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930412CA5926B00983863 /* BezierCurveTests.swift */; };
 		D42930442CA5938A00983863 /* BezierCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930432CA5938A00983863 /* BezierCurve.swift */; };
 		D42930462CA599DD00983863 /* BezierCurveHandlePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */; };
@@ -80,6 +81,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D41EE0AA2D66081B00E417D5 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		D42930412CA5926B00983863 /* BezierCurveTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierCurveTests.swift; sourceTree = "<group>"; };
 		D42930432CA5938A00983863 /* BezierCurve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierCurve.swift; sourceTree = "<group>"; };
 		D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierCurveHandlePoints.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 				D462E1822C0C580600E0503E /* ViewSize.swift */,
 				D462E1A52C0C682300E0503E /* Calculator.swift */,
 				D46C036A2C95D0DC001658C5 /* Constants.swift */,
+				D41EE0AA2D66081B00E417D5 /* Logger.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -576,6 +579,7 @@
 				D46ECA2F2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift in Sources */,
 				D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */,
 				D462E1852C0C583900E0503E /* MTLTextureExtensions.swift in Sources */,
+				D41EE0AB2D66081B00E417D5 /* Logger.swift in Sources */,
 				D462E1832C0C580600E0503E /* ViewSize.swift in Sources */,
 				D47CBFD92CDF68E100189B08 /* MTLTextureNodes.swift in Sources */,
 				D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */,
