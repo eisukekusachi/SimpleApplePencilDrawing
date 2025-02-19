@@ -193,20 +193,24 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture() {
-        guard let commandBuffer = canvasView?.commandBuffer else { return }
+        guard
+            let canvasTexture,
+            let currentTexture,
+            let commandBuffer = canvasView?.commandBuffer
+        else { return }
 
         resetAllInputParameters()
 
         drawingTexture.clearAllTextures(with: commandBuffer)
 
-        MTLRenderer.clear(
+        MTLRenderer.shared.clearTexture(
             texture: currentTexture,
             with: commandBuffer
         )
 
-        MTLRenderer.fill(
-            color: backgroundColor.rgb,
-            on: canvasTexture,
+        MTLRenderer.shared.fillTexture(
+            texture: canvasTexture,
+            withRGB: backgroundColor.rgb,
             with: commandBuffer
         )
 
@@ -226,9 +230,11 @@ extension CanvasViewModel {
         currentTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
         canvasTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
 
-        MTLRenderer.fill(
-            color: backgroundColor.rgb,
-            on: canvasTexture,
+        guard let canvasTexture else { return }
+
+        MTLRenderer.shared.fillTexture(
+            texture: canvasTexture,
+            withRGB: backgroundColor.rgb,
             with: commandBuffer
         )
     }
@@ -317,7 +323,7 @@ extension CanvasViewModel {
             let commandBuffer = canvasView?.commandBuffer
         else { return }
 
-        MTLRenderer.drawTexture(
+        MTLRenderer.shared.drawTexture(
             texture: sourceTexture,
             buffers: sourceTextureBuffers,
             withBackgroundColor: .init(rgb: Constants.blankAreaBackgroundColor),

@@ -45,12 +45,13 @@ extension CanvasBrushDrawingTexture {
         with commandBuffer: MTLCommandBuffer
     ) {
         guard
+            let texture,
             let selectedTexture,
             let flippedTextureBuffers,
             let targetTexture
         else { return }
 
-        MTLRenderer.drawTexture(
+        MTLRenderer.shared.drawTexture(
             texture: selectedTexture,
             buffers: flippedTextureBuffers,
             withBackgroundColor: backgroundColor,
@@ -58,7 +59,7 @@ extension CanvasBrushDrawingTexture {
             with: commandBuffer
         )
 
-        MTLRenderer.merge(
+        MTLRenderer.shared.mergeTexture(
             texture: texture,
             into: targetTexture,
             with: commandBuffer
@@ -69,9 +70,12 @@ extension CanvasBrushDrawingTexture {
         into destinationTexture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
-        guard let destinationTexture else { return }
+        guard
+            let texture,
+            let destinationTexture
+        else { return }
 
-        MTLRenderer.merge(
+        MTLRenderer.shared.mergeTexture(
             texture: texture,
             into: destinationTexture,
             with: commandBuffer
@@ -87,7 +91,7 @@ extension CanvasBrushDrawingTexture {
     }
 
     func clearAllTextures(with commandBuffer: MTLCommandBuffer) {
-        MTLRenderer.clear(
+        MTLRenderer.shared.clearTextures(
             textures: [
                 texture,
                 grayscaleTexture
@@ -118,13 +122,13 @@ extension CanvasBrushDrawingTexture {
             )
         else { return }
 
-        MTLRenderer.drawCurve(
+        MTLRenderer.shared.drawGrayPointBuffersWithMaxBlendMode(
             buffers: buffers,
             onGrayscaleTexture: grayscaleTexture,
             with: commandBuffer
         )
 
-        MTLRenderer.colorize(
+        MTLRenderer.shared.drawTexture(
             grayscaleTexture: grayscaleTexture,
             color: color.rgb,
             on: texture,
