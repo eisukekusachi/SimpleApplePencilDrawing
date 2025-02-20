@@ -51,13 +51,15 @@ final class CanvasViewModel {
             .store(in: &cancellables)
     }
 
-    func setCanvasView(_ canvasView: CanvasViewProtocol) {
-        self.canvasView = canvasView
-    }
-
 }
 
 extension CanvasViewModel {
+    func onViewDidLoad(
+        canvasView: CanvasViewProtocol,
+        textureSize: CGSize? = nil
+    ) {
+        self.canvasView = canvasView
+    }
 
     func onViewDidAppear() {
         // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
