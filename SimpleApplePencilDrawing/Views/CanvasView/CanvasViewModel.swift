@@ -31,33 +31,28 @@ final class CanvasViewModel {
 
     private var backgroundColor: UIColor = .white
 
-    private var drawingDisplayLink: CADisplayLink?
-
     private let runDisplayLinkSubject = PassthroughSubject<Bool, Never>()
+
+    private var drawingDisplayLink = CanvasDrawingDisplayLink()
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
     private var cancellables = Set<AnyCancellable>()
 
     init() {
-        runDisplayLinkSubject
-            .map { !$0 }
-            .sink { [weak self] isPause in
-                self?.drawingDisplayLink?.isPaused = isPause
+        subscribe()
+    }
+
+    private func subscribe() {
+        drawingDisplayLink.canvasDrawingPublisher
+            .sink { [weak self] in
+                self?.updateCanvasWithDrawing()
             }
             .store(in: &cancellables)
-
-        configureDisplayLink()
     }
 
     func setCanvasView(_ canvasView: CanvasViewProtocol) {
         self.canvasView = canvasView
-    }
-
-    private func configureDisplayLink() {
-        drawingDisplayLink = CADisplayLink(target: self, selector: #selector(updateCanvasViewWhileDrawing))
-        drawingDisplayLink?.add(to: .current, forMode: .common)
-        drawingDisplayLink?.isPaused = true
     }
 
 }
@@ -123,7 +118,9 @@ extension CanvasViewModel {
             }
         )
 
-        runDrawingDisplayLinkToUpdateCanvasView(!drawingCurvePoints.isDrawingFinished)
+        drawingDisplayLink.updateCanvasWithDrawing(
+            isCurrentlyDrawing: !drawingCurvePoints.isDrawingFinished
+        )
     }
 
     func onPencilGestureDetected(
@@ -189,7 +186,9 @@ extension CanvasViewModel {
             }
         )
 
-        runDrawingDisplayLinkToUpdateCanvasView(!drawingCurvePoints.isDrawingFinished)
+        drawingDisplayLink.updateCanvasWithDrawing(
+            isCurrentlyDrawing: !drawingCurvePoints.isDrawingFinished
+        )
     }
 
     func onTapClearTexture() {
@@ -253,21 +252,11 @@ extension CanvasViewModel {
         drawingCurvePoints.reset()
     }
 
-    /// Starts or stops the display link loop
-    private func runDrawingDisplayLinkToUpdateCanvasView(_ isRunning: Bool) {
-        runDisplayLinkSubject.send(isRunning)
-
-        // Call `requestingUpdateCanvasView` when stopping as the last line isn’t drawn
-        if !isRunning {
-            updateCanvasViewWhileDrawing()
-        }
-    }
-
 }
 
 extension CanvasViewModel {
 
-    @objc private func updateCanvasViewWhileDrawing() {
+    private func updateCanvasWithDrawing() {
         guard
             let currentTexture,
             let canvasTexture,
