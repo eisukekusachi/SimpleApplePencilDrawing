@@ -79,65 +79,11 @@ extension CanvasViewModel {
         updateCanvas()
     }
 
-    func onFingerInputGesture(
-        touches: Set<UITouch>,
-        view: UIView
-    ) {
-        guard
-            pencilDrawingArrays.estimatedTouchPointArray.isEmpty,
-            let canvasTextureSize = canvasTexture?.size
-        else { return }
-
-        let touchScreenPoints: [CanvasTouchPoint] = touches.map {
-            .init(touch: $0, view: view)
-        }
-
-        // Reset the current drawing at the start of drawing
-        if touchScreenPoints.currentTouchPhase == .began {
-            resetAllInputParameters()
-        }
-
-        drawingCurvePoints.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
-
-        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
-            // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
-            .init(
-                location: $0.location.scaleAndCenter(
-                    sourceTextureRatio: ViewSize.getScaleToFill(view.frame.size, to: canvasTextureSize),
-                    sourceTextureSize: view.frame.size,
-                    destinationTextureSize: canvasTextureSize
-                ),
-                touch: $0
-            )
-        }
-
-        drawingCurvePoints.appendToIterator(
-            textureTouchPoints.map {
-                .init(
-                    touchPoint: $0,
-                    diameter: CGFloat(drawingToolStatus.brushDiameter)
-                )
-            }
-        )
-
-        drawingDisplayLink.updateCanvasWithDrawing(
-            isCurrentlyDrawing: !drawingCurvePoints.isDrawingFinished
-        )
-    }
-
     func onPencilGestureDetected(
         touches: Set<UITouch>,
         with event: UIEvent?,
         view: UIView
     ) {
-        // Reset the current drawing
-        if touches.contains(where: { $0.phase == .began }) {
-            if drawingCurvePoints.isCurrentlyDrawing {
-                resetCurrentDrawing()
-            }
-            resetAllInputParameters()
-        }
-
         event?.allTouches?
             .compactMap { $0.type == .pencil ? $0 : nil }
             .sorted { $0.timestamp < $1.timestamp }
@@ -238,15 +184,6 @@ extension CanvasViewModel {
             withRGB: backgroundColor.rgb,
             with: commandBuffer
         )
-    }
-
-    /// Clears the line being drawn on the canvas
-    private func resetCurrentDrawing() {
-        drawingTexture.clearAllTextures()
-
-        canvasView?.resetCommandBuffer()
-
-        updateCanvas()
     }
 
     private func resetAllInputParameters() {
