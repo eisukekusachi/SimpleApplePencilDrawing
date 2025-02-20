@@ -40,7 +40,6 @@
 		D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C036A2C95D0DC001658C5 /* Constants.swift */; };
 		D46ECA2D2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46ECA2C2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift */; };
 		D46ECA2F2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46ECA2E2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift */; };
-		D47123982CB284E3001F16C6 /* CanvasDrawingCurveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47123972CB284E3001F16C6 /* CanvasDrawingCurveTests.swift */; };
 		D476E9A82CA00B3B00F2332E /* InterpolatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */; };
 		D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D478DD9C2C7978CA0031521D /* SetExtensions.swift */; };
 		D47CBFD92CDF68E100189B08 /* MTLTextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47CBFD82CDF68E100189B08 /* MTLTextureNodes.swift */; };
@@ -114,7 +113,6 @@
 		D46C036A2C95D0DC001658C5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		D46ECA2C2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasGrayscaleDotPointTests.swift; sourceTree = "<group>"; };
 		D46ECA2E2CB1787C00B6ECE8 /* CanvasBezierCurvePoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasBezierCurvePoints.swift; sourceTree = "<group>"; };
-		D47123972CB284E3001F16C6 /* CanvasDrawingCurveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasDrawingCurveTests.swift; sourceTree = "<group>"; };
 		D476E9A72CA00B3B00F2332E /* InterpolatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpolatorTests.swift; sourceTree = "<group>"; };
 		D478DD9C2C7978CA0031521D /* SetExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetExtensions.swift; sourceTree = "<group>"; };
 		D47CBFD82CDF68E100189B08 /* MTLTextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLTextureNodes.swift; sourceTree = "<group>"; };
@@ -407,7 +405,6 @@
 			isa = PBXGroup;
 			children = (
 				D47123992CB285D7001F16C6 /* Point */,
-				D47123972CB284E3001F16C6 /* CanvasDrawingCurveTests.swift */,
 				D4D0FDEE2C834A2200E91B4B /* CanvasPencilDrawingArraysTests.swift */,
 			);
 			path = Models;
@@ -605,7 +602,6 @@
 				D467BB552CA810180039EA0D /* CalculatorTests.swift in Sources */,
 				D43D06662CBC042F0029CAB4 /* IteratorExtensionsTests.swift in Sources */,
 				D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */,
-				D47123982CB284E3001F16C6 /* CanvasDrawingCurveTests.swift in Sources */,
 				D4D0FDEF2C834A2200E91B4B /* CanvasPencilDrawingArraysTests.swift in Sources */,
 				D46ECA2D2CB0CA9A00B6ECE8 /* CanvasGrayscaleDotPointTests.swift in Sources */,
 				D4C3C7B32CA94437003E417C /* CanvasGrayscaleDotPointDummy.swift in Sources */,
