@@ -11,6 +11,8 @@ struct CanvasGrayscaleDotPoint: Equatable {
 
     let location: CGPoint
     let diameter: CGFloat
+
+    /// Grayscale brightness (0.0 ~ 1.0)
     let brightness: CGFloat
 
     var blurSize: CGFloat = 2.0
@@ -21,19 +23,17 @@ extension CanvasGrayscaleDotPoint {
 
     init(
         touchPoint: CanvasTouchPoint,
-        diameter: CGFloat,
-        blurSize: CGFloat = 2.0
+        diameter: CGFloat
     ) {
         self.location = touchPoint.location
         self.diameter = diameter
         self.brightness = touchPoint.maximumPossibleForce != 0 ? min(touchPoint.force, 1.0) : 1.0
-        self.blurSize = blurSize
     }
 
 }
 
 extension CanvasGrayscaleDotPoint {
-    /// Calculate the average of two values
+
     static func average(_ left: Self, _ right: Self) -> Self {
         .init(
             location: left.location == right.location ? left.location : CGPoint(
@@ -41,8 +41,7 @@ extension CanvasGrayscaleDotPoint {
                 y: (left.location.y + right.location.y) * 0.5
             ),
             diameter: left.diameter == right.diameter ? left.diameter : (left.diameter + right.diameter) * 0.5,
-            brightness: left.brightness == right.brightness ? left.brightness : (left.brightness + right.brightness) * 0.5,
-            blurSize: left.blurSize == right.blurSize ? left.blurSize : (left.blurSize + right.blurSize) * 0.5
+            brightness: left.brightness == right.brightness ? left.brightness : (left.brightness + right.brightness) * 0.5
         )
     }
 
