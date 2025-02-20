@@ -68,7 +68,7 @@ extension CanvasViewModel {
             initCanvas(size: textureSize)
         }
 
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
+        updateCanvas()
     }
 
     func onUpdateRenderTexture() {
@@ -76,7 +76,7 @@ extension CanvasViewModel {
             initCanvas(size: textureSize)
         }
 
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
+        updateCanvas()
     }
 
     func onFingerInputGesture(
@@ -215,7 +215,7 @@ extension CanvasViewModel {
             with: commandBuffer
         )
 
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
+        updateCanvas()
     }
 
 }
@@ -246,7 +246,7 @@ extension CanvasViewModel {
 
         canvasView?.resetCommandBuffer()
 
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
+        updateCanvas()
     }
 
     private func resetAllInputParameters() {
@@ -292,16 +292,12 @@ extension CanvasViewModel {
             resetAllInputParameters()
         }
 
-        // Update `canvasView` with `canvasTexture`
-        updateCanvasWithTexture(canvasTexture, on: canvasView)
+        updateCanvas()
     }
 
-    private func updateCanvasWithTexture(
-        _ texture: MTLTexture?,
-        on canvasView: CanvasViewProtocol?
-    ) {
+    private func updateCanvas() {
         guard
-            let sourceTexture = texture,
+            let sourceTexture = canvasTexture,
             let destinationTexture = canvasView?.renderTexture,
             let sourceTextureBuffers = MTLBuffers.makeTextureBuffers(
                 sourceSize: .init(
