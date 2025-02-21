@@ -24,21 +24,20 @@ final class CanvasDrawingCurvePoints {
 
 extension CanvasDrawingCurvePoints {
 
-    func makeDrawingCurvePointsFromIterator() -> [CanvasGrayscaleDotPoint]? {
+    func makeCurvePointsFromIterator() -> [CanvasGrayscaleDotPoint] {
         var array: [CanvasGrayscaleDotPoint] = []
 
         if hasArrayThreeElementsButNoFirstCurveCreated {
             array.append(contentsOf: makeFirstCurvePoints())
-            setFirstCurveHasBeenCreated()
         }
 
         array.append(contentsOf: makeIntermediateCurvePoints(shouldIncludeEndPoint: false))
 
-        if isDrawingComplete {
+        if isDrawingFinished {
             array.append(contentsOf: makeLastCurvePoints())
         }
 
-        return array.count != 0 ? array : nil
+        return array
     }
 
     var isCurrentlyDrawing: Bool {

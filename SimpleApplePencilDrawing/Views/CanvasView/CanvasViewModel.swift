@@ -16,7 +16,7 @@ final class CanvasViewModel {
     private var drawingCurvePoints: CanvasDrawingCurvePoints = .init()
 
     /// A texture currently being drawn
-    private let drawingTexture: CanvasDrawingTexture = CanvasBrushDrawingTexture()
+    private let drawingTexture = CanvasBrushDrawingTexture(renderer: MTLRenderer.shared)
 
     /// A texture with lines
     private var currentTexture: MTLTexture?
@@ -47,6 +47,12 @@ final class CanvasViewModel {
         drawingDisplayLink.canvasDrawingPublisher
             .sink { [weak self] in
                 self?.updateCanvasWithDrawing()
+            }
+            .store(in: &cancellables)
+
+        drawingTexture.canvasDrawFinishedPublisher
+            .sink { [weak self] in
+                self?.resetAllInputParameters()
             }
             .store(in: &cancellables)
     }
@@ -148,7 +154,7 @@ extension CanvasViewModel {
 
         resetAllInputParameters()
 
-        drawingTexture.clearAllTextures(with: commandBuffer)
+        drawingTexture.initTextures(canvasTexture.size)
 
         MTLRenderer.shared.clearTexture(
             texture: currentTexture,
@@ -172,7 +178,7 @@ extension CanvasViewModel {
     func initCanvas(size: CGSize) {
         guard let commandBuffer = canvasView?.commandBuffer else { return }
 
-        drawingTexture.initTexture(size: size)
+        drawingTexture.initTextures(size)
 
         currentTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
         canvasTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
@@ -202,32 +208,12 @@ extension CanvasViewModel {
             let commandBuffer = canvasView?.commandBuffer
         else { return }
 
-        // Draw curve points on `drawingTexture`
-        if let curvePoints = drawingCurvePoints.makeDrawingCurvePointsFromIterator() {
-            (drawingTexture as? CanvasBrushDrawingTexture)?.drawPointsOnBrushDrawingTexture(
-                points: curvePoints,
-                color: drawingToolStatus.brushColor,
-                with: commandBuffer
-            )
-        }
-
-        // Draw `currentTexture` and `drawingTexture` onto `canvasTexture`
-        drawingTexture.renderDrawingTexture(
-            withSelectedTexture: currentTexture,
-            backgroundColor: .white,
-            onto: canvasTexture,
+        drawingTexture.drawCurvePointsUsingSelectedTexture(
+            drawingCurvePoints: drawingCurvePoints,
+            selectedTexture: currentTexture,
+            on: canvasTexture,
             with: commandBuffer
         )
-
-        if drawingCurvePoints.isDrawingFinished {
-            // Draw `drawingTexture` onto `currentTexture`
-            drawingTexture.mergeDrawingTexture(
-                into: currentTexture,
-                with: commandBuffer
-            )
-
-            resetAllInputParameters()
-        }
 
         updateCanvas()
     }
