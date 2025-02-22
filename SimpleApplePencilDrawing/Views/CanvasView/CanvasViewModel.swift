@@ -13,7 +13,7 @@ final class CanvasViewModel {
     var frameSize: CGSize = .zero
 
     /// A class for handling Apple Pencil inputs
-    private let pencilScreenTouch = CanvasPencilScreenTouch()
+    private let pencilScreenStrokeData = PencilScreenStrokeData()
 
     /// An iterator for real-time drawing
     private let drawingCurveIterator = CanvasBrushDrawingCurveIterator()
@@ -91,7 +91,7 @@ extension CanvasViewModel {
         with event: UIEvent?,
         view: UIView
     ) {
-        pencilScreenTouch.setLatestEstimatedTouchPoint(
+        pencilScreenStrokeData.setLatestEstimatedTouchPoint(
             estimatedTouches
                 .filter({ $0.type == .pencil })
                 .sorted(by: { $0.timestamp < $1.timestamp })
@@ -104,13 +104,13 @@ extension CanvasViewModel {
         actualTouches: Set<UITouch>,
         view: UIView
     ) {
-        pencilScreenTouch.appendActualTouches(
+        pencilScreenStrokeData.appendActualTouches(
             actualTouches: actualTouches
                 .sorted { $0.timestamp < $1.timestamp }
                 .map { TouchPoint(touch: $0, view: view) }
         )
 
-        drawCurveOnCanvas(pencilScreenTouch.latestActualTouchPoints)
+        drawCurveOnCanvas(pencilScreenStrokeData.latestActualTouchPoints)
     }
 
     func onTapClearTexture() {
@@ -140,7 +140,7 @@ extension CanvasViewModel {
     }
 
     private func resetAllInputParameters() {
-        pencilScreenTouch.reset()
+        pencilScreenStrokeData.reset()
         drawingCurveIterator.reset()
     }
 
