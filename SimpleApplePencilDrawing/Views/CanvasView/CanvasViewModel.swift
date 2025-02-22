@@ -23,6 +23,8 @@ final class CanvasViewModel {
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
+    private var drawingDisplayLink = CanvasDrawingDisplayLink()
+
     /// A texture with lines
     private var currentTexture: MTLTexture?
 
@@ -33,8 +35,6 @@ final class CanvasViewModel {
     private var canvasView: CanvasViewProtocol?
 
     private var backgroundColor: UIColor = .white
-
-    private var drawingDisplayLink = CanvasDrawingDisplayLink()
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
@@ -62,8 +62,7 @@ final class CanvasViewModel {
 
 extension CanvasViewModel {
     func onViewDidLoad(
-        canvasView: CanvasViewProtocol,
-        textureSize: CGSize? = nil
+        canvasView: CanvasViewProtocol
     ) {
         self.canvasView = canvasView
     }

@@ -178,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				D4057FE72D68B1EB00DB8B4D /* BlurredDotSize.swift */,
+				D4057FF72D69713A00DB8B4D /* DrawingCurveIterator.swift */,
 				D4057FFF2D69A46700DB8B4D /* Points */,
 				D41E21702C78C686005CE868 /* Gestures */,
 			);
@@ -189,7 +190,6 @@
 			children = (
 				D46ECA2E2CB1787C00B6ECE8 /* BezierCurvePoints.swift */,
 				D40580002D69A4A400DB8B4D /* DotPoint.swift */,
-				D4057FF72D69713A00DB8B4D /* DrawingCurveIterator.swift */,
 				D462E1972C0C651B00E0503E /* GrayscaleDotPoint.swift */,
 				D462E18E2C0C620500E0503E /* TouchPoint.swift */,
 			);
@@ -282,12 +282,12 @@
 		D462E17C2C0C566900E0503E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D462E1842C0C583900E0503E /* MTLTextureExtensions.swift */,
-				D462E17D2C0C567E00E0503E /* UIColorExtensions.swift */,
-				D462E1AB2C0C6A8800E0503E /* CGPointExtensions.swift */,
-				D478DD9C2C7978CA0031521D /* SetExtensions.swift */,
 				D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */,
+				D462E1AB2C0C6A8800E0503E /* CGPointExtensions.swift */,
 				D43D06602CBBF76C0029CAB4 /* IteratorExtensions.swift */,
+				D462E1842C0C583900E0503E /* MTLTextureExtensions.swift */,
+				D478DD9C2C7978CA0031521D /* SetExtensions.swift */,
+				D462E17D2C0C567E00E0503E /* UIColorExtensions.swift */,
 				D4057FF52D68DE4900DB8B4D /* UITouchExtensions.swift */,
 			);
 			path = Extensions;
