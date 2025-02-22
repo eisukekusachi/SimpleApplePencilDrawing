@@ -64,7 +64,8 @@ extension GrayscaleDotPoint {
                 y: (left.location.y + right.location.y) * 0.5
             ),
             diameter: left.diameter == right.diameter ? left.diameter : (left.diameter + right.diameter) * 0.5,
-            brightness: left.brightness == right.brightness ? left.brightness : (left.brightness + right.brightness) * 0.5
+            brightness: left.brightness == right.brightness ? left.brightness : (left.brightness + right.brightness) * 0.5,
+            blurSize: left.blurSize == right.blurSize ? left.blurSize : (left.blurSize + right.blurSize) * 0.5
         )
     }
 

@@ -16,7 +16,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let array: [GrayscaleDotPoint]
         }
         struct Expectation {
-            let result: CanvasFirstBezierCurvePoints?
+            let result: CanvasBezierCurveFirstPoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -64,7 +64,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let iterator = Iterator<GrayscaleDotPoint>()
             iterator.append(condition.array)
 
-            let result = iterator.getFirstBezierCurvePoints()
+            let result = iterator.getBezierCurveFirstPoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
@@ -91,7 +91,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let array: [GrayscaleDotPoint]
         }
         struct Expectation {
-            let result: [CanvasIntermediateBezierCurvePoints]
+            let result: [CanvasBezierCurveIntermediatePoints]
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -163,7 +163,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let iterator = Iterator<GrayscaleDotPoint>()
             iterator.append(condition.array)
 
-            let resultArray = iterator.getIntermediateBezierCurvePointsWithFixedRange4()
+            let resultArray = iterator.getBezierCurveIntermediatePointsWithFixedRange4()
             let expectationArray = expectation.result
 
             XCTAssertEqual(resultArray.count, expectationArray.count)
@@ -195,7 +195,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let array: [GrayscaleDotPoint]
         }
         struct Expectation {
-            let result: CanvasLastBezierCurvePoints?
+            let result: CanvasBezierCurveLastPoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -243,7 +243,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let iterator = Iterator<GrayscaleDotPoint>()
             iterator.append(condition.array)
 
-            let result = iterator.getLastBezierCurvePoints()
+            let result = iterator.getBezierCurveLastPoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
