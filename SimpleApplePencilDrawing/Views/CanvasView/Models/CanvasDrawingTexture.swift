@@ -1,5 +1,5 @@
 //
-//  CanvasDrawingTexture.swift
+//  CanvasDrawingTextureSet.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -8,8 +8,8 @@
 import MetalKit
 import Combine
 
-/// A class used for real-time drawing on a texture using a brush
-final class CanvasDrawingTexture {
+/// A set of textures for real-time drawing
+final class CanvasDrawingTextureSet {
 
     var canvasDrawFinishedPublisher: AnyPublisher<Void, Never> {
         canvasDrawFinishedSubject.eraseToAnyPublisher()
@@ -39,7 +39,7 @@ final class CanvasDrawingTexture {
 
 }
 
-extension CanvasDrawingTexture {
+extension CanvasDrawingTextureSet {
 
     func initTextures(_ textureSize: CGSize) {
         self.drawingTexture = MTLTextureCreator.makeTexture(label: "drawingTexture", size: textureSize, with: device)
@@ -85,7 +85,7 @@ extension CanvasDrawingTexture {
 
 }
 
-extension CanvasDrawingTexture {
+extension CanvasDrawingTextureSet {
 
     private func drawCurvePointsOnDrawingTexture(
         points: [GrayscaleDotPoint],

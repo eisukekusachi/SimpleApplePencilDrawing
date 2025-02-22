@@ -19,7 +19,7 @@ final class CanvasViewModel {
     private let drawingCurveIterator = DrawingCurveIterator()
 
     /// A texture currently being drawn
-    private let drawingTexture = CanvasDrawingTexture(renderer: MTLRenderer.shared)
+    private let drawingTextureSet = CanvasDrawingTextureSet(renderer: MTLRenderer.shared)
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
@@ -51,7 +51,7 @@ final class CanvasViewModel {
             }
             .store(in: &cancellables)
 
-        drawingTexture.canvasDrawFinishedPublisher
+        drawingTextureSet.canvasDrawFinishedPublisher
             .sink { [weak self] in
                 self?.resetAllInputParameters()
             }
@@ -115,7 +115,7 @@ extension CanvasViewModel {
     func initCanvas(size: CGSize) {
         guard let commandBuffer = canvasView?.commandBuffer else { return }
 
-        drawingTexture.initTextures(size)
+        drawingTextureSet.initTextures(size)
 
         currentTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
         canvasTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
@@ -143,7 +143,7 @@ extension CanvasViewModel {
 
         resetAllInputParameters()
 
-        drawingTexture.initTextures(canvasTexture.size)
+        drawingTextureSet.initTextures(canvasTexture.size)
 
         MTLRenderer.shared.clearTexture(
             texture: currentTexture,
@@ -194,7 +194,7 @@ extension CanvasViewModel {
             let commandBuffer = canvasView?.commandBuffer
         else { return }
 
-        drawingTexture.drawCurvePoints(
+        drawingTextureSet.drawCurvePoints(
             drawingCurveIterator: drawingCurveIterator,
             withBackgroundTexture: currentTexture,
             on: canvasTexture,
