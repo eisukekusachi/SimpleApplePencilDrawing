@@ -34,8 +34,6 @@ final class CanvasViewModel {
 
     private var backgroundColor: UIColor = .white
 
-    private let runDisplayLinkSubject = PassthroughSubject<Bool, Never>()
-
     private var drawingDisplayLink = CanvasDrawingDisplayLink()
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
