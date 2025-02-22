@@ -59,7 +59,6 @@
 		D4C3C7A52CA8DB8A003E417C /* IteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7A42CA8DB8A003E417C /* IteratorTests.swift */; };
 		D4C3C7B32CA94437003E417C /* GrayscaleDotPointDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C3C7B22CA94437003E417C /* GrayscaleDotPointDummy.swift */; };
 		D4D0FDD52C82D4B900E91B4B /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */; };
-		D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */; };
 		D4D0FDEA2C8349EB00E91B4B /* TouchPointDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDE92C8349EB00E91B4B /* TouchPointDummy.swift */; };
 		D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D0FDF02C834A3C00E91B4B /* UITouchDummy.swift */; };
 /* End PBXBuildFile section */
@@ -138,7 +137,6 @@
 		D4C3C7A42CA8DB8A003E417C /* IteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IteratorTests.swift; sourceTree = "<group>"; };
 		D4C3C7B22CA94437003E417C /* GrayscaleDotPointDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleDotPointDummy.swift; sourceTree = "<group>"; };
 		D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
-		D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExtensions.swift; sourceTree = "<group>"; };
 		D4D0FDE92C8349EB00E91B4B /* TouchPointDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchPointDummy.swift; sourceTree = "<group>"; };
 		D4D0FDF02C834A3C00E91B4B /* UITouchDummy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITouchDummy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -265,7 +263,6 @@
 				D462E1AB2C0C6A8800E0503E /* CGPointExtensions.swift */,
 				D478DD9C2C7978CA0031521D /* SetExtensions.swift */,
 				D4D0FDD42C82D4B900E91B4B /* ArrayExtensions.swift */,
-				D4D0FDD82C82D56E00E91B4B /* TimeIntervalExtensions.swift */,
 				D4057FF52D68DE4900DB8B4D /* UITouchExtensions.swift */,
 			);
 			path = Extensions;
@@ -575,7 +572,6 @@
 				D47CBFD92CDF68E100189B08 /* MTLTextureNodes.swift in Sources */,
 				D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */,
 				D462E1A62C0C682300E0503E /* Calculator.swift in Sources */,
-				D4D0FDD92C82D56E00E91B4B /* TimeIntervalExtensions.swift in Sources */,
 				D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */,
 				D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */,
 				D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */,

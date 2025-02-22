@@ -27,11 +27,6 @@ class CanvasViewController: UIViewController {
         )
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        canvasViewModel.onViewDidAppear()
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         canvasViewModel.frameSize = view.frame.size

@@ -21,6 +21,8 @@ final class CanvasViewModel {
     /// A texture currently being drawn
     private let drawingTexture = CanvasDrawingTexture(renderer: MTLRenderer.shared)
 
+    private let drawingToolStatus = CanvasDrawingToolStatus()
+
     /// A texture with lines
     private var currentTexture: MTLTexture?
 
@@ -29,8 +31,6 @@ final class CanvasViewModel {
 
     /// Output destination for `canvasTexture`
     private var canvasView: CanvasViewProtocol?
-
-    private let drawingToolStatus = CanvasDrawingToolStatus()
 
     private var backgroundColor: UIColor = .white
 
@@ -66,16 +66,6 @@ extension CanvasViewModel {
         textureSize: CGSize? = nil
     ) {
         self.canvasView = canvasView
-    }
-
-    func onViewDidAppear() {
-        // Since `func onUpdateRenderTexture` is not called at app launch on iPhone,
-        // initialize the canvas here.
-        if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
-            initCanvas(size: textureSize)
-        }
-
-        updateCanvas()
     }
 
     func onUpdateRenderTexture() {
