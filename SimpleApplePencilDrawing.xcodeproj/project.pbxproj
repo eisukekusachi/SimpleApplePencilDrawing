@@ -172,20 +172,27 @@
 			isa = PBXGroup;
 			children = (
 				D4057FE72D68B1EB00DB8B4D /* BlurredDotSize.swift */,
+				D41E21702C78C686005CE868 /* Gestures */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		D4057FF92D69897E00DB8B4D /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				D462E1A72C0C684300E0503E /* CanvasDrawingToolStatus.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 		D41E216E2C78C35B005CE868 /* CanvasView */ = {
 			isa = PBXGroup;
 			children = (
-				D462E1A72C0C684300E0503E /* CanvasDrawingToolStatus.swift */,
+				D43D065F2CBBF7570029CAB4 /* Extensions */,
+				D462E18D2C0C61F400E0503E /* Models */,
 				D462E16D2C0C555900E0503E /* CanvasView.swift */,
 				D4B17E192C0ABCB30056C270 /* CanvasViewController.swift */,
 				D462E1862C0C5A7500E0503E /* CanvasViewModel.swift */,
-				D43D065F2CBBF7570029CAB4 /* Extensions */,
-				D41E21702C78C686005CE868 /* Gestures */,
-				D462E18D2C0C61F400E0503E /* Models */,
 			);
 			path = CanvasView;
 			sourceTree = "<group>";
@@ -262,7 +269,8 @@
 		D462E1812C0C56E000E0503E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				D4F159B22CAC208800BF9FE2 /* BezierCurve */,
+				D42930432CA5938A00983863 /* BezierCurve.swift */,
+				D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */,
 				D462E1A32C0C680400E0503E /* Interpolator.swift */,
 				D462E1A12C0C67DC00E0503E /* Iterator.swift */,
 				D462E1822C0C580600E0503E /* ViewSize.swift */,
@@ -278,6 +286,7 @@
 			children = (
 				D4D0FDCE2C82B17500E91B4B /* Drawing */,
 				D4D0FDCD2C82B15A00E91B4B /* Textures */,
+				D4057FF92D69897E00DB8B4D /* Tools */,
 				D4057FF32D68DE1F00DB8B4D /* CanvasPencilScreenTouch.swift */,
 			);
 			path = Models;
@@ -339,9 +348,9 @@
 				D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */,
 				D462E17C2C0C566900E0503E /* Extensions */,
 				D4057FE62D68B1E000DB8B4D /* Models */,
-				D462E1812C0C56E000E0503E /* Utils */,
 				D462E16C2C0C554900E0503E /* MetalKit */,
 				D462E16B2C0C554300E0503E /* Views */,
+				D462E1812C0C56E000E0503E /* Utils */,
 				D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */,
 				D4B17E202C0ABCB40056C270 /* LaunchScreen.storyboard */,
 				D4B17E232C0ABCB40056C270 /* Info.plist */,
@@ -422,15 +431,6 @@
 				D4799C3E2D675CEF00D3829D /* CanvasDrawingDisplayLinkTests.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		D4F159B22CAC208800BF9FE2 /* BezierCurve */ = {
-			isa = PBXGroup;
-			children = (
-				D42930432CA5938A00983863 /* BezierCurve.swift */,
-				D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */,
-			);
-			path = BezierCurve;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
