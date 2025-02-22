@@ -45,23 +45,24 @@ extension PencilScreenStrokeData {
         return touchPoints
     }
 
-    func isPenOffScreen(actualTouches: [TouchPoint]) -> Bool {
+    func isPenOffScreen(actualTouchPoints: [TouchPoint]) -> Bool {
         UITouch.isTouchCompleted(latestEstimatedTouchPoint?.phase ?? .cancelled) &&
-        actualTouches.contains(where: { $0.estimationUpdateIndex == latestEstimationUpdateIndex })
+        actualTouchPoints.contains(where: { $0.estimationUpdateIndex == latestEstimationUpdateIndex })
     }
 
     func setLatestEstimatedTouchPoint(_ estimatedTouchPoint: TouchPoint?) {
         latestEstimatedTouchPoint = estimatedTouchPoint
 
-        if let estimationUpdateIndex = estimatedTouchPoint?.estimationUpdateIndex {
+        // It needs to be unwrapped since nil is assigned to `estimationUpdateIndex` when the touch ends.
+        if let estimationUpdateIndex = latestEstimatedTouchPoint?.estimationUpdateIndex {
             latestEstimationUpdateIndex = estimationUpdateIndex
         }
     }
 
-    func appendActualTouches(actualTouches: [TouchPoint]) {
-        actualTouchPointArray.append(contentsOf: actualTouches)
+    func appendActualTouches(actualTouchPoints: [TouchPoint]) {
+        actualTouchPointArray.append(contentsOf: actualTouchPoints)
 
-        if isPenOffScreen(actualTouches: actualTouches),
+        if isPenOffScreen(actualTouchPoints: actualTouchPoints),
            let latestEstimatedTouchPoint {
             self.actualTouchPointArray.append(latestEstimatedTouchPoint)
         }

@@ -95,7 +95,7 @@ extension CanvasViewModel {
         view: UIView
     ) {
         pencilScreenStrokeData.appendActualTouches(
-            actualTouches: actualTouches
+            actualTouchPoints: actualTouches
                 .sorted { $0.timestamp < $1.timestamp }
                 .map { TouchPoint(touch: $0, view: view) }
         )

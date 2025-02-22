@@ -16,6 +16,7 @@
 		D40580162D69EBD100DB8B4D /* DrawingCurveIteratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40580152D69EBD100DB8B4D /* DrawingCurveIteratorTests.swift */; };
 		D40580192D6A02D700DB8B4D /* MockMTLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40580182D6A02D700DB8B4D /* MockMTLRenderer.swift */; };
 		D405801B2D6A042800DB8B4D /* CanvasDrawingTextureSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D405801A2D6A042800DB8B4D /* CanvasDrawingTextureSetTests.swift */; };
+		D405801E2D6A116500DB8B4D /* PencilScreenStrokeDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D405801D2D6A116500DB8B4D /* PencilScreenStrokeDataTests.swift */; };
 		D41EE0AB2D66081B00E417D5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41EE0AA2D66081B00E417D5 /* Logger.swift */; };
 		D42930422CA5926B00983863 /* BezierCurveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930412CA5926B00983863 /* BezierCurveTests.swift */; };
 		D42930442CA5938A00983863 /* BezierCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930432CA5938A00983863 /* BezierCurve.swift */; };
@@ -93,6 +94,7 @@
 		D40580152D69EBD100DB8B4D /* DrawingCurveIteratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingCurveIteratorTests.swift; sourceTree = "<group>"; };
 		D40580182D6A02D700DB8B4D /* MockMTLRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMTLRenderer.swift; sourceTree = "<group>"; };
 		D405801A2D6A042800DB8B4D /* CanvasDrawingTextureSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasDrawingTextureSetTests.swift; sourceTree = "<group>"; };
+		D405801D2D6A116500DB8B4D /* PencilScreenStrokeDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilScreenStrokeDataTests.swift; sourceTree = "<group>"; };
 		D41EE0AA2D66081B00E417D5 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		D42930412CA5926B00983863 /* BezierCurveTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierCurveTests.swift; sourceTree = "<group>"; };
 		D42930432CA5938A00983863 /* BezierCurve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierCurve.swift; sourceTree = "<group>"; };
@@ -208,6 +210,14 @@
 				D40580182D6A02D700DB8B4D /* MockMTLRenderer.swift */,
 			);
 			path = Mocks;
+			sourceTree = "<group>";
+		};
+		D405801C2D6A115600DB8B4D /* Gestures */ = {
+			isa = PBXGroup;
+			children = (
+				D405801D2D6A116500DB8B4D /* PencilScreenStrokeDataTests.swift */,
+			);
+			path = Gestures;
 			sourceTree = "<group>";
 		};
 		D41E216E2C78C35B005CE868 /* CanvasView */ = {
@@ -370,6 +380,7 @@
 			children = (
 				D4D0FDE82C8349DA00E91B4B /* Dummies */,
 				D43D06642CBC04150029CAB4 /* Extensions */,
+				D405801C2D6A115600DB8B4D /* Gestures */,
 				D40580172D6A02C900DB8B4D /* Mocks */,
 				D40580062D69B25900DB8B4D /* Models */,
 				D4D0FDEB2C8349FD00E91B4B /* Views */,
@@ -609,6 +620,7 @@
 				D4D0FDEA2C8349EB00E91B4B /* TouchPointDummy.swift in Sources */,
 				D467BB552CA810180039EA0D /* CalculatorTests.swift in Sources */,
 				D43D06662CBC042F0029CAB4 /* IteratorExtensionsTests.swift in Sources */,
+				D405801E2D6A116500DB8B4D /* PencilScreenStrokeDataTests.swift in Sources */,
 				D40580162D69EBD100DB8B4D /* DrawingCurveIteratorTests.swift in Sources */,
 				D4D0FDF12C834A3C00E91B4B /* UITouchDummy.swift in Sources */,
 				D46ECA2D2CB0CA9A00B6ECE8 /* GrayscaleDotPointTests.swift in Sources */,
