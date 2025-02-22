@@ -16,7 +16,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let array: [GrayscaleDotPoint]
         }
         struct Expectation {
-            let result: CanvasBezierCurveFirstPoints?
+            let result: BezierCurveFirstPoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -91,7 +91,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let array: [GrayscaleDotPoint]
         }
         struct Expectation {
-            let result: [CanvasBezierCurveIntermediatePoints]
+            let result: [BezierCurveIntermediatePoints]
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -195,7 +195,7 @@ final class IteratorExtensionsTests: XCTestCase {
             let array: [GrayscaleDotPoint]
         }
         struct Expectation {
-            let result: CanvasBezierCurveLastPoints?
+            let result: BezierCurveLastPoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [

@@ -7,14 +7,14 @@
 
 import Foundation
 /// A struct that defines the points needed to create a first Bézier curve
-struct CanvasBezierCurveFirstPoints {
+struct BezierCurveFirstPoints {
     let previousPoint: GrayscaleDotPoint
     let startPoint: GrayscaleDotPoint
     let endPoint: GrayscaleDotPoint
 }
 
 /// A struct that defines the points needed to create a Bézier curve
-struct CanvasBezierCurveIntermediatePoints {
+struct BezierCurveIntermediatePoints {
     let previousPoint: GrayscaleDotPoint
     let startPoint: GrayscaleDotPoint
     let endPoint: GrayscaleDotPoint
@@ -22,7 +22,7 @@ struct CanvasBezierCurveIntermediatePoints {
 }
 
 /// A struct that defines the points needed to create a last Bézier curve
-struct CanvasBezierCurveLastPoints {
+struct BezierCurveLastPoints {
     let previousPoint: GrayscaleDotPoint
     let startPoint: GrayscaleDotPoint
     let endPoint: GrayscaleDotPoint
