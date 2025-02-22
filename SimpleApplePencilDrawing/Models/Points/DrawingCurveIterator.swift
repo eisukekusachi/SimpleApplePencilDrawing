@@ -1,5 +1,5 @@
 //
-//  CanvasDrawingCurveIterator.swift
+//  DrawingCurveIterator.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2025/02/22.
@@ -8,7 +8,7 @@
 import UIKit
 
 /// An iterator for real-time drawing with `UITouch.Phase`
-final class CanvasDrawingCurveIterator: Iterator<GrayscaleDotPoint> {
+final class DrawingCurveIterator: Iterator<GrayscaleDotPoint> {
 
     var touchPhase: UITouch.Phase?
 
@@ -27,7 +27,7 @@ final class CanvasDrawingCurveIterator: Iterator<GrayscaleDotPoint> {
 
 }
 
-extension CanvasDrawingCurveIterator {
+extension DrawingCurveIterator {
 
     /// Returns `true` if three elements are added to the array and `isFirstCurveHasBeenCreated` is `false`
     var hasArrayThreeElementsButNoFirstCurveCreated: Bool {
@@ -61,7 +61,7 @@ extension CanvasDrawingCurveIterator {
 
 }
 
-extension CanvasDrawingCurveIterator {
+extension DrawingCurveIterator {
 
     /// Makes an array of first curve points from an iterator
     func makeFirstCurvePoints() -> [GrayscaleDotPoint] {
