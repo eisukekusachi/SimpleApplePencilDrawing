@@ -19,7 +19,7 @@ final class CanvasViewModel {
     private let drawingCurveIterator = DrawingCurveIterator()
 
     /// A texture set for real-time drawing
-    private let drawingTextureSet = CanvasDrawingTextureSet(renderer: MTLRenderer.shared)
+    private let drawingTextureSet = CanvasDrawingTextureSet()
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
@@ -40,7 +40,11 @@ final class CanvasViewModel {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
+    private var renderer: MTLRenderer!
+
+    init(renderer: MTLRenderer = MTLRenderer.shared) {
+        self.renderer = renderer
+
         subscribe()
     }
 
@@ -121,7 +125,7 @@ extension CanvasViewModel {
 
         guard let canvasTexture else { return }
 
-        MTLRenderer.shared.fillTexture(
+        renderer.fillTexture(
             texture: canvasTexture,
             withRGB: backgroundColor.rgb,
             with: commandBuffer
@@ -144,12 +148,12 @@ extension CanvasViewModel {
 
         drawingTextureSet.initTextures(canvasTexture.size)
 
-        MTLRenderer.shared.clearTexture(
+        renderer.clearTexture(
             texture: currentTexture,
             with: commandBuffer
         )
 
-        MTLRenderer.shared.fillTexture(
+        renderer.fillTexture(
             texture: canvasTexture,
             withRGB: backgroundColor.rgb,
             with: commandBuffer
@@ -218,7 +222,7 @@ extension CanvasViewModel {
             let commandBuffer = canvasView?.commandBuffer
         else { return }
 
-        MTLRenderer.shared.drawTexture(
+        renderer.drawTexture(
             texture: sourceTexture,
             buffers: sourceTextureBuffers,
             withBackgroundColor: .init(rgb: Constants.blankAreaBackgroundColor),
