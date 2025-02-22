@@ -18,7 +18,7 @@ final class CanvasViewModel {
     /// An iterator for real-time drawing
     private let drawingCurveIterator = DrawingCurveIterator()
 
-    /// A texture currently being drawn
+    /// A texture set for real-time drawing
     private let drawingTextureSet = CanvasDrawingTextureSet(renderer: MTLRenderer.shared)
 
     private let drawingToolStatus = CanvasDrawingToolStatus()

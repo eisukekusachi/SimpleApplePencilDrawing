@@ -57,16 +57,18 @@ extension CanvasDrawingTextureSet {
     func drawCurvePoints(
         drawingCurveIterator: DrawingCurveIterator,
         withBackgroundTexture backgroundTexture: MTLTexture,
+        withBackgroundColor backgroundColor: UIColor = .white,
         on destinationTexture: MTLTexture,
         with commandBuffer: MTLCommandBuffer
     ) {
         drawCurvePointsOnDrawingTexture(
-            points: drawingCurveIterator.makeCurvePointsFromIterator(),
+            points: drawingCurveIterator.getPoints(),
             with: commandBuffer
         )
 
         drawDrawingTextureWithBackgroundTexture(
             backgroundTexture: backgroundTexture,
+            backgroundColor: backgroundColor,
             shouldUpdateSelectedTexture: drawingCurveIterator.isDrawingFinished,
             on: destinationTexture,
             with: commandBuffer
@@ -112,7 +114,7 @@ extension CanvasDrawingTextureSet {
 
     private func drawDrawingTextureWithBackgroundTexture(
         backgroundTexture: MTLTexture,
-        backgroundColor: UIColor = .white,
+        backgroundColor: UIColor,
         shouldUpdateSelectedTexture: Bool,
         on destinationTexture: MTLTexture,
         with commandBuffer: MTLCommandBuffer

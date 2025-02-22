@@ -12,28 +12,6 @@ final class DrawingCurveIterator: Iterator<GrayscaleDotPoint> {
 
     var touchPhase: UITouch.Phase?
 
-    private var isFirstCurveHasBeenCreated: Bool = false
-
-    func append(points: [GrayscaleDotPoint], touchPhase: UITouch.Phase) {
-        self.append(points)
-        self.touchPhase = touchPhase
-    }
-
-    override func reset() {
-        super.reset()
-        isFirstCurveHasBeenCreated = false
-        touchPhase = nil
-    }
-
-}
-
-extension DrawingCurveIterator {
-
-    /// Returns `true` if three elements are added to the array and `isFirstCurveHasBeenCreated` is `false`
-    var hasArrayThreeElementsButNoFirstCurveCreated: Bool {
-        array.count >= 3 && !isFirstCurveHasBeenCreated
-    }
-
     /// Is the drawing finished
     var isDrawingFinished: Bool {
         [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase)
@@ -43,20 +21,38 @@ extension DrawingCurveIterator {
         !isDrawingFinished
     }
 
-    func makeCurvePointsFromIterator() -> [GrayscaleDotPoint] {
-        var array: [GrayscaleDotPoint] = []
+    var shouldDrawFirstCurve: Bool {
+        hasNoFirstCurve && self.array.count >= 3
+    }
 
-        if hasArrayThreeElementsButNoFirstCurveCreated {
-            array.append(contentsOf: makeFirstCurvePoints())
+    private var hasNoFirstCurve: Bool = true
+
+    func append(points: [GrayscaleDotPoint], touchPhase: UITouch.Phase) {
+        self.append(points)
+        self.touchPhase = touchPhase
+    }
+
+    func getPoints() -> [GrayscaleDotPoint] {
+        var newArray: [GrayscaleDotPoint] = []
+
+        if shouldDrawFirstCurve {
+            newArray.append(contentsOf: makeFirstCurvePoints())
+            hasNoFirstCurve = false
         }
 
-        array.append(contentsOf: makeIntermediateCurvePoints(shouldIncludeEndPoint: false))
+        newArray.append(contentsOf: makeIntermediateCurvePoints(shouldIncludeEndPoint: false))
 
         if isDrawingFinished {
-            array.append(contentsOf: makeLastCurvePoints())
+            newArray.append(contentsOf: makeLastCurvePoints())
         }
 
-        return array
+        return newArray
+    }
+
+    override func reset() {
+        super.reset()
+        hasNoFirstCurve = false
+        touchPhase = nil
     }
 
 }
@@ -67,7 +63,7 @@ extension DrawingCurveIterator {
     func makeFirstCurvePoints() -> [GrayscaleDotPoint] {
         var curve: [GrayscaleDotPoint] = []
 
-        if array.count >= 3,
+        if self.array.count >= 3,
            let points = getBezierCurveFirstPoints() {
 
             let bezierCurvePoints = BezierCurve.makeFirstCurvePoints(
@@ -122,7 +118,7 @@ extension DrawingCurveIterator {
     func makeLastCurvePoints() -> [GrayscaleDotPoint] {
         var curve: [GrayscaleDotPoint] = []
 
-        if array.count >= 3,
+        if self.array.count >= 3,
            let points = getBezierCurveLastPoints() {
 
             let bezierCurvePoints = BezierCurve.makeLastCurvePoints(
