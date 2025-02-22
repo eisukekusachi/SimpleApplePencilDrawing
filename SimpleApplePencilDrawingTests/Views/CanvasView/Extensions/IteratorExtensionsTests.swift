@@ -10,13 +10,13 @@ import XCTest
 
 final class IteratorExtensionsTests: XCTestCase {
 
-    /// Confirms that the three `GrayscaleDotPoint` points needed to generate a first Bézier curve are retrieved from `GrayscaleDotPoint` array.
+    /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a first Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
     func testGetFirstBezierCurvePoints() {
         struct Condition {
-            let array: [GrayscaleDotPoint]
+            let array: [CanvasGrayscaleDotPoint]
         }
         struct Expectation {
-            let result: BezierCurveFirstPoints?
+            let result: CanvasFirstBezierCurvePoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -61,10 +61,10 @@ final class IteratorExtensionsTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let iterator = Iterator<GrayscaleDotPoint>()
+            let iterator = Iterator<CanvasGrayscaleDotPoint>()
             iterator.append(condition.array)
 
-            let result = iterator.getBezierCurveFirstPoints()
+            let result = iterator.getFirstBezierCurvePoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(
@@ -85,13 +85,13 @@ final class IteratorExtensionsTests: XCTestCase {
         }
     }
 
-    /// Confirms that the four `GrayscaleDotPoint` points needed to generate the Bézier curve are retrieved from `GrayscaleDotPoint` array.
+    /// Confirms that the four `CanvasGrayscaleDotPoint` points needed to generate the Bézier curve are retrieved from `CanvasGrayscaleDotPoint` array.
     func testGetIntermediateBezierCurvePointsWithFixedRange4() {
         struct Condition {
-            let array: [GrayscaleDotPoint]
+            let array: [CanvasGrayscaleDotPoint]
         }
         struct Expectation {
-            let result: [BezierCurveIntermediatePoints]
+            let result: [CanvasIntermediateBezierCurvePoints]
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -160,10 +160,10 @@ final class IteratorExtensionsTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let iterator = Iterator<GrayscaleDotPoint>()
+            let iterator = Iterator<CanvasGrayscaleDotPoint>()
             iterator.append(condition.array)
 
-            let resultArray = iterator.getBezierCurveIntermediatePointsWithFixedRange4()
+            let resultArray = iterator.getIntermediateBezierCurvePointsWithFixedRange4()
             let expectationArray = expectation.result
 
             XCTAssertEqual(resultArray.count, expectationArray.count)
@@ -189,13 +189,13 @@ final class IteratorExtensionsTests: XCTestCase {
         }
     }
 
-    /// Confirms that the three `GrayscaleDotPoint` points needed to generate a last Bézier curve are retrieved from  `GrayscaleDotPoint` array.
+    /// Confirms that the three `CanvasGrayscaleDotPoint` points needed to generate a last Bézier curve are retrieved from  `CanvasGrayscaleDotPoint` array.
     func testGetLastBezierCurvePoints() {
         struct Condition {
-            let array: [GrayscaleDotPoint]
+            let array: [CanvasGrayscaleDotPoint]
         }
         struct Expectation {
-            let result: BezierCurveLastPoints?
+            let result: CanvasLastBezierCurvePoints?
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -240,10 +240,10 @@ final class IteratorExtensionsTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let iterator = Iterator<GrayscaleDotPoint>()
+            let iterator = Iterator<CanvasGrayscaleDotPoint>()
             iterator.append(condition.array)
 
-            let result = iterator.getBezierCurveLastPoints()
+            let result = iterator.getLastBezierCurvePoints()
 
             if let result, let expectation = expectation.result {
                 XCTAssertEqual(

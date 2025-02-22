@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension Iterator<GrayscaleDotPoint> {
+extension Iterator<CanvasGrayscaleDotPoint> {
 
-    func getBezierCurveFirstPoints() -> BezierCurveFirstPoints? {
+    func getFirstBezierCurvePoints() -> CanvasFirstBezierCurvePoints? {
         guard array.count >= 3 else { return nil }
         return .init(
             previousPoint: array[0],
@@ -18,8 +18,8 @@ extension Iterator<GrayscaleDotPoint> {
         )
     }
 
-    func getBezierCurveIntermediatePointsWithFixedRange4() -> [BezierCurveIntermediatePoints] {
-        var array: [BezierCurveIntermediatePoints] = []
+    func getIntermediateBezierCurvePointsWithFixedRange4() -> [CanvasIntermediateBezierCurvePoints] {
+        var array: [CanvasIntermediateBezierCurvePoints] = []
         while let subsequence = next(range: 4) {
             array.append(
                 .init(
@@ -33,7 +33,7 @@ extension Iterator<GrayscaleDotPoint> {
         return array
     }
 
-    func getBezierCurveLastPoints() -> BezierCurveLastPoints? {
+    func getLastBezierCurvePoints() -> CanvasLastBezierCurvePoints? {
         guard array.count >= 3 else { return nil }
         return .init(
             previousPoint: array[array.count - 3],

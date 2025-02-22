@@ -23,7 +23,7 @@ class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
 
     private var commandQueue: MTLCommandQueue!
 
-    private(set) var commandBuffer: MTLCommandBuffer?
+    private (set) var commandBuffer: MTLCommandBuffer?
 
     var updateTexturePublisher: AnyPublisher<Void, Never> {
         updateTextureSubject.eraseToAnyPublisher()

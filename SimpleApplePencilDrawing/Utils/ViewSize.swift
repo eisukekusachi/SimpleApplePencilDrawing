@@ -23,28 +23,4 @@ enum ViewSize {
         return max(widthRatio, heightRatio)
     }
 
-    static func convertScreenLocationToTextureLocation(
-        touchLocation: CGPoint,
-        frameSize: CGSize,
-        drawableSize: CGSize,
-        textureSize: CGSize
-    ) -> CGPoint {
-        if textureSize != drawableSize {
-            let drawableToTextureFillScale = ViewSize.getScaleToFill(drawableSize, to: textureSize)
-            let drawableLocation: CGPoint = .init(
-                x: touchLocation.x * (drawableSize.width / frameSize.width),
-                y: touchLocation.y * (drawableSize.width / frameSize.width)
-            )
-            return .init(
-                x: drawableLocation.x * drawableToTextureFillScale + (textureSize.width - drawableSize.width * drawableToTextureFillScale) * 0.5,
-                y: drawableLocation.y * drawableToTextureFillScale + (textureSize.height - drawableSize.height * drawableToTextureFillScale) * 0.5
-            )
-        } else {
-            return .init(
-                x: touchLocation.x * (textureSize.width / frameSize.width),
-                y: touchLocation.y * (textureSize.width / frameSize.width)
-            )
-        }
-    }
-
 }

@@ -1,5 +1,5 @@
 //
-//  GrayscaleDotPoint.swift
+//  CanvasGrayscaleDotPoint.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,56 +7,33 @@
 
 import UIKit
 
-struct GrayscaleDotPoint: DotPoint {
+struct CanvasGrayscaleDotPoint: Equatable {
 
     let location: CGPoint
     let diameter: CGFloat
-
-    /// Grayscale brightness (0.0 ~ 1.0)
     let brightness: CGFloat
 
     var blurSize: CGFloat = 2.0
 
 }
 
-extension GrayscaleDotPoint {
+extension CanvasGrayscaleDotPoint {
 
     init(
-        touchPoint: TouchPoint,
-        diameter: CGFloat
+        touchPoint: CanvasTouchPoint,
+        diameter: CGFloat,
+        blurSize: CGFloat = 2.0
     ) {
         self.location = touchPoint.location
         self.diameter = diameter
         self.brightness = touchPoint.maximumPossibleForce != 0 ? min(touchPoint.force, 1.0) : 1.0
+        self.blurSize = blurSize
     }
 
-    init(
-        touchPoint: TouchPoint,
-        textureSize: CGSize,
-        drawableSize: CGSize,
-        frameSize: CGSize,
-        diameter: CGFloat
-    ) {
-        let textureLocation = ViewSize.convertScreenLocationToTextureLocation(
-            touchLocation: touchPoint.location,
-            frameSize: frameSize,
-            drawableSize: drawableSize,
-            textureSize: textureSize
-        )
-
-        let touchPoint: TouchPoint = .init(
-            location: textureLocation,
-            touch: touchPoint
-        )
-
-        self.location = touchPoint.location
-        self.diameter = diameter
-        self.brightness = touchPoint.maximumPossibleForce != 0 ? min(touchPoint.force, 1.0) : 1.0
-    }
 }
 
-extension GrayscaleDotPoint {
-
+extension CanvasGrayscaleDotPoint {
+    /// Calculate the average of two values
     static func average(_ left: Self, _ right: Self) -> Self {
         .init(
             location: left.location == right.location ? left.location : CGPoint(

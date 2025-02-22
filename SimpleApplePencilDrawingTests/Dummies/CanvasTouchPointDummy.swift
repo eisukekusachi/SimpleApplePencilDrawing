@@ -1,5 +1,5 @@
 //
-//  TouchPointDummy.swift
+//  CanvasTouchPointDummy.swift
 //  SimpleApplePencilDrawingTests
 //
 //  Created by Eisuke Kusachi on 2024/08/31.
@@ -8,7 +8,7 @@
 import UIKit
 @testable import SimpleApplePencilDrawing
 
-extension TouchPoint {
+extension CanvasTouchPoint {
 
     static func generate(
         location: CGPoint = .zero,
@@ -17,7 +17,7 @@ extension TouchPoint {
         maximumPossibleForce: CGFloat = 0,
         estimationUpdateIndex: NSNumber? = nil,
         timestamp: TimeInterval = 0
-    ) -> TouchPoint {
+    ) -> CanvasTouchPoint {
         .init(
             location: location,
             phase: phase,

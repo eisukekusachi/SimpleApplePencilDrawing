@@ -25,44 +25,55 @@ struct MTLTextureBuffers {
 enum MTLBuffers {
 
     static func makeGrayscalePointBuffers(
-        points: [GrayscaleDotPoint],
-        alpha: Int,
+        grayscaleTexturePoints: [CanvasGrayscaleDotPoint],
+        pointsAlpha: Int = 255,
         textureSize: CGSize,
-        with device: MTLDevice?
+        with device: MTLDevice
     ) -> MTLGrayscalePointBuffers? {
-        guard points.count != .zero else { return nil }
+        guard grayscaleTexturePoints.count != .zero else { return nil }
 
         var vertexArray: [Float] = []
-        var alphaArray: [Float] = []
-        var blurSizeArray: [Float] = []
-        var diameterArray: [Float] = []
+        var diameterPlusBlurSizeArray: [Float] = []
+        var bufferSizeArray: [Float] = []
+        var brightnessArray: [Float] = []
 
-        points.forEach {
+        let alpha: CGFloat = CGFloat(pointsAlpha) / 255.0
+
+        grayscaleTexturePoints.forEach {
             let vertexX: Float = Float($0.location.x / textureSize.width) * 2.0 - 1.0
             let vertexY: Float = Float($0.location.y / textureSize.height) * 2.0 - 1.0
 
             vertexArray.append(contentsOf: [vertexX, vertexY])
-            alphaArray.append(Float($0.brightness) * Float(alpha) / 255.0)
-            diameterArray.append(
-                BlurredDotSize(diameter: Float($0.diameter), blurSize: Float($0.blurSize)).diameterIncludingBlurSize
-            )
-            blurSizeArray.append(Float($0.blurSize))
+            diameterPlusBlurSizeArray.append(Float($0.diameter))
+            bufferSizeArray.append(4.0)
+            brightnessArray.append(Float($0.brightness * alpha))
         }
 
         guard
-            let device,
-            let vertexBuffer = device.makeBuffer(bytes: vertexArray, length: vertexArray.count * MemoryLayout<Float>.size),
-            let diameterBuffer = device.makeBuffer(bytes: diameterArray, length: diameterArray.count * MemoryLayout<Float>.size),
-            let alphaBuffer = device.makeBuffer(bytes: alphaArray, length: alphaArray.count * MemoryLayout<Float>.size),
-            let blurSizeBuffer = device.makeBuffer(bytes: blurSizeArray, length: blurSizeArray.count * MemoryLayout<Float>.size)
+            let vertexBuffer = device.makeBuffer(
+                bytes: vertexArray,
+                length: vertexArray.count * MemoryLayout<Float>.size
+            ),
+            let diameterPlusBlurSizeBuffer = device.makeBuffer(
+                bytes: diameterPlusBlurSizeArray,
+                length: diameterPlusBlurSizeArray.count * MemoryLayout<Float>.size
+            ),
+            let blurSizeBuffer = device.makeBuffer(
+                bytes: bufferSizeArray,
+                length: bufferSizeArray.count * MemoryLayout<Float>.size
+            ),
+            let brightnessBuffer = device.makeBuffer(
+                bytes: brightnessArray,
+                length: brightnessArray.count * MemoryLayout<Float>.size
+            )
         else { return nil }
 
         return .init(
             vertexBuffer: vertexBuffer,
-            diameterIncludingBlurBuffer: diameterBuffer,
-            brightnessBuffer: alphaBuffer,
+            diameterIncludingBlurBuffer: diameterPlusBlurSizeBuffer,
+            brightnessBuffer: brightnessBuffer,
             blurSizeBuffer: blurSizeBuffer,
-            numberOfPoints: vertexArray.count / 2
+            numberOfPoints: grayscaleTexturePoints.count
         )
     }
 
