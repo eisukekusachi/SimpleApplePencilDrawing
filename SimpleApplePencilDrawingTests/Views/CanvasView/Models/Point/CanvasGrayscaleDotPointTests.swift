@@ -1,5 +1,5 @@
 //
-//  CanvasGrayscaleDotPointTests.swift
+//  GrayscaleDotPointTests.swift
 //  SimpleApplePencilDrawingTests
 //
 //  Created by Eisuke Kusachi on 2024/10/05.
@@ -8,10 +8,10 @@
 import XCTest
 @testable import SimpleApplePencilDrawing
 
-final class CanvasGrayscaleDotPointTests: XCTestCase {
+final class GrayscaleDotPointTests: XCTestCase {
     /// Confirm that the average can be calculated
     func testAverage() {
-        let result = CanvasGrayscaleDotPoint.average(
+        let result = GrayscaleDotPoint.average(
             .generate(location: .init(x: 1, y: 1), diameter: 1, brightness: 1, blurSize: 1),
             .generate(location: .init(x: 2, y: 2), diameter: 2, brightness: 2, blurSize: 2)
         )
@@ -25,11 +25,11 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
         struct Condition {
             let shouldIncludeEndPoint: Bool
             let targetPoints: [CGPoint]
-            let startPoint: CanvasGrayscaleDotPoint
-            let endPoint: CanvasGrayscaleDotPoint
+            let startPoint: GrayscaleDotPoint
+            let endPoint: GrayscaleDotPoint
         }
         struct Expectation {
-            let result: [CanvasGrayscaleDotPoint]
+            let result: [GrayscaleDotPoint]
         }
 
         let testCases: [(condition: Condition, expectation: Expectation)] = [
@@ -86,7 +86,7 @@ final class CanvasGrayscaleDotPointTests: XCTestCase {
             let condition = testCase.condition
             let expectation = testCase.expectation
 
-            let result = CanvasGrayscaleDotPoint.interpolateToMatchPointCount(
+            let result = GrayscaleDotPoint.interpolateToMatchPointCount(
                 targetPoints: condition.targetPoints,
                 interpolationStart: condition.startPoint,
                 interpolationEnd: condition.endPoint,

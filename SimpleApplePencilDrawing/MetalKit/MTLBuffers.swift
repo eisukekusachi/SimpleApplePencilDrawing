@@ -25,7 +25,7 @@ struct MTLTextureBuffers {
 enum MTLBuffers {
 
     static func makeGrayscalePointBuffers(
-        points: [CanvasGrayscaleDotPoint],
+        points: [GrayscaleDotPoint],
         alpha: Int,
         textureSize: CGSize,
         with device: MTLDevice?

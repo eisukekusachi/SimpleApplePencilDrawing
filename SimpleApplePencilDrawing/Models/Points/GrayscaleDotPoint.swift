@@ -1,5 +1,5 @@
 //
-//  CanvasGrayscaleDotPoint.swift
+//  GrayscaleDotPoint.swift
 //  SimpleApplePencilDrawing
 //
 //  Created by Eisuke Kusachi on 2024/06/02.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct CanvasGrayscaleDotPoint: Equatable {
+struct GrayscaleDotPoint: DotPoint {
 
     let location: CGPoint
     let diameter: CGFloat
@@ -19,7 +19,7 @@ struct CanvasGrayscaleDotPoint: Equatable {
 
 }
 
-extension CanvasGrayscaleDotPoint {
+extension GrayscaleDotPoint {
 
     init(
         touchPoint: CanvasTouchPoint,
@@ -55,7 +55,7 @@ extension CanvasGrayscaleDotPoint {
     }
 }
 
-extension CanvasGrayscaleDotPoint {
+extension GrayscaleDotPoint {
 
     static func average(_ left: Self, _ right: Self) -> Self {
         .init(
