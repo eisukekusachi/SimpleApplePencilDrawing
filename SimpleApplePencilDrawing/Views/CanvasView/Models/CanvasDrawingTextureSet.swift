@@ -28,7 +28,7 @@ final class CanvasDrawingTextureSet {
 
     private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
 
-    required init(renderer: MTLRendering) {
+    required init(renderer: MTLRendering = MTLRenderer.shared) {
         self.renderer = renderer
 
         self.flippedTextureBuffers = MTLBuffers.makeTextureBuffers(
