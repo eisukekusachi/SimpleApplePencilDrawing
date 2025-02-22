@@ -107,7 +107,7 @@ extension CanvasViewModel {
         pencilScreenTouch.appendActualTouches(
             actualTouches: actualTouches
                 .sorted { $0.timestamp < $1.timestamp }
-                .map { CanvasTouchPoint(touch: $0, view: view) }
+                .map { TouchPoint(touch: $0, view: view) }
         )
 
         drawCurveOnCanvas(pencilScreenTouch.latestActualTouchPoints)
@@ -173,7 +173,7 @@ extension CanvasViewModel {
 
 extension CanvasViewModel {
 
-    private func drawCurveOnCanvas(_ screenTouchPoints: [CanvasTouchPoint]) {
+    private func drawCurveOnCanvas(_ screenTouchPoints: [TouchPoint]) {
         guard
             let textureSize = canvasTexture?.size,
             let drawableSize = canvasView?.renderTexture?.size

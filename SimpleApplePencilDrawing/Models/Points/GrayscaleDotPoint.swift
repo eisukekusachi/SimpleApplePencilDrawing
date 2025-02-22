@@ -22,7 +22,7 @@ struct GrayscaleDotPoint: DotPoint {
 extension GrayscaleDotPoint {
 
     init(
-        touchPoint: CanvasTouchPoint,
+        touchPoint: TouchPoint,
         diameter: CGFloat
     ) {
         self.location = touchPoint.location
@@ -31,7 +31,7 @@ extension GrayscaleDotPoint {
     }
 
     init(
-        touchPoint: CanvasTouchPoint,
+        touchPoint: TouchPoint,
         textureSize: CGSize,
         drawableSize: CGSize,
         frameSize: CGSize,
@@ -44,7 +44,7 @@ extension GrayscaleDotPoint {
             textureSize: textureSize
         )
 
-        let touchPoint: CanvasTouchPoint = .init(
+        let touchPoint: TouchPoint = .init(
             location: textureLocation,
             touch: touchPoint
         )
