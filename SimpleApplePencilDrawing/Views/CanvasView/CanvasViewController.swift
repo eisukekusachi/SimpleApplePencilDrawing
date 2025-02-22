@@ -22,39 +22,23 @@ class CanvasViewController: UIViewController {
         subscribeEvents()
         bindViewModel()
 
-        setupCanvasViewModel()
+        canvasViewModel.onViewDidLoad(
+            canvasView: canvasView
+        )
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        canvasViewModel.onViewDidAppear()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        canvasViewModel.frameSize = view.frame.size
     }
 
 }
 
 extension CanvasViewController {
 
-    private func setupCanvasViewModel() {
-
-        canvasViewModel.setCanvasView(canvasView)
-
-        // Initialize the texture with any size
-        /*
-        canvasViewModel.initCanvas(
-            size: .init(width: 768, height: 1024)
-        )
-        */
-    }
-
     private func subscribeEvents() {
-        // Remove `/* */` to enable finger drawing
-        /*
         canvasView.addGestureRecognizer(
-            CanvasFingerInputGestureRecognizer(self)
-        )
-        */
-        canvasView.addGestureRecognizer(
-            CanvasPencilInputGestureRecognizer(self)
+            PencilInputGestureRecognizer(self)
         )
 
         // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
@@ -74,22 +58,11 @@ extension CanvasViewController {
 
 }
 
-extension CanvasViewController: CanvasFingerInputGestureSender {
-
-    func sendFingerTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
-        canvasViewModel.onFingerInputGesture(
-            touches: touches,
-            view: view
-        )
-    }
-
-}
-
-extension CanvasViewController: CanvasPencilInputGestureSender {
+extension CanvasViewController: PencilInputGestureSender {
 
     func sendPencilEstimatedTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilGestureDetected(
-            touches: touches,
+            estimatedTouches: touches,
             with: event,
             view: view
         )
