@@ -54,20 +54,20 @@ extension CanvasBrushDrawingTexture {
         blushColor = color
     }
 
-    func drawCurvePointsUsingSelectedTexture(
-        drawingCurvePoints: CanvasDrawingCurvePoints,
-        selectedTexture: MTLTexture,
+    func drawCurvePoints(
+        drawingCurveIterator: CanvasBrushDrawingCurveIterator,
+        withBackgroundTexture backgroundTexture: MTLTexture,
         on destinationTexture: MTLTexture,
         with commandBuffer: MTLCommandBuffer
     ) {
         drawCurvePointsOnDrawingTexture(
-            points: drawingCurvePoints.makeCurvePointsFromIterator(),
+            points: drawingCurveIterator.makeCurvePointsFromIterator(),
             with: commandBuffer
         )
 
-        drawDrawingTextureWithSelectedTexture(
-            selectedTexture: selectedTexture,
-            shouldUpdateSelectedTexture: drawingCurvePoints.isDrawingFinished,
+        drawDrawingTextureWithBackgroundTexture(
+            backgroundTexture: backgroundTexture,
+            shouldUpdateSelectedTexture: drawingCurveIterator.isDrawingFinished,
             on: destinationTexture,
             with: commandBuffer
         )
@@ -110,16 +110,17 @@ extension CanvasBrushDrawingTexture {
         )
     }
 
-    private func drawDrawingTextureWithSelectedTexture(
-        selectedTexture: MTLTexture,
+    private func drawDrawingTextureWithBackgroundTexture(
+        backgroundTexture: MTLTexture,
+        backgroundColor: UIColor = .white,
         shouldUpdateSelectedTexture: Bool,
         on destinationTexture: MTLTexture,
         with commandBuffer: MTLCommandBuffer
     ) {
         renderer.drawTexture(
-            texture: selectedTexture,
+            texture: backgroundTexture,
             buffers: flippedTextureBuffers,
-            withBackgroundColor: .white,
+            withBackgroundColor: backgroundColor,
             on: destinationTexture,
             with: commandBuffer
         )
@@ -133,7 +134,7 @@ extension CanvasBrushDrawingTexture {
         if shouldUpdateSelectedTexture {
             renderer.mergeTexture(
                 texture: drawingTexture,
-                into: selectedTexture,
+                into: backgroundTexture,
                 with: commandBuffer
             )
 

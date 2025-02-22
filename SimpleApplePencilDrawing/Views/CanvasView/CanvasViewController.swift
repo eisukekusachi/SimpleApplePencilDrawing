@@ -32,6 +32,11 @@ class CanvasViewController: UIViewController {
         canvasViewModel.onViewDidAppear()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        canvasViewModel.frameSize = view.frame.size
+    }
+
 }
 
 extension CanvasViewController {
@@ -68,7 +73,7 @@ extension CanvasViewController: CanvasPencilInputGestureSender {
 
     func sendPencilEstimatedTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilGestureDetected(
-            touches: touches,
+            estimatedTouches: touches,
             with: event,
             view: view
         )

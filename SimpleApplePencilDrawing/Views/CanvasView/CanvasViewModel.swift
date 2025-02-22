@@ -9,11 +9,14 @@ import MetalKit
 import Combine
 
 final class CanvasViewModel {
-    /// Arrays for handling Apple Pencil input values
-    private let pencilDrawingArrays = CanvasPencilDrawingArrays()
 
-    /// Curve points for drawing
-    private var drawingCurvePoints: CanvasDrawingCurvePoints = .init()
+    var frameSize: CGSize = .zero
+
+    /// A class for handling Apple Pencil inputs
+    private let pencilScreenTouch = CanvasPencilScreenTouch()
+
+    /// An iterator for real-time drawing
+    private let drawingCurveIterator = CanvasBrushDrawingCurveIterator()
 
     /// A texture currently being drawn
     private let drawingTexture = CanvasBrushDrawingTexture(renderer: MTLRenderer.shared)
@@ -86,66 +89,64 @@ extension CanvasViewModel {
     }
 
     func onPencilGestureDetected(
-        touches: Set<UITouch>,
+        estimatedTouches: Set<UITouch>,
         with event: UIEvent?,
         view: UIView
     ) {
-        event?.allTouches?
-            .compactMap { $0.type == .pencil ? $0 : nil }
-            .sorted { $0.timestamp < $1.timestamp }
-            .forEach { touch in
-                event?.coalescedTouches(for: touch)?.forEach { coalescedTouch in
-                    pencilDrawingArrays.appendEstimatedValue(
-                        .init(touch: coalescedTouch, view: view)
-                    )
-                }
-            }
+        pencilScreenTouch.setLatestEstimatedTouchPoint(
+            estimatedTouches
+                .filter({ $0.type == .pencil })
+                .sorted(by: { $0.timestamp < $1.timestamp })
+                .last
+                .map { .init(touch: $0, view: view) }
+        )
     }
 
     func onPencilGestureDetected(
         actualTouches: Set<UITouch>,
         view: UIView
     ) {
-        guard let canvasTextureSize = canvasTexture?.size else { return }
-
-        // Combine `actualTouches` with the estimated values to create actual values, and append them to the array
-        let actualTouchArray = Array(actualTouches).sorted { $0.timestamp < $1.timestamp }
-        actualTouchArray.forEach { actualTouch in
-            pencilDrawingArrays.appendActualValueWithEstimatedValue(actualTouch)
-        }
-        pencilDrawingArrays.appendLastEstimatedValueToActualTouchPointArrayIfProcessCompleted()
-
-        let touchScreenPoints = pencilDrawingArrays.latestActualTouchPoints
-
-        drawingCurvePoints.setCurrentTouchPhase(touchScreenPoints.currentTouchPhase)
-
-        let textureTouchPoints: [CanvasTouchPoint] = touchScreenPoints.map {
-            // Scale the touch location on the screen to fit the canvasTexture size with aspect fill
-            .init(
-                location: $0.location.scaleAndCenter(
-                    sourceTextureRatio: ViewSize.getScaleToFill(view.frame.size, to: canvasTextureSize),
-                    sourceTextureSize: view.frame.size,
-                    destinationTextureSize: canvasTextureSize
-                ),
-                touch: $0
-            )
-        }
-
-        drawingCurvePoints.appendToIterator(
-            textureTouchPoints.map {
-                .init(
-                    touchPoint: $0,
-                    diameter: CGFloat(drawingToolStatus.brushDiameter)
-                )
-            }
+        pencilScreenTouch.appendActualTouches(
+            actualTouches: actualTouches
+                .sorted { $0.timestamp < $1.timestamp }
+                .map { CanvasTouchPoint(touch: $0, view: view) }
         )
 
-        drawingDisplayLink.updateCanvasWithDrawing(
-            isCurrentlyDrawing: !drawingCurvePoints.isDrawingFinished
-        )
+        drawCurveOnCanvas(pencilScreenTouch.latestActualTouchPoints)
     }
 
     func onTapClearTexture() {
+        clearCanvas()
+    }
+
+}
+
+extension CanvasViewModel {
+
+    /// Initializes the textures used for drawing with the same size
+    func initCanvas(size: CGSize) {
+        guard let commandBuffer = canvasView?.commandBuffer else { return }
+
+        drawingTexture.initTextures(size)
+
+        currentTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
+        canvasTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
+
+        guard let canvasTexture else { return }
+
+        MTLRenderer.shared.fillTexture(
+            texture: canvasTexture,
+            withRGB: backgroundColor.rgb,
+            with: commandBuffer
+        )
+    }
+
+    private func resetAllInputParameters() {
+        pencilScreenTouch.reset()
+        drawingCurveIterator.reset()
+    }
+
+    private func clearCanvas() {
         guard
             let canvasTexture,
             let currentTexture,
@@ -174,32 +175,29 @@ extension CanvasViewModel {
 
 extension CanvasViewModel {
 
-    /// Initializes the textures used for drawing with the same size
-    func initCanvas(size: CGSize) {
-        guard let commandBuffer = canvasView?.commandBuffer else { return }
+    private func drawCurveOnCanvas(_ screenTouchPoints: [CanvasTouchPoint]) {
+        guard
+            let textureSize = canvasTexture?.size,
+            let drawableSize = canvasView?.renderTexture?.size
+        else { return }
 
-        drawingTexture.initTextures(size)
+        drawingCurveIterator.append(
+            points: screenTouchPoints.map {
+                .init(
+                    touchPoint: $0,
+                    textureSize: textureSize,
+                    drawableSize: drawableSize,
+                    frameSize: frameSize,
+                    diameter: CGFloat(drawingToolStatus.brushDiameter)
+                )
+            },
+            touchPhase: screenTouchPoints.currentTouchPhase
+        )
 
-        currentTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
-        canvasTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
-
-        guard let canvasTexture else { return }
-
-        MTLRenderer.shared.fillTexture(
-            texture: canvasTexture,
-            withRGB: backgroundColor.rgb,
-            with: commandBuffer
+        drawingDisplayLink.updateCanvasWithDrawing(
+            isCurrentlyDrawing: drawingCurveIterator.isCurrentlyDrawing
         )
     }
-
-    private func resetAllInputParameters() {
-        pencilDrawingArrays.reset()
-        drawingCurvePoints.reset()
-    }
-
-}
-
-extension CanvasViewModel {
 
     private func updateCanvasWithDrawing() {
         guard
@@ -208,9 +206,9 @@ extension CanvasViewModel {
             let commandBuffer = canvasView?.commandBuffer
         else { return }
 
-        drawingTexture.drawCurvePointsUsingSelectedTexture(
-            drawingCurvePoints: drawingCurvePoints,
-            selectedTexture: currentTexture,
+        drawingTexture.drawCurvePoints(
+            drawingCurveIterator: drawingCurveIterator,
+            withBackgroundTexture: currentTexture,
             on: canvasTexture,
             with: commandBuffer
         )

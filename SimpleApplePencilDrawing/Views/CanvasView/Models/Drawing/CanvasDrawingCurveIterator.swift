@@ -1,28 +1,47 @@
 //
-//  CanvasDrawingCurvePoints.swift
+//  CanvasDrawingCurveIterator.swift
 //  SimpleApplePencilDrawing
 //
-//  Created by Eisuke Kusachi on 2024/10/06.
+//  Created by Eisuke Kusachi on 2025/02/22.
 //
 
 import UIKit
-/// A class that saves points in real-time to an iterator, then generates a curve based on those points.
-/// - Parameters:
-///   - iterator: An iterator that stores points
-///   - currentTouchPhase: Manages the touch phases from the beginning to the end of drawing a single line
-final class CanvasDrawingCurvePoints {
 
-    typealias T = CanvasGrayscaleDotPoint
+/// An iterator for real-time drawing with `UITouch.Phase`
+final class CanvasBrushDrawingCurveIterator: Iterator<CanvasGrayscaleDotPoint> {
 
-    private let iterator = Iterator<CanvasGrayscaleDotPoint>()
-
-    private var currentTouchPhase: UITouch.Phase?
+    var touchPhase: UITouch.Phase?
 
     private var isFirstCurveHasBeenCreated: Bool = false
 
+    func append(points: [CanvasGrayscaleDotPoint], touchPhase: UITouch.Phase) {
+        self.append(points)
+        self.touchPhase = touchPhase
+    }
+
+    override func reset() {
+        super.reset()
+        isFirstCurveHasBeenCreated = false
+        touchPhase = nil
+    }
+
 }
 
-extension CanvasDrawingCurvePoints {
+extension CanvasBrushDrawingCurveIterator {
+
+    /// Returns `true` if three elements are added to the array and `isFirstCurveHasBeenCreated` is `false`
+    var hasArrayThreeElementsButNoFirstCurveCreated: Bool {
+        array.count >= 3 && !isFirstCurveHasBeenCreated
+    }
+
+    /// Is the drawing finished
+    var isDrawingFinished: Bool {
+        [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(touchPhase)
+    }
+
+    var isCurrentlyDrawing: Bool {
+        !isDrawingFinished
+    }
 
     func makeCurvePointsFromIterator() -> [CanvasGrayscaleDotPoint] {
         var array: [CanvasGrayscaleDotPoint] = []
@@ -40,58 +59,16 @@ extension CanvasDrawingCurvePoints {
         return array
     }
 
-    var isCurrentlyDrawing: Bool {
-        iterator.array.count != 0
-    }
-
-    /// Is the drawing finished successfully
-    var isDrawingComplete: Bool {
-        guard let currentTouchPhase else { return false }
-        return [UITouch.Phase.ended].contains(currentTouchPhase)
-    }
-
-    /// Is the drawing finished
-    var isDrawingFinished: Bool {
-        guard let currentTouchPhase else { return false }
-        return [UITouch.Phase.ended, UITouch.Phase.cancelled].contains(currentTouchPhase)
-    }
-
-    /// Returns `true` if three elements are added to the array and `isFirstCurveHasBeenCreated` is `false`
-    var hasArrayThreeElementsButNoFirstCurveCreated: Bool {
-        iterator.array.count >= 3 && !isFirstCurveHasBeenCreated
-    }
-
-    func setFirstCurveHasBeenCreated() {
-        isFirstCurveHasBeenCreated = true
-    }
-
-    func setCurrentTouchPhase(_ touchPhase: UITouch.Phase) {
-        currentTouchPhase = touchPhase
-    }
-
-    func appendToIterator(_ point: CanvasGrayscaleDotPoint) {
-        iterator.append(point)
-    }
-    func appendToIterator(_ points: [CanvasGrayscaleDotPoint]) {
-        iterator.append(points)
-    }
-
-    func reset() {
-        isFirstCurveHasBeenCreated = false
-        currentTouchPhase = nil
-        iterator.reset()
-    }
-
 }
 
-extension CanvasDrawingCurvePoints {
+extension CanvasBrushDrawingCurveIterator {
 
     /// Makes an array of first curve points from an iterator
     func makeFirstCurvePoints() -> [CanvasGrayscaleDotPoint] {
         var curve: [CanvasGrayscaleDotPoint] = []
 
-        if iterator.array.count >= 3,
-           let points = iterator.getFirstBezierCurvePoints() {
+        if array.count >= 3,
+           let points = getFirstBezierCurvePoints() {
 
             let bezierCurvePoints = BezierCurve.makeFirstCurvePoints(
                 pointA: points.previousPoint.location,
@@ -117,7 +94,7 @@ extension CanvasDrawingCurvePoints {
     ) -> [CanvasGrayscaleDotPoint] {
         var curve: [CanvasGrayscaleDotPoint] = []
 
-        let pointArray = iterator.getIntermediateBezierCurvePointsWithFixedRange4()
+        let pointArray = getIntermediateBezierCurvePointsWithFixedRange4()
 
         pointArray.enumerated().forEach { (index, points) in
             let shouldIncludeEndPoint = index == pointArray.count - 1 ? shouldIncludeEndPoint : false
@@ -145,8 +122,8 @@ extension CanvasDrawingCurvePoints {
     func makeLastCurvePoints() -> [CanvasGrayscaleDotPoint] {
         var curve: [CanvasGrayscaleDotPoint] = []
 
-        if iterator.array.count >= 3,
-           let points = iterator.getLastBezierCurvePoints() {
+        if array.count >= 3,
+           let points = getLastBezierCurvePoints() {
 
             let bezierCurvePoints = BezierCurve.makeLastCurvePoints(
                 pointA: points.previousPoint.location,
