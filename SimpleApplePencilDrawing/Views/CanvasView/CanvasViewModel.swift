@@ -16,7 +16,7 @@ final class CanvasViewModel {
     private let pencilScreenStrokeData = PencilScreenStrokeData()
 
     /// An iterator for real-time drawing
-    private let drawingCurveIterator = CanvasBrushDrawingCurveIterator()
+    private let drawingCurveIterator = CanvasDrawingCurveIterator()
 
     /// A texture currently being drawn
     private let drawingTexture = CanvasDrawingTexture(renderer: MTLRenderer.shared)

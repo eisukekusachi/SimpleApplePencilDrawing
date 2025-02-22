@@ -55,7 +55,7 @@ extension CanvasDrawingTexture {
     }
 
     func drawCurvePoints(
-        drawingCurveIterator: CanvasBrushDrawingCurveIterator,
+        drawingCurveIterator: CanvasDrawingCurveIterator,
         withBackgroundTexture backgroundTexture: MTLTexture,
         on destinationTexture: MTLTexture,
         with commandBuffer: MTLCommandBuffer

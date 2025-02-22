@@ -8,7 +8,7 @@
 import UIKit
 
 /// An iterator for real-time drawing with `UITouch.Phase`
-final class CanvasBrushDrawingCurveIterator: Iterator<GrayscaleDotPoint> {
+final class CanvasDrawingCurveIterator: Iterator<GrayscaleDotPoint> {
 
     var touchPhase: UITouch.Phase?
 
@@ -27,7 +27,7 @@ final class CanvasBrushDrawingCurveIterator: Iterator<GrayscaleDotPoint> {
 
 }
 
-extension CanvasBrushDrawingCurveIterator {
+extension CanvasDrawingCurveIterator {
 
     /// Returns `true` if three elements are added to the array and `isFirstCurveHasBeenCreated` is `false`
     var hasArrayThreeElementsButNoFirstCurveCreated: Bool {
@@ -61,7 +61,7 @@ extension CanvasBrushDrawingCurveIterator {
 
 }
 
-extension CanvasBrushDrawingCurveIterator {
+extension CanvasDrawingCurveIterator {
 
     /// Makes an array of first curve points from an iterator
     func makeFirstCurvePoints() -> [GrayscaleDotPoint] {
