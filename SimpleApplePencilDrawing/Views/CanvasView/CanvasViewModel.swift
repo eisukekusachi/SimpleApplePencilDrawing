@@ -19,7 +19,7 @@ final class CanvasViewModel {
     private let drawingCurveIterator = CanvasBrushDrawingCurveIterator()
 
     /// A texture currently being drawn
-    private let drawingTexture = CanvasBrushDrawingTexture(renderer: MTLRenderer.shared)
+    private let drawingTexture = CanvasDrawingTexture(renderer: MTLRenderer.shared)
 
     /// A texture with lines
     private var currentTexture: MTLTexture?
