@@ -10,7 +10,7 @@ import Combine
 
 class CanvasViewController: UIViewController {
 
-    @IBOutlet private weak var canvasView: CanvasView!
+    private let canvasView: CanvasView = .init()
 
     private let canvasViewModel = CanvasViewModel()
 
@@ -18,6 +18,8 @@ class CanvasViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        view.addSubview(canvasView)
 
         subscribeEvents()
         bindViewModel()
@@ -29,9 +31,9 @@ class CanvasViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        canvasView.frame = view.bounds
         canvasViewModel.frameSize = view.frame.size
     }
-
 }
 
 extension CanvasViewController {
