@@ -23,6 +23,8 @@
 		D42930462CA599DD00983863 /* BezierCurveHandlePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */; };
 		D43D06612CBBF76C0029CAB4 /* IteratorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43D06602CBBF76C0029CAB4 /* IteratorExtensions.swift */; };
 		D43D06662CBC042F0029CAB4 /* IteratorExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43D06652CBC042F0029CAB4 /* IteratorExtensionsTests.swift */; };
+		D45C0FED2F04BBC400BFDB25 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45C0FEC2F04BBC400BFDB25 /* ContentView.swift */; };
+		D45C0FEF2F04BBEF00BFDB25 /* SimpleApplePencilDrawingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45C0FEE2F04BBEF00BFDB25 /* SimpleApplePencilDrawingApp.swift */; };
 		D462E16E2C0C555900E0503E /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E16D2C0C555900E0503E /* CanvasView.swift */; };
 		D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1712C0C55B000E0503E /* MTLRenderer.swift */; };
 		D462E1742C0C55D300E0503E /* MTLPipelines.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462E1732C0C55D300E0503E /* MTLPipelines.swift */; };
@@ -51,10 +53,7 @@
 		D4799C3D2D67593900D3829D /* CanvasDrawingDisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4799C3C2D67593900D3829D /* CanvasDrawingDisplayLink.swift */; };
 		D4799C3F2D675CEF00D3829D /* CanvasDrawingDisplayLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4799C3E2D675CEF00D3829D /* CanvasDrawingDisplayLinkTests.swift */; };
 		D47CBFD92CDF68E100189B08 /* MTLTextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47CBFD82CDF68E100189B08 /* MTLTextureNodes.swift */; };
-		D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E152C0ABCB30056C270 /* AppDelegate.swift */; };
-		D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */; };
 		D4B17E1A2C0ABCB30056C270 /* CanvasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E192C0ABCB30056C270 /* CanvasViewController.swift */; };
-		D4B17E1D2C0ABCB30056C270 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E1C2C0ABCB30056C270 /* Base */; };
 		D4B17E1F2C0ABCB40056C270 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */; };
 		D4B17E222C0ABCB40056C270 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E212C0ABCB40056C270 /* Base */; };
 		D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */; };
@@ -101,6 +100,8 @@
 		D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierCurveHandlePoints.swift; sourceTree = "<group>"; };
 		D43D06602CBBF76C0029CAB4 /* IteratorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IteratorExtensions.swift; sourceTree = "<group>"; };
 		D43D06652CBC042F0029CAB4 /* IteratorExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IteratorExtensionsTests.swift; sourceTree = "<group>"; };
+		D45C0FEC2F04BBC400BFDB25 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D45C0FEE2F04BBEF00BFDB25 /* SimpleApplePencilDrawingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleApplePencilDrawingApp.swift; sourceTree = "<group>"; };
 		D462E16D2C0C555900E0503E /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		D462E1712C0C55B000E0503E /* MTLRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLRenderer.swift; sourceTree = "<group>"; };
 		D462E1732C0C55D300E0503E /* MTLPipelines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLPipelines.swift; sourceTree = "<group>"; };
@@ -130,10 +131,7 @@
 		D4799C3E2D675CEF00D3829D /* CanvasDrawingDisplayLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasDrawingDisplayLinkTests.swift; sourceTree = "<group>"; };
 		D47CBFD82CDF68E100189B08 /* MTLTextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLTextureNodes.swift; sourceTree = "<group>"; };
 		D4B17E122C0ABCB30056C270 /* SimpleApplePencilDrawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleApplePencilDrawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D4B17E152C0ABCB30056C270 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		D4B17E192C0ABCB30056C270 /* CanvasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasViewController.swift; sourceTree = "<group>"; };
-		D4B17E1C2C0ABCB30056C270 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D4B17E212C0ABCB40056C270 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D4B17E232C0ABCB40056C270 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -252,7 +250,6 @@
 			isa = PBXGroup;
 			children = (
 				D41E216E2C78C35B005CE868 /* CanvasView */,
-				D4B17E1B2C0ABCB30056C270 /* Main.storyboard */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -361,8 +358,6 @@
 		D4B17E142C0ABCB30056C270 /* SimpleApplePencilDrawing */ = {
 			isa = PBXGroup;
 			children = (
-				D4B17E152C0ABCB30056C270 /* AppDelegate.swift */,
-				D4B17E172C0ABCB30056C270 /* SceneDelegate.swift */,
 				D462E17C2C0C566900E0503E /* Extensions */,
 				D4057FE62D68B1E000DB8B4D /* Models */,
 				D462E16C2C0C554900E0503E /* MetalKit */,
@@ -371,6 +366,8 @@
 				D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */,
 				D4B17E202C0ABCB40056C270 /* LaunchScreen.storyboard */,
 				D4B17E232C0ABCB40056C270 /* Info.plist */,
+				D45C0FEC2F04BBC400BFDB25 /* ContentView.swift */,
+				D45C0FEE2F04BBEF00BFDB25 /* SimpleApplePencilDrawingApp.swift */,
 			);
 			path = SimpleApplePencilDrawing;
 			sourceTree = "<group>";
@@ -540,7 +537,6 @@
 			files = (
 				D4B17E1F2C0ABCB40056C270 /* Assets.xcassets in Resources */,
 				D4B17E222C0ABCB40056C270 /* Base in Resources */,
-				D4B17E1D2C0ABCB30056C270 /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,21 +584,21 @@
 				D4799C3D2D67593900D3829D /* CanvasDrawingDisplayLink.swift in Sources */,
 				D462E1AC2C0C6A8800E0503E /* CGPointExtensions.swift in Sources */,
 				D462E1782C0C562400E0503E /* Texture.metal in Sources */,
+				D45C0FED2F04BBC400BFDB25 /* ContentView.swift in Sources */,
 				D462E18F2C0C620500E0503E /* TouchPoint.swift in Sources */,
 				D42930462CA599DD00983863 /* BezierCurveHandlePoints.swift in Sources */,
 				D462E17E2C0C567E00E0503E /* UIColorExtensions.swift in Sources */,
 				D46ECA2F2CB1787C00B6ECE8 /* BezierCurvePoints.swift in Sources */,
-				D4B17E162C0ABCB30056C270 /* AppDelegate.swift in Sources */,
 				D462E1852C0C583900E0503E /* MTLTextureExtensions.swift in Sources */,
 				D4057FF82D69713A00DB8B4D /* DrawingCurveIterator.swift in Sources */,
 				D41EE0AB2D66081B00E417D5 /* Logger.swift in Sources */,
+				D45C0FEF2F04BBEF00BFDB25 /* SimpleApplePencilDrawingApp.swift in Sources */,
 				D462E1832C0C580600E0503E /* ViewSize.swift in Sources */,
 				D47CBFD92CDF68E100189B08 /* MTLTextureNodes.swift in Sources */,
 				D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */,
 				D462E1A62C0C682300E0503E /* Calculator.swift in Sources */,
 				D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */,
 				D462E1722C0C55B000E0503E /* MTLRenderer.swift in Sources */,
-				D4B17E182C0ABCB30056C270 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -653,14 +649,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		D4B17E1B2C0ABCB30056C270 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D4B17E1C2C0ABCB30056C270 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		D4B17E202C0ABCB40056C270 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -797,14 +785,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 59LR79WH8J;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SimpleApplePencilDrawing/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -832,14 +819,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 59LR79WH8J;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SimpleApplePencilDrawing/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
