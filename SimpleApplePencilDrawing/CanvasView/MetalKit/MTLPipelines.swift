@@ -15,9 +15,8 @@ final class MTLPipelines {
     private(set) var mergeTextures: MTLComputePipelineState
     private(set) var fillColor: MTLComputePipelineState
 
-    init() {
+    public init(device: MTLDevice) {
         guard
-            let device = MTLCreateSystemDefaultDevice(),
             let library = device.makeDefaultLibrary() else {
             fatalError("Failed to create default library with device.")
         }

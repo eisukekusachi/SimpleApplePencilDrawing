@@ -8,75 +8,75 @@
 import MetalKit
 import Combine
 
+@MainActor
 final class CanvasViewModel {
 
-    var frameSize: CGSize = .zero
+    /// Frame size, which changes when the screen rotates or the view layout updates.
+    var frameSize: CGSize = .zero {
+        didSet {
+            canvasRenderer.setFrameSize(frameSize)
+            drawingRenderer?.setFrameSize(frameSize)
+        }
+    }
 
     /// Handles input from Apple Pencil
     private let pencilStroke = PencilStroke()
 
-    /// An iterator for real-time drawing
-    private let drawingCurveIterator = DrawingCurveIterator()
+    private let canvasRenderer: CanvasRenderer
 
-    /// A texture set for real-time drawing
-    private let drawingTextureSet = CanvasDrawingTextureSet()
+    /// A class that manages drawing lines onto textures
+    private var drawingRenderer: DrawingRenderer?
 
-    private let drawingToolStatus = CanvasDrawingToolStatus()
+    /// Touch phase for drawing
+    private var drawingTouchPhase: UITouch.Phase?
 
     private var drawingDisplayLink = DrawingDisplayLink()
 
-    /// A texture with lines
-    private var currentTexture: MTLTexture?
-
-    /// A texture with a background color, composed of `drawingTexture` and `currentTexture`
-    private var canvasTexture: MTLTexture?
-
     /// Output destination for `canvasTexture`
-    private var canvasView: CanvasViewProtocol?
-
-    private var backgroundColor: UIColor = .white
-
-    private let device: MTLDevice = MTLCreateSystemDefaultDevice()!
+    private var displayView: CanvasDisplayable?
 
     private var cancellables = Set<AnyCancellable>()
 
-    private var renderer: MTLRenderer!
-
-    init(renderer: MTLRenderer = MTLRenderer.shared) {
-        self.renderer = renderer
-
-        subscribe()
+    init(
+        displayView: CanvasDisplayable,
+        canvasRenderer: CanvasRenderer
+    ) {
+        self.displayView = displayView
+        self.canvasRenderer = canvasRenderer
     }
 
-    private func subscribe() {
+    func setup(
+        drawingRenderer: DrawingRenderer,
+        textureSize: CGSize
+    ) throws {
+        self.bindData()
+        self.drawingRenderer = drawingRenderer
+        try self.setupCanvas(size: textureSize)
+    }
+
+    private func bindData() {
         drawingDisplayLink.update
             .sink { [weak self] in
-                self?.updateCanvasWithDrawing()
-            }
-            .store(in: &cancellables)
-
-        drawingTextureSet.canvasDrawFinishedPublisher
-            .sink { [weak self] in
-                self?.resetAllInputParameters()
+                self?.onDisplayLinkForDrawing()
             }
             .store(in: &cancellables)
     }
 
+    /// Initializes the textures used for drawing with the same size
+    private func setupCanvas(size: CGSize) throws {
+        try canvasRenderer.initializeTextures(textureSize: size)
+        drawingRenderer?.initializeTextures(textureSize: size)
+        drawingRenderer?.prepareNextStroke()
+        canvasRenderer.composeAndRefreshCanvas(
+            useRealtimeDrawingTexture: false
+        )
+    }
 }
 
 extension CanvasViewModel {
-    func onViewDidLoad(
-        canvasView: CanvasViewProtocol
-    ) {
-        self.canvasView = canvasView
-    }
 
-    func onUpdateRenderTexture() {
-        if canvasTexture == nil, let textureSize = canvasView?.renderTexture?.size {
-            initCanvas(size: textureSize)
-        }
-
-        updateCanvas()
+    func onUpdateDisplayTexture() {
+        canvasRenderer.drawCanvasToDisplay()
     }
 
     func onPencilGestureDetected(
@@ -97,6 +97,12 @@ extension CanvasViewModel {
         actualTouches: Set<UITouch>,
         view: UIView
     ) {
+        guard
+            let drawingRenderer,
+            let textureSize = canvasRenderer.textureSize,
+            let displayTextureSize = displayView?.displayTexture?.size
+        else { return }
+
         pencilStroke.appendActualTouches(
             actualTouches: actualTouches
                 .sorted { $0.timestamp < $1.timestamp }
@@ -106,134 +112,96 @@ extension CanvasViewModel {
         let pointArray = pencilStroke.drawingPoints(after: pencilStroke.drawingLineEndPoint)
         pencilStroke.setDrawingLineEndPoint()
 
-        drawCurveOnCanvas(pointArray)
-    }
+        // Update the touch phase for drawing
+        drawingTouchPhase = touchPhase(pointArray)
 
-    func onTapClearTexture() {
-        clearCanvas()
-    }
-
-}
-
-extension CanvasViewModel {
-
-    /// Initializes the textures used for drawing with the same size
-    func initCanvas(size: CGSize) {
-        guard let commandBuffer = canvasView?.commandBuffer else { return }
-
-        drawingTextureSet.initTextures(size)
-
-        currentTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
-        canvasTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
-
-        guard let canvasTexture else { return }
-
-        renderer.fillTexture(
-            texture: canvasTexture,
-            withRGB: backgroundColor.rgb,
-            with: commandBuffer
-        )
-    }
-
-    private func resetAllInputParameters() {
-        pencilStroke.reset()
-        drawingCurveIterator.reset()
-    }
-
-    private func clearCanvas() {
-        guard
-            let canvasTexture,
-            let currentTexture,
-            let commandBuffer = canvasView?.commandBuffer
-        else { return }
-
-        resetAllInputParameters()
-
-        drawingTextureSet.initTextures(canvasTexture.size)
-
-        renderer.clearTexture(
-            texture: currentTexture,
-            with: commandBuffer
-        )
-
-        renderer.fillTexture(
-            texture: canvasTexture,
-            withRGB: backgroundColor.rgb,
-            with: commandBuffer
-        )
-
-        updateCanvas()
-    }
-
-}
-
-extension CanvasViewModel {
-
-    private func drawCurveOnCanvas(_ screenTouchPoints: [TouchPoint]) {
-        guard
-            let textureSize = canvasTexture?.size,
-            let drawableSize = canvasView?.renderTexture?.size
-        else { return }
-
-        drawingCurveIterator.append(
-            points: screenTouchPoints.map {
+        drawingRenderer.appendStrokePoints(
+            strokePoints: pointArray.map {
                 .init(
-                    touchPoint: $0,
-                    textureSize: textureSize,
-                    drawableSize: drawableSize,
-                    frameSize: frameSize,
-                    diameter: CGFloat(drawingToolStatus.brushDiameter)
+                    location: CGAffineTransform.texturePoint(
+                        screenPoint: $0.preciseLocation,
+                        textureSize: textureSize,
+                        drawableSize: displayTextureSize,
+                        frameSize: frameSize
+                    ),
+                    brightness: $0.maximumPossibleForce != 0 ? min($0.force, 1.0) : 1.0,
+                    diameter: CGFloat(drawingRenderer.diameter)
                 )
             },
-            touchPhase: screenTouchPoints.currentTouchPhase
+            touchPhase: pointArray.currentTouchPhase
         )
 
         drawingDisplayLink.run(
-            drawingCurveIterator.isCurrentlyDrawing
+            isCurrentlyDrawing
         )
     }
 
-    private func updateCanvasWithDrawing() {
+    private func onDisplayLinkForDrawing() {
         guard
-            let currentTexture,
-            let canvasTexture,
-            let commandBuffer = canvasView?.commandBuffer
+            let drawingRenderer,
+            let selectedLayerTexture = canvasRenderer.selectedLayerTexture,
+            let realtimeDrawingTexture = canvasRenderer.realtimeDrawingTexture,
+            let commandBuffer = displayView?.commandBuffer
         else { return }
 
-        drawingTextureSet.drawCurvePoints(
-            drawingCurveIterator: drawingCurveIterator,
-            withBackgroundTexture: currentTexture,
-            on: canvasTexture,
+        drawingRenderer.drawStrokePoints(
+            baseTexture: selectedLayerTexture,
+            on: realtimeDrawingTexture,
             with: commandBuffer
         )
 
-        updateCanvas()
-    }
+        // The finalization process is performed when drawing is completed
+        if isFinishedDrawing {
+            canvasRenderer.updateCurrentTexture(
+                using: canvasRenderer.realtimeDrawingTexture,
+                with: commandBuffer
+            )
 
-    private func updateCanvas() {
-        guard
-            let sourceTexture = canvasTexture,
-            let destinationTexture = canvasView?.renderTexture,
-            let sourceTextureBuffers = MTLBuffers.makeTextureBuffers(
-                sourceSize: .init(
-                    width: sourceTexture.size.width * ViewSize.getScaleToFit(sourceTexture.size, to: destinationTexture.size),
-                    height: sourceTexture.size.height * ViewSize.getScaleToFit(sourceTexture.size, to: destinationTexture.size)
-                ),
-                destinationSize: destinationTexture.size,
-                with: device
-            ),
-            let commandBuffer = canvasView?.commandBuffer
-        else { return }
+            commandBuffer.addCompletedHandler { @Sendable _ in
+                Task { @MainActor [weak self] in
+                    // Reset parameters on drawing completion
+                    self?.drawingRenderer?.prepareNextStroke()
+                }
+            }
+        }
 
-        renderer.drawTexture(
-            texture: sourceTexture,
-            buffers: sourceTextureBuffers,
-            withBackgroundColor: .init(rgb: Constants.blankAreaBackgroundColor),
-            on: destinationTexture,
-            with: commandBuffer
+        canvasRenderer.composeAndRefreshCanvas(
+            useRealtimeDrawingTexture: !isFinishedDrawing
         )
-
-        canvasView?.setNeedsDisplay()
     }
 
+    func onTapClearTexture() {
+        guard let commandBuffer = displayView?.commandBuffer else { return }
+        pencilStroke.reset()
+        drawingRenderer?.prepareNextStroke()
+        canvasRenderer.clearTextures(with: commandBuffer)
+        canvasRenderer.drawCanvasToDisplay()
+    }
+}
+
+extension CanvasViewModel {
+
+    private func touchPhase(_ points: [TouchPoint]) -> UITouch.Phase? {
+        if points.contains(where: { $0.phase == .cancelled }) {
+            return .cancelled
+        } else if points.contains(where: { $0.phase == .ended }) {
+            return .ended
+        } else if points.contains(where: { $0.phase == .began }) {
+            return .began
+        } else if points.contains(where: { $0.phase == .moved }) {
+            return .moved
+        }
+        return nil
+    }
+
+    private var isCurrentlyDrawing: Bool {
+        switch drawingTouchPhase {
+        case .began, .moved: return true
+        default: return false
+        }
+    }
+
+    private var isFinishedDrawing: Bool {
+        drawingTouchPhase == .ended
+    }
 }

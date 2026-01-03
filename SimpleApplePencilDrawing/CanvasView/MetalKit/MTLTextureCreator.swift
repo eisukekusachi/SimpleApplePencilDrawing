@@ -5,42 +5,79 @@
 //  Created by Eisuke Kusachi on 2024/06/02.
 //
 
-import MetalKit
-import Accelerate
+@preconcurrency import Accelerate
+@preconcurrency import MetalKit
 
-enum MTLTextureCreator {
+private let bytesPerPixel = 4
+private let bitsPerComponent = 8
 
-    static let pixelFormat: MTLPixelFormat = .bgra8Unorm
-    static let bytesPerPixel = 4
-    static let bitsPerComponent = 8
+public enum MTLTextureCreator {
 
     static func makeTexture(
+        url: URL,
+        textureSize: CGSize,
+        with device: MTLDevice
+    ) throws -> MTLTexture? {
+        guard
+            let hexadecimalData = try Data(contentsOf: url).encodedHexadecimals
+        else { return nil }
+        return try MTLTextureCreator.makeTexture(
+            width: Int(textureSize.width),
+            height: Int(textureSize.height),
+            from: hexadecimalData,
+            with: device
+        )
+    }
+
+    public static func makeTexture(
         label: String? = nil,
-        size: CGSize,
-        pixelFormat: MTLPixelFormat = pixelFormat,
+        width: Int,
+        height: Int,
         with device: MTLDevice
     ) -> MTLTexture? {
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
+            pixelFormat: .bgra8Unorm,
+            width: width,
+            height: height,
+            mipmapped: false
+        )
+        textureDescriptor.usage = [
+            .renderTarget,
+            .shaderRead,
+            .shaderWrite
+        ]
+
         let texture = device.makeTexture(
-            descriptor: getTextureDescriptor(size: size)
+            descriptor: textureDescriptor
         )
         texture?.label = label
         return texture
     }
 
-    static func makeTexture(
+    public static func makeTexture(
         label: String? = nil,
-        size: CGSize,
-        colorArray: [UInt8],
+        width: Int,
+        height: Int,
+        from colorArray: [UInt8],
         with device: MTLDevice
-    ) -> MTLTexture? {
-        guard colorArray.count == Int(size.width * size.height) * bytesPerPixel else { return nil }
-
-        let width: Int = Int(size.width)
-        let height: Int = Int(size.height)
+    ) throws -> MTLTexture? {
+        guard colorArray.count == Int(width * height) * bytesPerPixel else {
+            let error = NSError(
+                title: String(localized: "Error", bundle: .main),
+                message: String(localized: "Invalid value", bundle: .main)
+            )
+            Logger.error(error)
+            return nil
+        }
 
         let bytesPerRow = bytesPerPixel * width
 
-        let texture = makeTexture(label: label, size: .init(width: width, height: height), with: device)
+        let texture = makeTexture(
+            label: label,
+            width: width,
+            height: height,
+            with: device
+        )
         texture?.replace(
             region: MTLRegionMake2D(0, 0, width, height),
             mipmapLevel: 0,
@@ -52,38 +89,43 @@ enum MTLTextureCreator {
         return texture
     }
 
-    static func makeBlankTexture(
-        label: String? = nil,
-        size: CGSize,
-        with device: MTLDevice
-    ) -> MTLTexture? {
+    @MainActor
+    public static func duplicateTexture(
+        texture: MTLTexture?,
+        renderer: MTLRendering
+    ) async throws -> MTLTexture? {
         guard
-            let texture = makeTexture(label: label, size: size, with: device),
-            let commandBuffer = device.makeCommandQueue()?.makeCommandBuffer()
-        else { return nil }
+            let texture,
+            let newCommandBuffer = renderer.newCommandBuffer,
+            let resultTexture = MTLTextureCreator.makeTexture(
+                label: texture.label,
+                width: texture.width,
+                height: texture.height,
+                with: renderer.device
+            )
+        else {
+            return nil
+        }
 
-        MTLRenderer.shared.clearTexture(
-            texture: texture,
-            with: commandBuffer
+        guard
+            texture.pixelFormat == resultTexture.pixelFormat && texture.sampleCount == resultTexture.sampleCount
+        else {
+            let error = NSError(
+                title: String(localized: "Error"),
+                message: String(localized: "Invalid value")
+            )
+            Logger.error(error)
+            return nil
+        }
+
+        renderer.copyTexture(
+            srcTexture: texture,
+            dstTexture: resultTexture,
+            with: newCommandBuffer
         )
-        commandBuffer.commit()
 
-        return texture
+        try await newCommandBuffer.commitAndWaitAsync()
+
+        return resultTexture
     }
-
-    private static func getTextureDescriptor(size: CGSize) -> MTLTextureDescriptor {
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: pixelFormat,
-            width: Int(size.width),
-            height: Int(size.height),
-            mipmapped: false
-        )
-        textureDescriptor.usage = [
-            .renderTarget,
-            .shaderRead,
-            .shaderWrite
-        ]
-        return textureDescriptor
-    }
-
 }

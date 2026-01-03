@@ -23,6 +23,49 @@ enum ViewSize {
         return max(widthRatio, heightRatio)
     }
 
+    static func convertScreenToTexture(
+        drawableSize: CGSize,
+        textureSize: CGSize,
+        frameSize: CGSize
+    ) -> CGAffineTransform {
+
+        let drawableScale = ViewSize.getScaleToFit(textureSize, to: drawableSize)
+        let drawableTextureSize: CGSize = .init(
+            width: textureSize.width * drawableScale,
+            height: textureSize.height * drawableScale
+        )
+
+        let frameToTextureFitScale = ViewSize.getScaleToFit(frameSize, to: textureSize)
+        let drawableTextureToDrawableFillScale = ViewSize.getScaleToFill(drawableTextureSize, to: drawableSize)
+
+        var transform: CGAffineTransform = .identity
+        transform.tx *= (frameToTextureFitScale * drawableTextureToDrawableFillScale)
+        transform.ty *= (frameToTextureFitScale * drawableTextureToDrawableFillScale)
+        return transform
+    }
+
+    static func convertScreenMatrixToTextureMatrix(
+        matrix: CGAffineTransform,
+        drawableSize: CGSize,
+        textureSize: CGSize,
+        frameSize: CGSize
+    ) -> CGAffineTransform {
+
+        let drawableScale = ViewSize.getScaleToFit(textureSize, to: drawableSize)
+        let drawableTextureSize: CGSize = .init(
+            width: textureSize.width * drawableScale,
+            height: textureSize.height * drawableScale
+        )
+
+        let frameToTextureFitScale = ViewSize.getScaleToFit(frameSize, to: textureSize)
+        let drawableTextureToDrawableFillScale = ViewSize.getScaleToFill(drawableTextureSize, to: drawableSize)
+
+        var matrix = matrix
+        matrix.tx *= (frameToTextureFitScale * drawableTextureToDrawableFillScale)
+        matrix.ty *= (frameToTextureFitScale * drawableTextureToDrawableFillScale)
+        return matrix
+    }
+
     static func convertScreenLocationToTextureLocation(
         touchLocation: CGPoint,
         frameSize: CGSize,
@@ -46,5 +89,4 @@ enum ViewSize {
             )
         }
     }
-
 }

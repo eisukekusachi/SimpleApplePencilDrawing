@@ -2,121 +2,144 @@
 //  CanvasView.swift
 //  SimpleApplePencilDrawing
 //
-//  Created by Eisuke Kusachi on 2024/06/02.
+//  Created by Eisuke Kusachi on 2026/01/10.
 //
 
-import MetalKit
 import Combine
+import UIKit
 
-protocol CanvasViewProtocol {
-    var commandBuffer: MTLCommandBuffer? { get }
+@preconcurrency import MetalKit
 
-    var renderTexture: MTLTexture? { get }
+@objc public class CanvasView: UIView {
 
-    func resetCommandBuffer()
+    private let displayView: CanvasDisplayView
 
-    func setNeedsDisplay()
-}
+    private var viewModel: CanvasViewModel
 
-/// A custom view for displaying textures with Metal support.
-class CanvasView: MTKView, MTKViewDelegate, CanvasViewProtocol {
+    /// The single Metal device instance used throughout the app
+    private let sharedDevice: MTLDevice
 
-    private var commandQueue: MTLCommandQueue!
+    private let renderer: MTLRendering
 
-    private(set) var commandBuffer: MTLCommandBuffer?
+    private let brushDrawingRenderer = BrushDrawingRenderer()
 
-    var updateTexturePublisher: AnyPublisher<Void, Never> {
-        updateTextureSubject.eraseToAnyPublisher()
+    private var cancellables = Set<AnyCancellable>()
+
+    /// The size of the screen
+    static var screenSize: CGSize {
+        let scale = UIScreen.main.scale
+        let size = UIScreen.main.bounds.size
+        return .init(
+            width: size.width * scale,
+            height: size.height * scale
+        )
     }
-    var renderTexture: MTLTexture? {
-        _renderTexture
-    }
 
-    private var _renderTexture: MTLTexture? {
-        didSet {
-            updateTextureSubject.send(())
+    public init() {
+        do {
+            guard let sharedDevice = MTLCreateSystemDefaultDevice() else {
+                throw NSError()
+            }
+            self.sharedDevice = sharedDevice
+            self.renderer = MTLRenderer(device: sharedDevice)
+            self.displayView = .init(renderer: renderer)
+            self.viewModel = .init(
+                displayView: displayView,
+                canvasRenderer: .init(renderer: renderer, displayView: displayView)
+            )
+            super.init(frame: .zero)
+        } catch {
+            fatalError("Metal is not supported on this device.")
+        }
+    }
+    public required init?(coder: NSCoder) {
+        do {
+            guard let sharedDevice = MTLCreateSystemDefaultDevice() else {
+                throw NSError()
+            }
+            self.sharedDevice = sharedDevice
+            self.renderer = MTLRenderer(device: sharedDevice)
+            self.displayView = .init(renderer: renderer)
+            self.viewModel = .init(
+                displayView: displayView,
+                canvasRenderer: .init(renderer: renderer, displayView: displayView)
+            )
+            super.init(frame: .zero)
+        } catch {
+            fatalError("Metal is not supported on this device.")
         }
     }
 
-    private var flippedTextureBuffers: MTLTextureBuffers?
+    public func setup(textureSize: CGSize? = nil) throws {
+        layoutViews()
+        addEvents()
+        bindData()
 
-    private let updateTextureSubject = PassthroughSubject<Void, Never>()
+        brushDrawingRenderer.setup(renderer: renderer)
 
-    override init(frame frameRect: CGRect, device: MTLDevice?) {
-        super.init(frame: frameRect, device: device)
-        commonInit()
+        try self.viewModel.setup(
+            drawingRenderer: brushDrawingRenderer,
+            textureSize: textureSize ?? CanvasView.screenSize
+        )
     }
-    required init(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
+
+    private func layoutViews() {
+        addSubview(displayView)
+        displayView.isUserInteractionEnabled = false
+        displayView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            displayView.topAnchor.constraint(equalTo: topAnchor),
+            displayView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            displayView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            displayView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
     }
 
-    private func commonInit() {
-        self.device = MTLCreateSystemDefaultDevice()
-        assert(device != nil, "Device is nil.")
-
-        guard
-            let device,
-            let queue = device.makeCommandQueue()
-        else { return }
-
-        commandQueue = queue
-        resetCommandBuffer()
-
-        flippedTextureBuffers = MTLBuffers.makeTextureBuffers(
-            nodes: .flippedTextureNodes,
-            with: device
+    private func addEvents() {
+        addGestureRecognizer(
+            PencilInputGestureRecognizer(delegate: self)
         )
 
-        self.delegate = self
-        self.enableSetNeedsDisplay = true
-        self.autoResizeDrawable = true
-        self.isUserInteractionEnabled = true
-        self.isMultipleTouchEnabled = true
-        self.backgroundColor = .white
-
-        if let textureSize: CGSize = currentDrawable?.texture.size {
-            _renderTexture = MTLTextureCreator.makeBlankTexture(size: textureSize, with: device)
-         }
+        // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+        tapGesture.numberOfTouchesRequired = 3
+        addGestureRecognizer(tapGesture)
     }
 
-    // MARK: - DrawTexture
-    func draw(in view: MTKView) {
-        guard
-            let commandBuffer,
-            let flippedTextureBuffers,
-            let renderTexture,
-            let drawable = view.currentDrawable
-        else { return }
+    private func bindData() {
+        displayView.displayTextureSizeChanged
+            .sink { [weak self] _ in
+                guard let `self` else { return }
+                self.viewModel.onUpdateDisplayTexture()
+            }
+            .store(in: &cancellables)
+    }
 
-        // Draw `renderTexture` directly onto `drawable.texture`
-        MTLRenderer.shared.drawTexture(
-            texture: renderTexture,
-            buffers: flippedTextureBuffers,
-            on: drawable.texture,
-            with: commandBuffer
+    public override func layoutSubviews() {
+        viewModel.frameSize = frame.size
+    }
+}
+
+extension CanvasView: PencilInputGestureRecognizerSender {
+
+    func sendPencilEstimatedTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
+        viewModel.onPencilGestureDetected(
+            estimatedTouches: touches,
+            with: event,
+            view: view
         )
-
-        commandBuffer.present(drawable)
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-
-        resetCommandBuffer()
     }
 
-    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        guard let device else { return }
-
-        // Align the size of `_renderTexture` with `drawableSize`
-        _renderTexture = MTLTextureCreator.makeBlankTexture(size: size, with: device)
+    func sendPencilActualTouches(_ touches: Set<UITouch>, on view: UIView) {
+        viewModel.onPencilGestureDetected(
+            actualTouches: touches,
+            view: view
+        )
     }
-
 }
 
 extension CanvasView {
-
-    func resetCommandBuffer() {
-        commandBuffer = commandQueue.makeCommandBuffer()
+    @objc func didTap(_ gesture: UITapGestureRecognizer) -> Void {
+        viewModel.onTapClearTexture()
     }
-
 }

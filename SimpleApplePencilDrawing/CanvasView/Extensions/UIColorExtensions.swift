@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIColor {
+public extension UIColor {
 
     var alpha: Int {
         var alpha: CGFloat = 0
@@ -16,23 +16,33 @@ extension UIColor {
         return Int(alpha * 255)
     }
 
-    var rgb: (Int, Int, Int) {
+    var rgb: IntRGB {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: nil)
 
-        return (Int(red * 255), Int(green * 255), Int(blue * 255))
+        return .init(Int(red * 255), Int(green * 255), Int(blue * 255))
     }
 
-    var rgba: (Int, Int, Int, Int) {
+    var rgba: IntRGBA {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
         getRed(&red, green: &green, blue: &blue, alpha: &alpha)
 
-        return (Int(red * 255), Int(green * 255), Int(blue * 255), Int(alpha * 255))
+        return .init(Int(red * 255), Int(green * 255), Int(blue * 255), Int(alpha * 255))
+    }
+
+    func hexString() -> String {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        let rgb: Int = (Int)(r*255)<<24 | (Int)(g*255)<<16 | (Int)(b*255)<<8 | (Int)(a*255)<<0
+        return String(format:"#%08x", rgb)
     }
 
     convenience init(_ red: Int, _ green: Int, _ blue: Int, _ alpha: Int = 255) {
@@ -49,10 +59,10 @@ extension UIColor {
         )
     }
 
-    convenience init(rgb: (Int, Int, Int)) {
-        let red: Int = max(0, min(rgb.0, 255))
-        let green: Int = max(0, min(rgb.1, 255))
-        let blue: Int = max(0, min(rgb.2, 255))
+    convenience init(rgb: IntRGB) {
+        let red: Int = max(0, min(rgb.r, 255))
+        let green: Int = max(0, min(rgb.g, 255))
+        let blue: Int = max(0, min(rgb.b, 255))
 
         self.init(
             red: (CGFloat(red) / 255.0),
@@ -62,11 +72,11 @@ extension UIColor {
         )
     }
 
-    convenience init(rgba: (Int, Int, Int, Int)) {
-        let red: Int = max(0, min(rgba.0, 255))
-        let green: Int = max(0, min(rgba.1, 255))
-        let blue: Int = max(0, min(rgba.2, 255))
-        let alpha: Int = max(0, min(rgba.3, 255))
+    convenience init(rgba: IntRGBA) {
+        let red: Int = max(0, min(rgba.r, 255))
+        let green: Int = max(0, min(rgba.g, 255))
+        let blue: Int = max(0, min(rgba.b, 255))
+        let alpha: Int = max(0, min(rgba.a, 255))
 
         self.init(
             red: (CGFloat(red) / 255.0),
@@ -76,4 +86,18 @@ extension UIColor {
         )
     }
 
+    convenience init(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+
+        var rgb: UInt64 = 0
+        Scanner(string: hexSanitized).scanHexInt64(&rgb)
+
+        let r = CGFloat((rgb & 0xFF000000) >> 24) / 255
+        let g = CGFloat((rgb & 0x00FF0000) >> 16) / 255
+        let b = CGFloat((rgb & 0x0000FF00) >> 8) / 255
+        let a = CGFloat(rgb & 0x000000FF) / 255
+
+        self.init(red: r, green: g, blue: b, alpha: a)
+    }
 }

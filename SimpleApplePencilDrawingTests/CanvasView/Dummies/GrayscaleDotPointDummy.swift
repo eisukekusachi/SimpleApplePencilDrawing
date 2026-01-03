@@ -5,23 +5,22 @@
 //  Created by Eisuke Kusachi on 2024/09/29.
 //
 
+import SimpleApplePencilDrawing
 import UIKit
-@testable import SimpleApplePencilDrawing
 
-extension GrayscaleDotPoint {
+public extension GrayscaleDotPoint {
 
     static func generate(
         location: CGPoint = .zero,
-        diameter: CGFloat = 0.0,
         brightness: CGFloat = 0.0,
+        diameter: CGFloat = 0.0,
         blurSize: CGFloat = 0.0
-    ) -> GrayscaleDotPoint {
+    ) -> Self {
         .init(
             location: location,
-            diameter: diameter,
             brightness: brightness,
+            diameter: diameter,
             blurSize: blurSize
         )
     }
-
 }

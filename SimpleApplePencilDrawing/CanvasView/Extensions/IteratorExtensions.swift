@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 extension Iterator<GrayscaleDotPoint> {
 
     func getBezierCurveFirstPoints() -> BezierCurveFirstPoints? {
@@ -43,3 +43,4 @@ extension Iterator<GrayscaleDotPoint> {
     }
 
 }
+*/

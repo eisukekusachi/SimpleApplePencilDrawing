@@ -9,19 +9,21 @@ import UIKit
 
 enum Interpolator {
 
-    static func makeCubicCurvePoints(
+    static func createCubicCurvePoints(
         movePoint: CGPoint,
         controlPoint1: CGPoint,
         controlPoint2: CGPoint,
         endPoint: CGPoint,
         duration: Int,
-        shouldIncludeEndPoint: Bool
+        shouldAddEndPoint: Bool
     ) -> [CGPoint] {
 
         var result: [CGPoint] = []
 
+        let duration = max(duration, 0)
+
         var t: Float = 0.0
-        let step: Float = 1.0 / Float(duration)
+        let step: Float = duration != 0 ? (1.0 / Float(duration)) : 0.0
 
         for _ in 0 ..< duration {
             let moveX = movePoint.x * CGFloat(powf(1.0 - t, 3.0))
@@ -44,38 +46,45 @@ enum Interpolator {
             t += step
         }
 
-        if shouldIncludeEndPoint {
+        if shouldAddEndPoint {
             result.append(endPoint)
         }
 
         return result
     }
 
-    static func getLinearInterpolationValues(
+    static func createLinearInterpolationValues(
         begin: CGFloat,
-        change: CGFloat,
+        end: CGFloat,
         duration: Int,
-        shouldIncludeEndPoint: Bool
+        shouldAddEndPoint: Bool
     ) -> [CGFloat] {
 
         var result: [CGFloat] = []
 
-        for t in 0 ..< duration {
-            if begin == change {
-                result.append(begin)
-            } else {
-                let difference = (change - begin)
-                let normalizedValue = CGFloat(Float(t) / Float(duration))
+        let difference = (end - begin)
 
-                result.append(difference * normalizedValue + begin)
-            }
+        let duration = max(duration, 0)
+
+        for t in 0 ..< duration {
+            let normalizedValue = CGFloat(Float(t) / Float(duration))
+            result.append(difference * normalizedValue + begin)
         }
 
-        if shouldIncludeEndPoint {
-            result.append(change)
+        if shouldAddEndPoint {
+            result.append(end)
         }
 
         return result
     }
+}
 
+private extension CGVector {
+
+    init(leftHandSide: CGPoint, rightHandSide: CGPoint) {
+        self.init(
+            dx: leftHandSide.x - rightHandSide.x,
+            dy: leftHandSide.y - rightHandSide.y
+        )
+    }
 }
