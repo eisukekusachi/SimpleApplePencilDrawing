@@ -23,7 +23,7 @@ final class CanvasViewModel {
 
     private let drawingToolStatus = CanvasDrawingToolStatus()
 
-    private var drawingDisplayLink = CanvasDrawingDisplayLink()
+    private var drawingDisplayLink = DrawingDisplayLink()
 
     /// A texture with lines
     private var currentTexture: MTLTexture?
@@ -49,7 +49,7 @@ final class CanvasViewModel {
     }
 
     private func subscribe() {
-        drawingDisplayLink.canvasDrawingPublisher
+        drawingDisplayLink.update
             .sink { [weak self] in
                 self?.updateCanvasWithDrawing()
             }
@@ -188,8 +188,8 @@ extension CanvasViewModel {
             touchPhase: screenTouchPoints.currentTouchPhase
         )
 
-        drawingDisplayLink.updateCanvasWithDrawing(
-            isCurrentlyDrawing: drawingCurveIterator.isCurrentlyDrawing
+        drawingDisplayLink.run(
+            drawingCurveIterator.isCurrentlyDrawing
         )
     }
 
