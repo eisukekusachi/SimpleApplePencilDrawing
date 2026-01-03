@@ -8,35 +8,36 @@
 import Foundation
 
 enum Calculator {
-
     static func getCenterPoint(_ pointA: CGPoint, _ pointB: CGPoint) -> CGPoint {
         .init(x: (pointA.x + pointB.x) * 0.5, y: (pointA.y + pointB.y) * 0.5)
+    }
+
+    static func getLength(_ leftHandSide: CGPoint, to rightHandSide: CGPoint) -> CGFloat {
+        sqrt(pow(rightHandSide.x - leftHandSide.x, 2) + pow(rightHandSide.y - leftHandSide.y, 2))
+    }
+
+    static func getLength(_ vector: CGVector) -> CGFloat {
+        sqrt(pow(vector.dx, 2) + pow(vector.dy, 2))
     }
 
     /// Get the total distance by connecting points
     static func getTotalLength(points: [CGPoint]) -> CGFloat {
         var totalLength: CGFloat = 0.0
         for i in 0 ..< points.count - 1 {
-            totalLength += Calculator.getLength(points[i], to: points[i + 1])
+            totalLength += getLength(points[i], to: points[i + 1])
         }
         return totalLength
     }
 
-    static func getLength(_ leftHandSide: CGPoint, to rightHandSide: CGPoint) -> CGFloat {
-        sqrt(pow(rightHandSide.x - leftHandSide.x, 2) + pow(rightHandSide.y - leftHandSide.y, 2))
-    }
-    static func getLength(_ vector: CGVector) -> CGFloat {
-        sqrt(pow(vector.dx, 2) + pow(vector.dy, 2))
-    }
-    static func getReversedVector(_ vector: CGVector) -> CGVector {
-        .init(dx: vector.dx * -1.0, dy: vector.dy * -1.0)
-    }
-
-    static func getRadian(_ left: CGVector, _ right: CGVector) -> CGFloat {
-        let dotProduct = left.dx * right.dx + left.dy * right.dy
-        let divisor: CGFloat = Calculator.getLength(left) * Calculator.getLength(right)
+    static func getRadian(_ leftHandSide: CGVector, _ rightHandSide: CGVector) -> CGFloat {
+        let dotProduct = leftHandSide.dx * rightHandSide.dx + leftHandSide.dy * rightHandSide.dy
+        let divisor = Calculator.getLength(leftHandSide) * Calculator.getLength(rightHandSide)
 
         return divisor != 0 ? acos(dotProduct / divisor) : 0.0
+    }
+
+    static func getReversedVector(_ vector: CGVector) -> CGVector {
+        .init(dx: vector.dx * -1.0, dy: vector.dy * -1.0)
     }
 
     static func getResizedVector(_ vector: CGVector, length: CGFloat) -> CGVector {
@@ -62,5 +63,4 @@ enum Calculator {
             return vector
         }
     }
-
 }
