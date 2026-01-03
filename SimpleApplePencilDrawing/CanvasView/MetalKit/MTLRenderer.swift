@@ -278,7 +278,7 @@ final class MTLRenderer: MTLRendering {
         guard
             texture.size == destinationTexture.size
         else {
-            Logger.standard.error("Texture size mismatch")
+            Logger.error("Texture size mismatch")
             return
         }
 
