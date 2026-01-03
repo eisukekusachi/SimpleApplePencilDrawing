@@ -7,20 +7,20 @@
 
 import UIKit
 
-protocol PencilInputGestureSender {
+@MainActor protocol PencilInputGestureRecognizerSender {
     func sendPencilEstimatedTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView)
     func sendPencilActualTouches(_ touches: Set<UITouch>, on view: UIView)
 }
 
 final class PencilInputGestureRecognizer: UIGestureRecognizer {
 
-    private var gestureDelegate: PencilInputGestureSender?
+    private var gestureDelegate: PencilInputGestureRecognizerSender?
 
-    init(_ view: PencilInputGestureSender) {
+    init(delegate: PencilInputGestureRecognizerSender) {
         super.init(target: nil, action: nil)
         allowedTouchTypes = [UITouch.TouchType.pencil.rawValue as NSNumber]
 
-        gestureDelegate = view
+        gestureDelegate = delegate
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -45,5 +45,4 @@ final class PencilInputGestureRecognizer: UIGestureRecognizer {
         guard let view else { return }
         gestureDelegate?.sendPencilActualTouches(touches, on: view)
     }
-
 }

@@ -40,7 +40,7 @@ extension CanvasViewController {
 
     private func subscribeEvents() {
         canvasView.addGestureRecognizer(
-            PencilInputGestureRecognizer(self)
+            PencilInputGestureRecognizer(delegate: self)
         )
 
         // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
@@ -60,7 +60,7 @@ extension CanvasViewController {
 
 }
 
-extension CanvasViewController: PencilInputGestureSender {
+extension CanvasViewController: PencilInputGestureRecognizerSender {
 
     func sendPencilEstimatedTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {
         canvasViewModel.onPencilGestureDetected(
