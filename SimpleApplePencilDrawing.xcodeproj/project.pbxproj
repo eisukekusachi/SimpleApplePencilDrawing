@@ -19,6 +19,7 @@
 		D4204DEC2F08AB0B0020E174 /* DrawingDisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4204DEB2F08AB0B0020E174 /* DrawingDisplayLink.swift */; };
 		D4204DEE2F08F4E90020E174 /* DrawingDisplayLinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4204DED2F08F4E90020E174 /* DrawingDisplayLinkTests.swift */; };
 		D4204DF02F08F5860020E174 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4204DEF2F08F5860020E174 /* TestHelpers.swift */; };
+		D4204E092F09101D0020E174 /* IntRGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4204E082F09101D0020E174 /* IntRGB.swift */; };
 		D42930422CA5926B00983863 /* BezierCurveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930412CA5926B00983863 /* BezierCurveTests.swift */; };
 		D42930442CA5938A00983863 /* BezierCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930432CA5938A00983863 /* BezierCurve.swift */; };
 		D42930462CA599DD00983863 /* BezierCurveHandlePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */; };
@@ -97,6 +98,7 @@
 		D4204DEB2F08AB0B0020E174 /* DrawingDisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingDisplayLink.swift; sourceTree = "<group>"; };
 		D4204DED2F08F4E90020E174 /* DrawingDisplayLinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingDisplayLinkTests.swift; sourceTree = "<group>"; };
 		D4204DEF2F08F5860020E174 /* TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
+		D4204E082F09101D0020E174 /* IntRGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntRGB.swift; sourceTree = "<group>"; };
 		D42930412CA5926B00983863 /* BezierCurveTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierCurveTests.swift; sourceTree = "<group>"; };
 		D42930432CA5938A00983863 /* BezierCurve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BezierCurve.swift; sourceTree = "<group>"; };
 		D42930452CA599DD00983863 /* BezierCurveHandlePoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BezierCurveHandlePoints.swift; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 				D462E1A52C0C682300E0503E /* Calculator.swift */,
 				D46C036A2C95D0DC001658C5 /* Constants.swift */,
 				D41EE0AA2D66081B00E417D5 /* Logger.swift */,
+				D4204E082F09101D0020E174 /* IntRGB.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -596,6 +599,7 @@
 				D4204DEC2F08AB0B0020E174 /* DrawingDisplayLink.swift in Sources */,
 				D41EE0AB2D66081B00E417D5 /* Logger.swift in Sources */,
 				D45C0FEF2F04BBEF00BFDB25 /* SimpleApplePencilDrawingApp.swift in Sources */,
+				D4204E092F09101D0020E174 /* IntRGB.swift in Sources */,
 				D462E1832C0C580600E0503E /* ViewSize.swift in Sources */,
 				D47CBFD92CDF68E100189B08 /* MTLTextureNodes.swift in Sources */,
 				D46C036B2C95D0DC001658C5 /* Constants.swift in Sources */,
