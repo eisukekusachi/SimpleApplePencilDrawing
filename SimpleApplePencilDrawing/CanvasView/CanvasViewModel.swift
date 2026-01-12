@@ -22,11 +22,11 @@ final class CanvasViewModel {
     /// Handles input from Apple Pencil
     private let pencilStroke = PencilStroke()
 
-    /// Manages drawing textures onto the canvas
-    private let canvasRenderer: CanvasRenderer
-
     /// Manages drawing lines onto textures
     private var drawingRenderer: DrawingRenderer?
+
+    /// Manages drawing textures onto the canvas
+    private let canvasRenderer: CanvasRenderer
 
     /// Touch phase for drawing
     private var drawingTouchPhase: UITouch.Phase?
@@ -34,16 +34,11 @@ final class CanvasViewModel {
     /// Display link for real-time drawing
     private var drawingDisplayLink = DrawingDisplayLink()
 
-    /// Output destination for `canvasTexture`
-    private var displayView: CanvasDisplayable?
-
     private var cancellables = Set<AnyCancellable>()
 
     init(
-        displayView: CanvasDisplayable,
         canvasRenderer: CanvasRenderer
     ) {
-        self.displayView = displayView
         self.canvasRenderer = canvasRenderer
     }
 
@@ -98,7 +93,7 @@ extension CanvasViewModel {
         guard
             let drawingRenderer,
             let textureSize = canvasRenderer.textureSize,
-            let displayTextureSize = displayView?.displayTexture?.size
+            let displayTextureSize = canvasRenderer.displayTextureSize
         else { return }
 
         pencilStroke.appendActualTouches(
@@ -139,7 +134,7 @@ extension CanvasViewModel {
             let drawingRenderer,
             let selectedLayerTexture = canvasRenderer.selectedLayerTexture,
             let realtimeDrawingTexture = canvasRenderer.realtimeDrawingTexture,
-            let commandBuffer = displayView?.commandBuffer
+            let commandBuffer = canvasRenderer.commandBuffer
         else { return }
 
         drawingRenderer.drawStrokePoints(
@@ -169,7 +164,7 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture() {
-        guard let commandBuffer = displayView?.commandBuffer else { return }
+        guard let commandBuffer = canvasRenderer.commandBuffer else { return }
         pencilStroke.reset()
         drawingRenderer?.prepareNextStroke()
         canvasRenderer.clearTextures(with: commandBuffer)
