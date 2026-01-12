@@ -15,6 +15,14 @@ public final class CanvasRenderer: ObservableObject {
         canvasTexture?.size
     }
 
+    public var commandBuffer: MTLCommandBuffer? {
+        displayView.commandBuffer
+    }
+
+    public var displayTextureSize: CGSize? {
+        displayView.displayTexture?.size
+    }
+
     /// Texture that combines the background color and the textures of `unselectedBottomTexture`, `selectedTexture` and `unselectedTopTexture`
     private(set) var canvasTexture: MTLTexture?
 
@@ -36,11 +44,11 @@ public final class CanvasRenderer: ObservableObject {
     /// Base background color of the canvas. this color that appears when the canvas is rotated or moved.
     private var baseBackgroundColor: UIColor = .lightGray
 
-    private var displayView: CanvasDisplayable?
+    private var displayView: CanvasDisplayable
 
     public init(
         renderer: MTLRendering,
-        displayView: CanvasDisplayable?
+        displayView: CanvasDisplayable
     ) {
         guard let buffer = MTLBuffers.makeTextureBuffers(
             nodes: .flippedTextureNodes,
@@ -126,7 +134,7 @@ extension CanvasRenderer {
             let canvasTexture,
             let selectedLayerTexture,
             let realtimeDrawingTexture,
-            let commandBuffer = displayView?.commandBuffer
+            let commandBuffer = displayView.commandBuffer
         else { return }
 
         renderer.fillColor(
@@ -148,8 +156,8 @@ extension CanvasRenderer {
     /// Draws `canvasTexture` to the display and requests a screen update
     public func drawCanvasToDisplay() {
         guard
-            let displayTexture = displayView?.displayTexture,
-            let commandBuffer = displayView?.commandBuffer
+            let displayTexture = displayView.displayTexture,
+            let commandBuffer = displayView.commandBuffer
         else { return }
 
         renderer.drawTexture(
@@ -160,7 +168,7 @@ extension CanvasRenderer {
             with: commandBuffer
         )
 
-        displayView?.setNeedsDisplay()
+        displayView.setNeedsDisplay()
     }
 
     public func clearTextures(
