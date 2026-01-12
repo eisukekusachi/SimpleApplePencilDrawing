@@ -11,7 +11,7 @@ import Combine
 @MainActor
 final class CanvasViewModel {
 
-    /// Frame size, which changes when the screen rotates or the view layout updates.
+    /// Frame size, which changes when the screen rotates or the view layout updates
     var frameSize: CGSize = .zero {
         didSet {
             canvasRenderer.setFrameSize(frameSize)
@@ -22,14 +22,16 @@ final class CanvasViewModel {
     /// Handles input from Apple Pencil
     private let pencilStroke = PencilStroke()
 
+    /// Manages drawing textures onto the canvas
     private let canvasRenderer: CanvasRenderer
 
-    /// A class that manages drawing lines onto textures
+    /// Manages drawing lines onto textures
     private var drawingRenderer: DrawingRenderer?
 
     /// Touch phase for drawing
     private var drawingTouchPhase: UITouch.Phase?
 
+    /// Display link for real-time drawing
     private var drawingDisplayLink = DrawingDisplayLink()
 
     /// Output destination for `canvasTexture`
@@ -51,7 +53,7 @@ final class CanvasViewModel {
     ) throws {
         self.bindData()
         self.drawingRenderer = drawingRenderer
-        try self.setupCanvas(size: textureSize)
+        try self.setupCanvas(textureSize: textureSize)
     }
 
     private func bindData() {
@@ -62,10 +64,10 @@ final class CanvasViewModel {
             .store(in: &cancellables)
     }
 
-    /// Initializes the textures used for drawing with the same size
-    private func setupCanvas(size: CGSize) throws {
-        try canvasRenderer.initializeTextures(textureSize: size)
-        drawingRenderer?.initializeTextures(textureSize: size)
+    /// Sets up textures used for drawing with a consistent size
+    private func setupCanvas(textureSize: CGSize) throws {
+        try canvasRenderer.setupTextures(textureSize: textureSize)
+        drawingRenderer?.setupTextures(textureSize: textureSize)
         drawingRenderer?.prepareNextStroke()
         canvasRenderer.composeAndRefreshCanvas(
             useRealtimeDrawingTexture: false
@@ -74,10 +76,6 @@ final class CanvasViewModel {
 }
 
 extension CanvasViewModel {
-
-    func onUpdateDisplayTexture() {
-        canvasRenderer.drawCanvasToDisplay()
-    }
 
     func onPencilGestureDetected(
         estimatedTouches: Set<UITouch>,
@@ -152,7 +150,7 @@ extension CanvasViewModel {
 
         // The finalization process is performed when drawing is completed
         if isFinishedDrawing {
-            canvasRenderer.updateCurrentTexture(
+            canvasRenderer.updateSelectedLayerTexture(
                 using: canvasRenderer.realtimeDrawingTexture,
                 with: commandBuffer
             )
@@ -175,6 +173,11 @@ extension CanvasViewModel {
         pencilStroke.reset()
         drawingRenderer?.prepareNextStroke()
         canvasRenderer.clearTextures(with: commandBuffer)
+        canvasRenderer.drawCanvasToDisplay()
+    }
+
+    /// Called when the display texture size changes, such as when the device orientation changes.
+    func onUpdateDisplayTexture() {
         canvasRenderer.drawCanvasToDisplay()
     }
 }

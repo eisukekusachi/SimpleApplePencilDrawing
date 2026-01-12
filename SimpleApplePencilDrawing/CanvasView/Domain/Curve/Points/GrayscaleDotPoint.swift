@@ -7,18 +7,18 @@
 
 import UIKit
 
-/// A point that has a brightness value
+/// Point that has a brightness value
 public struct GrayscaleDotPoint: Equatable, Sendable {
 
     let location: CGPoint
 
-    /// brightness (0.0 ~ 1.0)
+    /// Brightness (0.0 ~ 1.0)
     let brightness: CGFloat
 
-    /// The diameter without blur
+    /// Diameter without blur
     let diameter: CGFloat
 
-    /// The size of the blur on one side
+    /// Size of the blur on one side
     let blurSize: CGFloat
 
     public init(

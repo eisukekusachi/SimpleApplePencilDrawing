@@ -12,20 +12,23 @@ import UIKit
 
 @objc public class CanvasView: UIView {
 
-    private let displayView: CanvasDisplayView
-
-    private var viewModel: CanvasViewModel
-
     /// The single Metal device instance used throughout the app
     private let sharedDevice: MTLDevice
 
+    /// View that displays the canvas.
+    private let displayView: CanvasDisplayView
+
+    /// Renderer for drawing textures
     private let renderer: MTLRendering
 
+    /// Renderer for drawing lines
     private let brushDrawingRenderer = BrushDrawingRenderer()
+
+    private let viewModel: CanvasViewModel
 
     private var cancellables = Set<AnyCancellable>()
 
-    /// The size of the screen
+    /// Size of the screen
     static var screenSize: CGSize {
         let scale = UIScreen.main.scale
         let size = UIScreen.main.bounds.size
@@ -85,7 +88,6 @@ import UIKit
 
     private func layoutViews() {
         addSubview(displayView)
-        displayView.isUserInteractionEnabled = false
         displayView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             displayView.topAnchor.constraint(equalTo: topAnchor),
@@ -100,7 +102,7 @@ import UIKit
             PencilInputGestureRecognizer(delegate: self)
         )
 
-        // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers.
+        // Add a gesture recognizer to clear the canvas when the screen is tapped with three fingers
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
         tapGesture.numberOfTouchesRequired = 3
         addGestureRecognizer(tapGesture)

@@ -18,7 +18,7 @@ public final class CanvasRenderer: ObservableObject {
     /// Texture that combines the background color and the textures of `unselectedBottomTexture`, `selectedTexture` and `unselectedTopTexture`
     private(set) var canvasTexture: MTLTexture?
 
-    /// Ttexture of the selected layer
+    /// Texture of the selected layer
     private(set) var selectedLayerTexture: MTLTexture?
 
     /// Texture used during drawing
@@ -54,7 +54,7 @@ public final class CanvasRenderer: ObservableObject {
         self.flippedTextureBuffers = buffer
     }
 
-    public func initializeTextures(textureSize: CGSize) throws {
+    public func setupTextures(textureSize: CGSize) throws {
         guard
             Int(textureSize.width) >= canvasMinimumTextureLength &&
             Int(textureSize.height) >= canvasMinimumTextureLength
@@ -100,7 +100,7 @@ extension CanvasRenderer {
         self.frameSize = size
     }
 
-    func updateCurrentTexture(
+    func updateSelectedLayerTexture(
         using texture: RealtimeDrawingTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
@@ -118,7 +118,7 @@ extension CanvasRenderer {
         )
     }
 
-    /// Commits the command buffer and refreshes the entire screen using `unselectedBottomTexture`, `selectedTexture`, `unselectedTopTexture`
+    /// Refreshes the entire screen using textures
     public func composeAndRefreshCanvas(
         useRealtimeDrawingTexture: Bool
     ) {
@@ -145,7 +145,7 @@ extension CanvasRenderer {
         drawCanvasToDisplay()
     }
 
-    /// Draws the canvas texture to the display and requests a screen update
+    /// Draws `canvasTexture` to the display and requests a screen update
     public func drawCanvasToDisplay() {
         guard
             let displayTexture = displayView?.displayTexture,
@@ -159,15 +159,15 @@ extension CanvasRenderer {
             on: displayTexture,
             with: commandBuffer
         )
+
         displayView?.setNeedsDisplay()
     }
 
     public func clearTextures(
         with commandBuffer: MTLCommandBuffer
     ) {
-        guard
-            let canvasTexture
-        else { return }
+        guard let canvasTexture else { return }
+
         renderer.clearTextures(
             textures: [
                 selectedLayerTexture,

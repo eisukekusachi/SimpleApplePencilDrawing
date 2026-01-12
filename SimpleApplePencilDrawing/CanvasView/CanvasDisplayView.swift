@@ -61,7 +61,7 @@ class CanvasDisplayView: MTKView, MTKViewDelegate, CanvasDisplayable {
         self.delegate = self
         self.enableSetNeedsDisplay = true
         self.autoResizeDrawable = true
-        self.isUserInteractionEnabled = true
+        self.isUserInteractionEnabled = false
         self.isMultipleTouchEnabled = true
         self.backgroundColor = .white
         self.resetCommandBuffer()
@@ -71,7 +71,6 @@ class CanvasDisplayView: MTKView, MTKViewDelegate, CanvasDisplayable {
         fatalError("Use init(frame:device:) instead.")
     }
 
-    // MARK: - DrawTexture
     func draw(in view: MTKView) {
         guard
             let commandBuffer,
