@@ -47,7 +47,6 @@ import UIKit
             self.renderer = MTLRenderer(device: sharedDevice)
             self.displayView = .init(renderer: renderer)
             self.viewModel = .init(
-                displayView: displayView,
                 canvasRenderer: .init(renderer: renderer, displayView: displayView)
             )
             super.init(frame: .zero)
@@ -64,7 +63,6 @@ import UIKit
             self.renderer = MTLRenderer(device: sharedDevice)
             self.displayView = .init(renderer: renderer)
             self.viewModel = .init(
-                displayView: displayView,
                 canvasRenderer: .init(renderer: renderer, displayView: displayView)
             )
             super.init(frame: .zero)
