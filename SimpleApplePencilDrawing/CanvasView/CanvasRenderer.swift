@@ -7,16 +7,16 @@
 
 @preconcurrency import MetalKit
 
-/// A class that renders textures onto the texture of `displayView`
-@MainActor
-public final class CanvasRenderer: ObservableObject {
+/// Renders textures for display by merging layer textures
+@MainActor public final class CanvasRenderer: ObservableObject {
+
+    /// Command buffer for a single frame
+    public var currentFrameCommandBuffer: MTLCommandBuffer? {
+        displayView.currentFrameCommandBuffer
+    }
 
     public var textureSize: CGSize? {
         canvasTexture?.size
-    }
-
-    public var commandBuffer: MTLCommandBuffer? {
-        displayView.commandBuffer
     }
 
     public var displayTextureSize: CGSize? {
@@ -134,20 +134,20 @@ extension CanvasRenderer {
             let canvasTexture,
             let selectedLayerTexture,
             let realtimeDrawingTexture,
-            let commandBuffer = displayView.commandBuffer
+            let currentFrameCommandBuffer
         else { return }
 
         renderer.fillColor(
             texture: canvasTexture,
             withRGB: backgroundColor.rgb,
-            with: commandBuffer
+            with: currentFrameCommandBuffer
         )
 
         renderer.mergeTexture(
             texture: useRealtimeDrawingTexture ? realtimeDrawingTexture : selectedLayerTexture,
             alpha: 255,
             into: canvasTexture,
-            with: commandBuffer
+            with: currentFrameCommandBuffer
         )
 
         drawCanvasToDisplay()
@@ -157,7 +157,7 @@ extension CanvasRenderer {
     public func drawCanvasToDisplay() {
         guard
             let displayTexture = displayView.displayTexture,
-            let commandBuffer = displayView.commandBuffer
+            let currentFrameCommandBuffer
         else { return }
 
         renderer.drawTexture(
@@ -165,7 +165,7 @@ extension CanvasRenderer {
             frameSize: frameSize,
             backgroundColor: baseBackgroundColor,
             on: displayTexture,
-            with: commandBuffer
+            with: currentFrameCommandBuffer
         )
 
         displayView.setNeedsDisplay()

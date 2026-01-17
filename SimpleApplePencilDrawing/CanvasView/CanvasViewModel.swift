@@ -134,23 +134,23 @@ extension CanvasViewModel {
             let drawingRenderer,
             let selectedLayerTexture = canvasRenderer.selectedLayerTexture,
             let realtimeDrawingTexture = canvasRenderer.realtimeDrawingTexture,
-            let commandBuffer = canvasRenderer.commandBuffer
+            let currentFrameCommandBuffer = canvasRenderer.currentFrameCommandBuffer
         else { return }
 
         drawingRenderer.drawStrokePoints(
             baseTexture: selectedLayerTexture,
             on: realtimeDrawingTexture,
-            with: commandBuffer
+            with: currentFrameCommandBuffer
         )
 
         // The finalization process is performed when drawing is completed
         if isFinishedDrawing {
             canvasRenderer.updateSelectedLayerTexture(
                 using: canvasRenderer.realtimeDrawingTexture,
-                with: commandBuffer
+                with: currentFrameCommandBuffer
             )
 
-            commandBuffer.addCompletedHandler { @Sendable _ in
+            currentFrameCommandBuffer.addCompletedHandler { @Sendable _ in
                 Task { @MainActor [weak self] in
                     // Reset parameters on drawing completion
                     self?.drawingRenderer?.prepareNextStroke()
@@ -164,10 +164,10 @@ extension CanvasViewModel {
     }
 
     func onTapClearTexture() {
-        guard let commandBuffer = canvasRenderer.commandBuffer else { return }
+        guard let currentFrameCommandBuffer = canvasRenderer.currentFrameCommandBuffer else { return }
         pencilStroke.reset()
         drawingRenderer?.prepareNextStroke()
-        canvasRenderer.clearTextures(with: commandBuffer)
+        canvasRenderer.clearTextures(with: currentFrameCommandBuffer)
         canvasRenderer.drawCanvasToDisplay()
     }
 
