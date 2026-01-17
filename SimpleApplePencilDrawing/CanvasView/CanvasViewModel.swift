@@ -132,7 +132,7 @@ extension CanvasViewModel {
         )
 
         drawingDisplayLink.run(
-            isCurrentlyDrawing
+            drawingTouchPhase ?? .ended
         )
     }
 
@@ -201,12 +201,5 @@ extension CanvasViewModel {
             return .stationary
         }
         return nil
-    }
-
-    private var isCurrentlyDrawing: Bool {
-        switch drawingTouchPhase {
-        case .began, .moved: return true
-        default: return false
-        }
     }
 }
