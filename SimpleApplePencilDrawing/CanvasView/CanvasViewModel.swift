@@ -19,6 +19,10 @@ final class CanvasViewModel {
         }
     }
 
+    private var isFinishedDrawing: Bool {
+        drawingTouchPhase == .ended
+    }
+
     /// Handles input from Apple Pencil
     private let pencilStroke = PencilStroke()
 
@@ -52,9 +56,10 @@ final class CanvasViewModel {
     }
 
     private func bindData() {
+        // The canvas is updated every frame during drawing
         drawingDisplayLink.update
             .sink { [weak self] in
-                self?.onDisplayLinkForDrawing()
+                self?.onDrawingDisplayLinkFrame()
             }
             .store(in: &cancellables)
     }
@@ -64,7 +69,7 @@ final class CanvasViewModel {
         try canvasRenderer.setupTextures(textureSize: textureSize)
         drawingRenderer?.setupTextures(textureSize: textureSize)
         drawingRenderer?.prepareNextStroke()
-        canvasRenderer.composeAndRefreshCanvas(
+        canvasRenderer.refreshCanvasAfterComposition(
             useRealtimeDrawingTexture: false
         )
     }
@@ -72,6 +77,7 @@ final class CanvasViewModel {
 
 extension CanvasViewModel {
 
+    /// Processes pencil input using estimated touches
     func onPencilGestureDetected(
         estimatedTouches: Set<UITouch>,
         with event: UIEvent?,
@@ -86,6 +92,7 @@ extension CanvasViewModel {
         )
     }
 
+    /// Processes pencil input using actual touches
     func onPencilGestureDetected(
         actualTouches: Set<UITouch>,
         view: UIView
@@ -129,7 +136,8 @@ extension CanvasViewModel {
         )
     }
 
-    private func onDisplayLinkForDrawing() {
+    /// Called on every display-link frame while drawing is active
+    private func onDrawingDisplayLinkFrame() {
         guard
             let drawingRenderer,
             let selectedLayerTexture = canvasRenderer.selectedLayerTexture,
@@ -145,8 +153,8 @@ extension CanvasViewModel {
 
         // The finalization process is performed when drawing is completed
         if isFinishedDrawing {
-            canvasRenderer.updateSelectedLayerTexture(
-                using: canvasRenderer.realtimeDrawingTexture,
+            canvasRenderer.drawSelectedLayerTexture(
+                from: canvasRenderer.realtimeDrawingTexture,
                 with: currentFrameCommandBuffer
             )
 
@@ -158,7 +166,7 @@ extension CanvasViewModel {
             }
         }
 
-        canvasRenderer.composeAndRefreshCanvas(
+        canvasRenderer.refreshCanvasAfterComposition(
             useRealtimeDrawingTexture: !isFinishedDrawing
         )
     }
@@ -197,9 +205,5 @@ extension CanvasViewModel {
         case .began, .moved: return true
         default: return false
         }
-    }
-
-    private var isFinishedDrawing: Bool {
-        drawingTouchPhase == .ended
     }
 }

@@ -15,15 +15,17 @@
         displayView.currentFrameCommandBuffer
     }
 
+    /// Size of the canvas texture
     public var textureSize: CGSize? {
         canvasTexture?.size
     }
 
+    /// Size of the texture rendered on the screen
     public var displayTextureSize: CGSize? {
         displayView.displayTexture?.size
     }
 
-    /// Texture that combines the background color and the textures of `unselectedBottomTexture`, `selectedTexture` and `unselectedTopTexture`
+    /// Texture that combines the background color and the textures of `selectedLayerTexture`
     private(set) var canvasTexture: MTLTexture?
 
     /// Texture of the selected layer
@@ -36,6 +38,7 @@
 
     private let renderer: MTLRendering
 
+    /// Buffers used to draw textures with vertical flipping
     private let flippedTextureBuffers: MTLTextureBuffers
 
     /// Background color of the canvas
@@ -44,6 +47,7 @@
     /// Base background color of the canvas. this color that appears when the canvas is rotated or moved.
     private var baseBackgroundColor: UIColor = .lightGray
 
+    /// View for displaying content on the screen
     private var displayView: CanvasDisplayable
 
     public init(
@@ -100,34 +104,16 @@
         self.realtimeDrawingTexture = realtimeDrawingTexture
         self.realtimeDrawingTexture?.label = "realtimeDrawingTexture"
     }
-}
-
-extension CanvasRenderer {
 
     public func setFrameSize(_ size: CGSize) {
         self.frameSize = size
     }
+}
 
-    func updateSelectedLayerTexture(
-        using texture: RealtimeDrawingTexture?,
-        with commandBuffer: MTLCommandBuffer
-    ) {
-        guard
-            let texture,
-            let selectedLayerTexture
-        else { return }
-
-        renderer.drawTexture(
-            texture: texture,
-            buffers: flippedTextureBuffers,
-            withBackgroundColor: .clear,
-            on: selectedLayerTexture,
-            with: commandBuffer
-        )
-    }
+extension CanvasRenderer {
 
     /// Refreshes the entire screen using textures
-    public func composeAndRefreshCanvas(
+    public func refreshCanvasAfterComposition(
         useRealtimeDrawingTexture: Bool
     ) {
         guard
@@ -169,6 +155,25 @@ extension CanvasRenderer {
         )
 
         displayView.setNeedsDisplay()
+    }
+
+    /// Draws the given texture onto `selectedLayerTexture`
+    func drawSelectedLayerTexture(
+        from texture: MTLTexture?,
+        with commandBuffer: MTLCommandBuffer
+    ) {
+        guard
+            let texture,
+            let selectedLayerTexture
+        else { return }
+
+        renderer.drawTexture(
+            texture: texture,
+            buffers: flippedTextureBuffers,
+            withBackgroundColor: .clear,
+            on: selectedLayerTexture,
+            with: commandBuffer
+        )
     }
 
     public func clearTextures(
