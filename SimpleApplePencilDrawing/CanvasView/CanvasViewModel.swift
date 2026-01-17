@@ -19,6 +19,10 @@ final class CanvasViewModel {
         }
     }
 
+    private var isFinishedDrawing: Bool {
+        drawingTouchPhase == .ended
+    }
+
     /// Handles input from Apple Pencil
     private let pencilStroke = PencilStroke()
 
@@ -52,9 +56,10 @@ final class CanvasViewModel {
     }
 
     private func bindData() {
+        // The canvas is updated every frame during drawing
         drawingDisplayLink.update
             .sink { [weak self] in
-                self?.onDisplayLinkForDrawing()
+                self?.onDrawingDisplayLinkFrame()
             }
             .store(in: &cancellables)
     }
@@ -64,7 +69,7 @@ final class CanvasViewModel {
         try canvasRenderer.setupTextures(textureSize: textureSize)
         drawingRenderer?.setupTextures(textureSize: textureSize)
         drawingRenderer?.prepareNextStroke()
-        canvasRenderer.composeAndRefreshCanvas(
+        canvasRenderer.refreshCanvasAfterComposition(
             useRealtimeDrawingTexture: false
         )
     }
@@ -72,6 +77,7 @@ final class CanvasViewModel {
 
 extension CanvasViewModel {
 
+    /// Processes pencil input using estimated touches
     func onPencilGestureDetected(
         estimatedTouches: Set<UITouch>,
         with event: UIEvent?,
@@ -86,6 +92,7 @@ extension CanvasViewModel {
         )
     }
 
+    /// Processes pencil input using actual touches
     func onPencilGestureDetected(
         actualTouches: Set<UITouch>,
         view: UIView
@@ -106,7 +113,7 @@ extension CanvasViewModel {
         pencilStroke.setDrawingLineEndPoint()
 
         // Update the touch phase for drawing
-        drawingTouchPhase = touchPhase(pointArray)
+        drawingTouchPhase = drawingTouchPhase(pointArray)
 
         drawingRenderer.appendStrokePoints(
             strokePoints: pointArray.map {
@@ -125,32 +132,33 @@ extension CanvasViewModel {
         )
 
         drawingDisplayLink.run(
-            isCurrentlyDrawing
+            drawingTouchPhase ?? .ended
         )
     }
 
-    private func onDisplayLinkForDrawing() {
+    /// Called on every display-link frame while drawing is active
+    private func onDrawingDisplayLinkFrame() {
         guard
             let drawingRenderer,
             let selectedLayerTexture = canvasRenderer.selectedLayerTexture,
             let realtimeDrawingTexture = canvasRenderer.realtimeDrawingTexture,
-            let commandBuffer = canvasRenderer.commandBuffer
+            let currentFrameCommandBuffer = canvasRenderer.currentFrameCommandBuffer
         else { return }
 
         drawingRenderer.drawStrokePoints(
             baseTexture: selectedLayerTexture,
             on: realtimeDrawingTexture,
-            with: commandBuffer
+            with: currentFrameCommandBuffer
         )
 
         // The finalization process is performed when drawing is completed
         if isFinishedDrawing {
-            canvasRenderer.updateSelectedLayerTexture(
-                using: canvasRenderer.realtimeDrawingTexture,
-                with: commandBuffer
+            canvasRenderer.drawSelectedLayerTexture(
+                from: canvasRenderer.realtimeDrawingTexture,
+                with: currentFrameCommandBuffer
             )
 
-            commandBuffer.addCompletedHandler { @Sendable _ in
+            currentFrameCommandBuffer.addCompletedHandler { @Sendable _ in
                 Task { @MainActor [weak self] in
                     // Reset parameters on drawing completion
                     self?.drawingRenderer?.prepareNextStroke()
@@ -158,16 +166,16 @@ extension CanvasViewModel {
             }
         }
 
-        canvasRenderer.composeAndRefreshCanvas(
+        canvasRenderer.refreshCanvasAfterComposition(
             useRealtimeDrawingTexture: !isFinishedDrawing
         )
     }
 
     func onTapClearTexture() {
-        guard let commandBuffer = canvasRenderer.commandBuffer else { return }
+        guard let currentFrameCommandBuffer = canvasRenderer.currentFrameCommandBuffer else { return }
         pencilStroke.reset()
         drawingRenderer?.prepareNextStroke()
-        canvasRenderer.clearTextures(with: commandBuffer)
+        canvasRenderer.clearTextures(with: currentFrameCommandBuffer)
         canvasRenderer.drawCanvasToDisplay()
     }
 
@@ -179,7 +187,8 @@ extension CanvasViewModel {
 
 extension CanvasViewModel {
 
-    private func touchPhase(_ points: [TouchPoint]) -> UITouch.Phase? {
+    /// Touch phase used for drawing
+    func drawingTouchPhase(_ points: [TouchPoint]) -> UITouch.Phase? {
         if points.contains(where: { $0.phase == .cancelled }) {
             return .cancelled
         } else if points.contains(where: { $0.phase == .ended }) {
@@ -188,18 +197,9 @@ extension CanvasViewModel {
             return .began
         } else if points.contains(where: { $0.phase == .moved }) {
             return .moved
+        } else if points.contains(where: { $0.phase == .stationary }) {
+            return .stationary
         }
         return nil
-    }
-
-    private var isCurrentlyDrawing: Bool {
-        switch drawingTouchPhase {
-        case .began, .moved: return true
-        default: return false
-        }
-    }
-
-    private var isFinishedDrawing: Bool {
-        drawingTouchPhase == .ended
     }
 }

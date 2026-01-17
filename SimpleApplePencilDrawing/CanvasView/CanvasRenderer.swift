@@ -7,23 +7,25 @@
 
 @preconcurrency import MetalKit
 
-/// A class that renders textures onto the texture of `displayView`
-@MainActor
-public final class CanvasRenderer: ObservableObject {
+/// Renders textures for display by merging layer textures
+@MainActor public final class CanvasRenderer: ObservableObject {
 
+    /// Command buffer for a single frame
+    public var currentFrameCommandBuffer: MTLCommandBuffer? {
+        displayView.currentFrameCommandBuffer
+    }
+
+    /// Size of the canvas texture
     public var textureSize: CGSize? {
         canvasTexture?.size
     }
 
-    public var commandBuffer: MTLCommandBuffer? {
-        displayView.commandBuffer
-    }
-
+    /// Size of the texture rendered on the screen
     public var displayTextureSize: CGSize? {
         displayView.displayTexture?.size
     }
 
-    /// Texture that combines the background color and the textures of `unselectedBottomTexture`, `selectedTexture` and `unselectedTopTexture`
+    /// Texture that combines the background color and the textures of `selectedLayerTexture`
     private(set) var canvasTexture: MTLTexture?
 
     /// Texture of the selected layer
@@ -36,6 +38,7 @@ public final class CanvasRenderer: ObservableObject {
 
     private let renderer: MTLRendering
 
+    /// Buffers used to draw textures with vertical flipping
     private let flippedTextureBuffers: MTLTextureBuffers
 
     /// Background color of the canvas
@@ -44,6 +47,7 @@ public final class CanvasRenderer: ObservableObject {
     /// Base background color of the canvas. this color that appears when the canvas is rotated or moved.
     private var baseBackgroundColor: UIColor = .lightGray
 
+    /// View for displaying content on the screen
     private var displayView: CanvasDisplayable
 
     public init(
@@ -100,16 +104,62 @@ public final class CanvasRenderer: ObservableObject {
         self.realtimeDrawingTexture = realtimeDrawingTexture
         self.realtimeDrawingTexture?.label = "realtimeDrawingTexture"
     }
-}
-
-extension CanvasRenderer {
 
     public func setFrameSize(_ size: CGSize) {
         self.frameSize = size
     }
+}
 
-    func updateSelectedLayerTexture(
-        using texture: RealtimeDrawingTexture?,
+extension CanvasRenderer {
+
+    /// Refreshes the entire screen using textures
+    public func refreshCanvasAfterComposition(
+        useRealtimeDrawingTexture: Bool
+    ) {
+        guard
+            let canvasTexture,
+            let selectedLayerTexture,
+            let realtimeDrawingTexture,
+            let currentFrameCommandBuffer
+        else { return }
+
+        renderer.fillColor(
+            texture: canvasTexture,
+            withRGB: backgroundColor.rgb,
+            with: currentFrameCommandBuffer
+        )
+
+        renderer.mergeTexture(
+            texture: useRealtimeDrawingTexture ? realtimeDrawingTexture : selectedLayerTexture,
+            alpha: 255,
+            into: canvasTexture,
+            with: currentFrameCommandBuffer
+        )
+
+        drawCanvasToDisplay()
+    }
+
+    /// Draws `canvasTexture` to the display and requests a screen update
+    public func drawCanvasToDisplay() {
+        guard
+            let displayTexture = displayView.displayTexture,
+            let currentFrameCommandBuffer
+        else { return }
+
+        renderer.drawTexture(
+            texture: canvasTexture,
+            frameSize: frameSize,
+            backgroundColor: baseBackgroundColor,
+            on: displayTexture,
+            with: currentFrameCommandBuffer
+        )
+
+        displayView.setNeedsDisplay()
+    }
+
+    /// Draws the given texture onto `selectedLayerTexture`
+    func drawSelectedLayerTexture(
+        from texture: MTLTexture?,
         with commandBuffer: MTLCommandBuffer
     ) {
         guard
@@ -124,51 +174,6 @@ extension CanvasRenderer {
             on: selectedLayerTexture,
             with: commandBuffer
         )
-    }
-
-    /// Refreshes the entire screen using textures
-    public func composeAndRefreshCanvas(
-        useRealtimeDrawingTexture: Bool
-    ) {
-        guard
-            let canvasTexture,
-            let selectedLayerTexture,
-            let realtimeDrawingTexture,
-            let commandBuffer = displayView.commandBuffer
-        else { return }
-
-        renderer.fillColor(
-            texture: canvasTexture,
-            withRGB: backgroundColor.rgb,
-            with: commandBuffer
-        )
-
-        renderer.mergeTexture(
-            texture: useRealtimeDrawingTexture ? realtimeDrawingTexture : selectedLayerTexture,
-            alpha: 255,
-            into: canvasTexture,
-            with: commandBuffer
-        )
-
-        drawCanvasToDisplay()
-    }
-
-    /// Draws `canvasTexture` to the display and requests a screen update
-    public func drawCanvasToDisplay() {
-        guard
-            let displayTexture = displayView.displayTexture,
-            let commandBuffer = displayView.commandBuffer
-        else { return }
-
-        renderer.drawTexture(
-            texture: canvasTexture,
-            frameSize: frameSize,
-            backgroundColor: baseBackgroundColor,
-            on: displayTexture,
-            with: commandBuffer
-        )
-
-        displayView.setNeedsDisplay()
     }
 
     public func clearTextures(
