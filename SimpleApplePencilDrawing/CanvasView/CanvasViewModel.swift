@@ -113,7 +113,7 @@ extension CanvasViewModel {
         pencilStroke.setDrawingLineEndPoint()
 
         // Update the touch phase for drawing
-        drawingTouchPhase = touchPhase(pointArray)
+        drawingTouchPhase = drawingTouchPhase(pointArray)
 
         drawingRenderer.appendStrokePoints(
             strokePoints: pointArray.map {
@@ -187,7 +187,8 @@ extension CanvasViewModel {
 
 extension CanvasViewModel {
 
-    private func touchPhase(_ points: [TouchPoint]) -> UITouch.Phase? {
+    /// Touch phase used for drawing
+    func drawingTouchPhase(_ points: [TouchPoint]) -> UITouch.Phase? {
         if points.contains(where: { $0.phase == .cancelled }) {
             return .cancelled
         } else if points.contains(where: { $0.phase == .ended }) {
@@ -196,6 +197,8 @@ extension CanvasViewModel {
             return .began
         } else if points.contains(where: { $0.phase == .moved }) {
             return .moved
+        } else if points.contains(where: { $0.phase == .stationary }) {
+            return .stationary
         }
         return nil
     }
