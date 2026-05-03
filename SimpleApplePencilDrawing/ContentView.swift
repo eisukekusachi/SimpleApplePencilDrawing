@@ -10,37 +10,24 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        MyViewControllerWrapper()
+        CanvasViewRepresentable()
+            .ignoresSafeArea()
     }
 }
 
-struct MyViewControllerWrapper: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UIViewController {
-        ViewController()
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-}
-
-final class ViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
+struct CanvasViewRepresentable: UIViewRepresentable {
+    func makeUIView(context: Context) -> CanvasView {
         let canvasView = CanvasView()
-        canvasView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(canvasView)
-        NSLayoutConstraint.activate([
-            canvasView.topAnchor.constraint(equalTo: view.topAnchor),
-            canvasView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            canvasView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            canvasView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-
         do {
             try canvasView.setup()
         } catch {
             fatalError("Failed to initialize the canvas")
         }
+        return canvasView
     }
+
+    func updateUIView(_ uiView: CanvasView, context: Context) {}
+    static func dismantleUIView(_ uiView: CanvasView, coordinator: ()) {}
 }
 
 #Preview {

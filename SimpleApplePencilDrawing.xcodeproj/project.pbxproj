@@ -170,7 +170,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D4057FE62D68B1E000DB8B4D /* Domain */ = {
+		D4057FE62D68B1E000DB8B4D /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				D4204E122F094D6F0020E174 /* Curve */,
@@ -179,7 +179,7 @@
 				D45C10092F0816FD00BFDB25 /* Textures */,
 				D4057FF72D69713A00DB8B4D /* DrawingCurve.swift */,
 			);
-			path = Domain;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		D4057FFF2D69A46700DB8B4D /* Points */ = {
@@ -196,7 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				D462E17C2C0C566900E0503E /* Extensions */,
-				D4057FE62D68B1E000DB8B4D /* Domain */,
+				D4057FE62D68B1E000DB8B4D /* Models */,
 				D462E16C2C0C554900E0503E /* MetalKit */,
 				D45C10042F0807E400BFDB25 /* Resources */,
 				D462E1812C0C56E000E0503E /* Utils */,
@@ -238,20 +238,20 @@
 		D45C10062F08164000BFDB25 /* CanvasView */ = {
 			isa = PBXGroup;
 			children = (
-				D45C10072F08165600BFDB25 /* Domain */,
+				D45C10072F08165600BFDB25 /* Models */,
 				D4D0FDE82C8349DA00E91B4B /* Dummies */,
 				D4204DEF2F08F5860020E174 /* TestHelpers.swift */,
 			);
 			path = CanvasView;
 			sourceTree = "<group>";
 		};
-		D45C10072F08165600BFDB25 /* Domain */ = {
+		D45C10072F08165600BFDB25 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				D47123992CB285D7001F16C6 /* Points */,
 				D45C100A2F08176100BFDB25 /* Stroke */,
 			);
-			path = Domain;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		D45C10082F0816D500BFDB25 /* Stroke */ = {
