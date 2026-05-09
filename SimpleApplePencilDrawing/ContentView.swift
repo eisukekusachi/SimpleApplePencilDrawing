@@ -63,10 +63,18 @@ struct CanvasViewRepresentable: UIViewRepresentable {
                 }
                 .store(in: &cancellables)
         }
+
+        func cleanup() {
+            canvasView = nil
+            cancellables.removeAll()
+        }
+    }
+
+    static func dismantleUIView(_ uiView: CanvasView, coordinator: Coordinator) {
+        coordinator.cleanup()
     }
 
     func updateUIView(_ uiView: CanvasView, context: Context) {}
-    static func dismantleUIView(_ uiView: CanvasView, coordinator: ()) {}
 }
 
 #Preview {
