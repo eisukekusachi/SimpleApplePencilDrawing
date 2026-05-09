@@ -13,6 +13,6 @@ class ContentViewModel: ObservableObject {
     let doSomethingSubject = PassthroughSubject<Void, Never>()
 
     func doSomething() {
-        doSomethingSubject.send()
+        doSomethingSubject.send(())
     }
 }
