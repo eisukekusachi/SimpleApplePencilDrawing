@@ -122,7 +122,7 @@ import UIKit
 
 extension CanvasView {
     func doSomething() {
-        print("Do something")
+        Logger.info("Do something")
     }
 }
 
