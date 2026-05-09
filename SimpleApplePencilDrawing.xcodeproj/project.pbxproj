@@ -55,6 +55,7 @@
 		D46ECA2D2CB0CA9A00B6ECE8 /* GrayscaleDotPointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46ECA2C2CB0CA9A00B6ECE8 /* GrayscaleDotPointTests.swift */; };
 		D478DD9D2C7978CA0031521D /* SetExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D478DD9C2C7978CA0031521D /* SetExtensions.swift */; };
 		D47CBFD92CDF68E100189B08 /* MTLTextureNodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47CBFD82CDF68E100189B08 /* MTLTextureNodes.swift */; };
+		D495069C2FAF0A54006736C5 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D495069B2FAF0A54006736C5 /* ContentViewModel.swift */; };
 		D4B17E1F2C0ABCB40056C270 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */; };
 		D4B17E222C0ABCB40056C270 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = D4B17E212C0ABCB40056C270 /* Base */; };
 		D4B17E2D2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B17E2C2C0ABCB40056C270 /* SimpleApplePencilDrawingTests.swift */; };
@@ -131,6 +132,7 @@
 		D46ECA2C2CB0CA9A00B6ECE8 /* GrayscaleDotPointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleDotPointTests.swift; sourceTree = "<group>"; };
 		D478DD9C2C7978CA0031521D /* SetExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetExtensions.swift; sourceTree = "<group>"; };
 		D47CBFD82CDF68E100189B08 /* MTLTextureNodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLTextureNodes.swift; sourceTree = "<group>"; };
+		D495069B2FAF0A54006736C5 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		D4B17E122C0ABCB30056C270 /* SimpleApplePencilDrawing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleApplePencilDrawing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4B17E1E2C0ABCB40056C270 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D4B17E212C0ABCB40056C270 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -372,6 +374,7 @@
 				D4B17E202C0ABCB40056C270 /* LaunchScreen.storyboard */,
 				D4B17E232C0ABCB40056C270 /* Info.plist */,
 				D45C0FEC2F04BBC400BFDB25 /* ContentView.swift */,
+				D495069B2FAF0A54006736C5 /* ContentViewModel.swift */,
 				D45C0FEE2F04BBEF00BFDB25 /* SimpleApplePencilDrawingApp.swift */,
 			);
 			path = SimpleApplePencilDrawing;
@@ -546,6 +549,7 @@
 				D462E1A42C0C680400E0503E /* Interpolator.swift in Sources */,
 				D4204E0B2F0937AC0020E174 /* MTLRendering.swift in Sources */,
 				D4204E112F0940150020E174 /* MTLCommandBufferExtensions.swift in Sources */,
+				D495069C2FAF0A54006736C5 /* ContentViewModel.swift in Sources */,
 				D4057FF62D68DE4900DB8B4D /* UITouchExtensions.swift in Sources */,
 				D462E1742C0C55D300E0503E /* MTLPipelines.swift in Sources */,
 				D462E17B2C0C565300E0503E /* MTLTextureCreator.swift in Sources */,

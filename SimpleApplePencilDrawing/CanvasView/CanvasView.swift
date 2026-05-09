@@ -120,6 +120,12 @@ import UIKit
     }
 }
 
+extension CanvasView {
+    func doSomething() {
+        Logger.info("Do something")
+    }
+}
+
 extension CanvasView: PencilInputGestureRecognizerSender {
 
     func sendPencilEstimatedTouches(_ touches: Set<UITouch>, with event: UIEvent?, on view: UIView) {

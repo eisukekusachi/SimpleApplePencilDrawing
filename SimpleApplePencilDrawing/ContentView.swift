@@ -5,19 +5,45 @@
 //  Created by Eisuke Kusachi on 2025/12/31.
 //
 
+import Combine
 import UIKit
 import SwiftUI
 
 struct ContentView: View {
+
+    @StateObject private var viewModel = ContentViewModel()
+
     var body: some View {
-        CanvasViewRepresentable()
+        ZStack(alignment: .bottom) {
+            CanvasViewRepresentable(
+                viewModel: viewModel
+            )
             .ignoresSafeArea()
+
+            Button(
+                action: {
+                    viewModel.doSomething()
+                },
+                label: {
+                    Text("Button")
+                }
+            )
+            .padding(.bottom, 28)
+        }
     }
 }
 
 struct CanvasViewRepresentable: UIViewRepresentable {
+
+    let viewModel: ContentViewModel
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(viewModel: viewModel)
+    }
+
     func makeUIView(context: Context) -> CanvasView {
         let canvasView = CanvasView()
+        context.coordinator.canvasView = canvasView
         do {
             try canvasView.setup()
         } catch {
@@ -26,8 +52,29 @@ struct CanvasViewRepresentable: UIViewRepresentable {
         return canvasView
     }
 
+    class Coordinator {
+        weak var canvasView: CanvasView?
+        private var cancellables = Set<AnyCancellable>()
+
+        init(viewModel: ContentViewModel) {
+            viewModel.doSomethingSubject
+                .sink { [weak self] in
+                    self?.canvasView?.doSomething()
+                }
+                .store(in: &cancellables)
+        }
+
+        func cleanup() {
+            canvasView = nil
+            cancellables.removeAll()
+        }
+    }
+
+    static func dismantleUIView(_ uiView: CanvasView, coordinator: Coordinator) {
+        coordinator.cleanup()
+    }
+
     func updateUIView(_ uiView: CanvasView, context: Context) {}
-    static func dismantleUIView(_ uiView: CanvasView, coordinator: ()) {}
 }
 
 #Preview {
