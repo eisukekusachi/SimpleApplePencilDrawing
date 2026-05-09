@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+@MainActor
 class ContentViewModel: ObservableObject {
 
     let doSomethingSubject = PassthroughSubject<Void, Never>()
